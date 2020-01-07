@@ -31,6 +31,6 @@ echo "UPDATE mysql.user SET Password=PASSWORD('$1') WHERE User='root';CREATE DAT
 echo "Mysql password changed completely!"
 
 # execute auto_loaddata.sh
-cd ~/Capstone_Design/src/Django/scode/test
+cd ~/CPH/src/Django/scode/test
 ./auto_loaddata.sh
 cd ~
