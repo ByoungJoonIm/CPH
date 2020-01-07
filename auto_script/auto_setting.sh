@@ -1,6 +1,6 @@
 #!/bin/bash
 
-db_name='SDB'
+db_name='CPH'
 
 # parameter check
 if [ -z "$1" ]; then
@@ -31,6 +31,6 @@ echo "UPDATE mysql.user SET Password=PASSWORD('$1') WHERE User='root';CREATE DAT
 echo "Mysql password changed completely!"
 
 # execute auto_loaddata.sh
-cd ~/Capstone_Design/src/Django/scode/data
+cd ~/Capstone_Design/src/Django/scode/test
 ./auto_loaddata.sh
 cd ~
