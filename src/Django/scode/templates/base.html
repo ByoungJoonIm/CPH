@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>{% block title %}Django Web Programming{% endblock %}</title>
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static "css/base.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% block extrastyle %}{% endblock %}" />
+
+</head>
+
+<body>
+<div id="header">
+	<h2 class="logo">
+		<a href="{% url 'home' %}"><img src="{% static 'img/hallym_logo.png' %}" style="height:30px;"/></a></h2>
+	<h2 class="maintitle"><a href="{% url 'home' %}">Scode</a></h2>
+	{% if request.session.is_loggedin %}
+	<h4 class="welcome">Welcome, {{ request.session.name }}!
+		<a href="#">Change Password</a> /
+		<a href="{% url 'logout' %}">Logout</a>
+	</h4>
+	{% else %}
+	<h4 class="welcome">Welcome, Anonymous /
+		<a href="{% url 'login' %}">Login</a>
+	</h4>
+	{% endif %}
+</div>
+{% block content %}{% endblock %}
+{% block footer %}
+<div id="footer">
+	&copy; scode team
+	&nbsp; &nbsp; &nbsp; &nbsp;
+	<a href="https://github.com/BJ-Lim/Capstone_Design">Our git</a>
+	&nbsp; &nbsp; &nbsp; &nbsp;
+	<a href="https://github.com/DMOJ">Dmoj-project</a>
+	&nbsp; &nbsp; &nbsp; &nbsp;
+	<a href="https://www.djangoproject.com/">Django</a>
+</div>
+{% endblock footer %}
+</body>
+</html>
