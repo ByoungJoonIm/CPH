@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -51,6 +52,7 @@ class subject(models.Model):
 
 
 class student(models.Model):
+    #user = models.OneToOneField(User, on_delete=models.CASCADE)
     student_id = models.CharField(max_length=10, primary_key=True)
     student_name = models.CharField(max_length=45)
     password = models.CharField(max_length=64)

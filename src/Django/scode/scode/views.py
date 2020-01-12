@@ -13,6 +13,7 @@ from judge.judgeManager import JudgeManager
 from scode.loginManager import LoginManager
 
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LogoutView
 
 #--- Homepage View
 class HomeView(TemplateView, LoginManager):
@@ -43,9 +44,5 @@ class LoginView(FormView, LoginManager):
         return self.login(request, login_id, login_password)
 
 
-class LogoutView(TemplateView, LoginManager):
-    template_name = 'registration/logout.html'
-
-    def get(self, request, *args, **kargs):
-        self.logout(request)
-        return render(request, self.template_name)
+class LogoutView(LogoutView):
+    template_name = 'home.html'
