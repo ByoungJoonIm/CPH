@@ -488,7 +488,7 @@ class JudgeManager():
     def login_check(self, login_id, login_password):
         # This must be distinguishable login rule.
         id_length = len(login_id)
-        sha256_login_password = hashlib.sha256(login_password).hexdigest()
+        sha256_login_password = hashlib.sha256(login_password.encode('utf-8')).hexdigest()
         result = -1
 
         # professor
