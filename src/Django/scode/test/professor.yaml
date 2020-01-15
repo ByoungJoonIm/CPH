@@ -1,4 +1,4 @@
-- model: 'judge.professor'
+- model: 'judge.Professor'
   pk: '00001'
   fields:
     professor_name: '김교수'
@@ -9,7 +9,7 @@
     update_id: '2019050600001'
     update_ip: '127.0.1.0'
     update_date: '2009-01-06 15:08:24.078915+09:00'
-- model: 'judge.professor'
+- model: 'judge.Professor'
   pk: '00002'
   fields:
     professor_name: '나교수'

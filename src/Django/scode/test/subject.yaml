@@ -1,4 +1,4 @@
-- model: judge.subject
+- model: judge.Subject
   fields:
     year: '2019'
     semester: 1
@@ -13,7 +13,7 @@
     update_id: 'sub_201905070'
     update_ip: '127.0.0.0'
     update_date: '2009-01-06 15:08:24.078915'
-- model: judge.subject
+- model: judge.Subject
   fields:
     year: '2019'
     semester: 1
@@ -28,7 +28,7 @@
     update_id: 'sub_201905071'
     update_ip: '127.0.0.1'
     update_date: '2009-01-06 15:08:24.078915'
-- model: judge.subject
+- model: judge.Subject
   fields:
     year: '2019'
     semester: 1
@@ -43,7 +43,7 @@
     update_id: 'sub_201905072'
     update_ip: '127.0.0.2'
     update_date: '2009-01-06 15:08:24.078915'
-- model: judge.subject
+- model: judge.Subject
   fields:
     year: '2019'
     semester: 1
@@ -58,7 +58,7 @@
     update_id: 'sub_201905073'
     update_ip: '127.0.0.3'
     update_date: '2009-01-06 15:08:24.078915'
-- model: judge.subject
+- model: judge.Subject
   fields:
     year: '2019'
     semester: 1

@@ -42,7 +42,7 @@ class ProfessorMainLV(ListView, LoginManager):
            AND judge_professor.professor_id=' + request.session["professor_id"] + ' \
            ORDER BY judge_subject.title;'
 
-        subject_list_sql = professor.objects.raw(sql)
+        subject_list_sql = Professor.objects.raw(sql)
 
         return render(request, self.template_name, {'subject_list_sql': subject_list_sql})
 
@@ -65,7 +65,7 @@ class ProfessorSubjectLV(ListView, LoginManager):
                     AND judge_professor.professor_id = "{1}" \
                     ORDER BY judge_subject.title;'.format(request.session['subject_id'], request.session['professor_id'])
 
-            subject_list_sql = professor.objects.raw(sql)
+            subject_list_sql = Professor.objects.raw(sql)
 
             return render(request, self.template_name, { 'subject_list_sql': subject_list_sql})
 
@@ -95,7 +95,7 @@ class ProfessorResultLV(ListView, LoginManager):
             AND judge_assignment.sequence = judge_submit.sequence_id \
             AND judge_submit.sub_seq_id = ' + str(sub_seq_id) + ';'
 
-    queryset = student.objects.raw(sql)
+    queryset = Student.objects.raw(sql)
     template_name = 'judge/professor/professor_result_list.html'
     context_object_name = "objects"
 
@@ -187,8 +187,8 @@ class StudentSubjectLV(TemplateView, LoginManager):
             not_expired_assignment_list_sql = common_sql + '> "{0}";'.format(now)
             expired_assignment_list_sql = common_sql + '< "{0}";'.format(now)
 
-            not_expired_assignment_list = student.objects.raw(not_expired_assignment_list_sql)
-            expired_assignment_list = student.objects.raw(expired_assignment_list_sql)
+            not_expired_assignment_list = Student.objects.raw(not_expired_assignment_list_sql)
+            expired_assignment_list = Student.objects.raw(expired_assignment_list_sql)
 
             return render(request, self.template_name,
                     { 'not_expired_assignment_list': not_expired_assignment_list,

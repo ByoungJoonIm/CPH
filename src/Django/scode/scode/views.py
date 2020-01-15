@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 
-from judge.models import professor
+from judge.models import Professor
 from judge.forms import LoginForm
 
 from judge.judgeManager import JudgeManager
@@ -22,9 +22,9 @@ class HomeView(TemplateView, LoginManager):
     def get(self, request, *args, **kargs):
         if self.is_activate(request):
             if request.session['role'] == 'professor':
-                return redirect(reverse_lazy('judge:professor'))
+                return redirect(reverse_lazy('judge:Professor'))
             if request.session['role'] == 'student':
-                return redirect(reverse_lazy('judge:student'))
+                return redirect(reverse_lazy('judge:Student'))
         return render(request, self.template_name)
 
 class LoginView(FormView, LoginManager):
