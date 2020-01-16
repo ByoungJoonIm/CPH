@@ -6,43 +6,29 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 
-from judge.models import Professor
-from judge.forms import LoginForm
-
-from judge.judgeManager import JudgeManager
-from scode.loginManager import LoginManager
+from scode.forms import LoginForm
 
 from django.contrib.auth.models import User
-from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import LoginView, LogoutView
 
 #--- Homepage View
-class HomeView(TemplateView, LoginManager):
+class HomeView(TemplateView):
     template_name = 'home.html'
 
     def get(self, request, *args, **kargs):
-        if self.is_activate(request):
-            if request.session['role'] == 'professor':
-                return redirect(reverse_lazy('judge:Professor'))
-            if request.session['role'] == 'student':
-                return redirect(reverse_lazy('judge:Student'))
+        if request.user is not None:
+            user_name_len = len(request.user.get_username())
+            if user_name_len == 5:
+                return redirect(reverse_lazy('judge:professor'))
+            if user_name_len == 8:
+                return redirect(reverse_lazy('judge:student'))
         return render(request, self.template_name)
 
-class LoginView(FormView, LoginManager):
+
+class LoginView(LoginView):
     template_name = 'registration/login.html'
-    form_class = LoginForm
-
-    success_url = template_name
-
-    def get(self, request, *args, **kargs):
-        return render(request, self.template_name, {'form' : self.form_class})
-
-    def post(self, request, *args, **kargs):
-        form = request.POST
-        login_id = form.get('userid')
-        login_password = form.get('password')
-
-        return self.login(request, login_id, login_password)
-
+    authentication_form = LoginForm
+    redirect_field_name = 'home.html'
 
 class LogoutView(LogoutView):
     template_name = 'home.html'

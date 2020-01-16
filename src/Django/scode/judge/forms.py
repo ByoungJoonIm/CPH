@@ -9,7 +9,3 @@ class AssignmentForm(forms.Form):
 
 class CodingForm(forms.Form):
     code = forms.CharField(widget=forms.Textarea(), label="code")
-
-class LoginForm(forms.Form):
-    userid = forms.CharField(label="userid")
-    password = forms.CharField(label="password", widget=forms.PasswordInput)
