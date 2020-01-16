@@ -156,7 +156,7 @@ class StudentMainLV(ListView, LoginManager):
                 AND judge_student.student_id = "{0}" \
                 ORDER BY judge_subject.title;'.format(request.session['student_id'])
 
-        subject_list_sql = student.objects.raw(sql)
+        subject_list_sql = Student.objects.raw(sql)
 
         return render(request, self.template_name, {'subject_list_sql': subject_list_sql})
 
