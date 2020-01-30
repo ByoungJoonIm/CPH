@@ -1,15 +1,15 @@
 - model: judge.Language
   fields:
     name: 'python'
-    extention: 'py'
+    extension: 'py'
     lang_id: 'PY3'
 - model: judge.Language
   fields:
     name: 'c'
-    extention: 'c'
+    extension: 'c'
     lang_id: 'C'
 - model: judge.Language
   fields:
     name: 'java'
-    extention: 'java'
+    extension: 'java'
     lang_id: 'JAVA8'
