@@ -10,10 +10,9 @@ from django.contrib.auth.models import User
 # https://github.com/BJ-Lim/Capstone_Design/blob/master/database/db_schema_v2.PNG
 
 class Language(models.Model):
-    pri_key = models.AutoField(primary_key = True)
+    lang_id = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=10)
     extension = models.CharField(max_length=10)
-    lang_id = models.CharField(max_length=10)
 
 class Subject(models.Model):
     pri_key = models.AutoField(primary_key=True)
@@ -25,7 +24,7 @@ class Subject(models.Model):
     title = models.CharField(max_length=100)
     grade = models.IntegerField()
 
-    lang_seq = models.ForeignKey(Language, on_delete=models.CASCADE)
+    lang_id = models.ForeignKey(Language, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('year', 'semester', 'subject_cd', 'classes')
