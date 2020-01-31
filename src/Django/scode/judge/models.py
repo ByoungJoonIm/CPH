@@ -15,42 +15,36 @@ class Language(models.Model):
     extension = models.CharField(max_length=10)
 
 class Subject(models.Model):
-    pri_key = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     year = models.CharField(max_length=4, null=False)
     semester = models.IntegerField(null=False)
     subject_cd = models.CharField(max_length=20, null=False)
     classes = models.CharField(max_length=2, null=False)
-
     title = models.CharField(max_length=100)
     grade = models.IntegerField()
-
-    lang = models.ForeignKey(Language, on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE, db_column = 'language_id')
 
     class Meta:
         unique_together = ('year', 'semester', 'subject_cd', 'classes')
 
 class Signup_class(models.Model):
-    # Table must have one key in Django
-    not_use_pri_key = models.AutoField(primary_key=True)
-    # sub_seq same as year, semester, subject_cd, classes
-    sub_seq = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, db_column = 'subject_id')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Assignment(models.Model):
-    not_use_pri_key = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     sequence = models.IntegerField(null=False)
-    # sub_seq same as year, semester, subject_cd, classes
-    sub_seq = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    assignment_name = models.CharField(max_length=100)
-    assignment_desc = models.TextField()
+    name = models.CharField(max_length=100)
+    desc = models.TextField()
     deadline = models.DateTimeField(null=False)
     max_score = models.IntegerField()
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, db_column = 'subject_id')
 
 class Submit(models.Model):
-    # Table must have one key in Django
-    not_use_pri_key = models.AutoField(primary_key=True)
-    sequence = models.ForeignKey(Assignment, on_delete=models.CASCADE)
-    sub_seq = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
     comment = models.CharField(max_length=100, null=True)
     score = models.IntegerField()
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, db_column = 'assignment_id')
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, db_column = 'subject_id')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_column = 'user_id')
