@@ -1,28 +1,49 @@
 - model: 'judge.Signup_class'
   fields:
-    sub_seq: 1
-    student_id: '20160001'
+    subject_id: 1
+    user_id: 1
 - model: 'judge.Signup_class'
   fields:
-    sub_seq: 2
-    student_id: '20160001'
+    subject_id: 2
+    user_id: 1
 - model: 'judge.Signup_class'
   fields:
-    sub_seq: 4
-    student_id: '20160001'
+    subject_id: 4
+    user_id: 1
 - model: 'judge.Signup_class'
   fields:
-    sub_seq: 3
-    student_id: '20160002'
+    subject_id: 3
+    user_id: 2
 - model: 'judge.Signup_class'
   fields:
-    sub_seq: 4
-    student_id: '20160002'
+    subject_id: 4
+    user_id: 2
 - model: 'judge.Signup_class'
   fields:
-    sub_seq: 1
-    student_id: '20160003'
+    subject_id: 1
+    user_id: 3
 - model: 'judge.Signup_class'
   fields:
-    sub_seq: 5
-    student_id: '20160003'
+    subject_id: 5
+    user_id: 3
+
+- model: 'judge.Signup_class'
+  fields:
+    subject_id: 1
+    user_id: 4
+- model: 'judge.Signup_class'
+  fields:
+    subject_id: 2
+    user_id: 4
+- model: 'judge.Signup_class'
+  fields:
+    subject_id: 3
+    user_id: 4
+- model: 'judge.Signup_class'
+  fields:
+    subject_id: 4
+    user_id: 5
+- model: 'judge.Signup_class'
+  fields:
+    subject_id: 5
+    user_id: 5
