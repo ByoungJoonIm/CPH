@@ -24,7 +24,7 @@ class Subject(models.Model):
     title = models.CharField(max_length=100)
     grade = models.IntegerField()
 
-    lang_id = models.ForeignKey(Language, on_delete=models.CASCADE)
+    lang = models.ForeignKey(Language, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('year', 'semester', 'subject_cd', 'classes')
