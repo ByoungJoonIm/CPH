@@ -4,27 +4,24 @@
 
 {% block content %}
 <div id="content">
-	<h1>Welcome, {{ request.session.name }}({{ request.session.professor_id }})!</h1>
+	<h1>Welcome, {{ request.user.last_name }}({{ request.user.username }})!</h1>
 	<table>
 		<tr>
 			<th>title</th>
 		</tr>
-
-		{% for obj in subject_list_sql %}
+		{% for obj in object_list %}
 		<tr>
 			<td>
-				<form id='{{ obj.title }}_{{ obj.classes}}' method="post" action="{% url 'judge:subject' obj.title obj.classes %}">{% csrf_token %}
+			{# <form id='{{ obj.title }}_{{ obj.classes}}' method="post" action="{% url 'judge:subject' obj.title obj.classes %}">{% csrf_token %} #}
+				<form id='{{ obj.title }}_{{ obj.classes}}' method="post">{% csrf_token %}
 					<input type="hidden" name="title" value="{{ obj.title }}"/>
 					<input type="hidden" name="classes" value="{{ obj.classes }}"/>
-					<input type="hidden" name="subject_id" value="{{ obj.subject_id }}"/>
+					<input type="hidden" name="subject_cd" value="{{ obj.subject_cd }}"/>
 					<a href="javascript:{}" onclick=document.getElementById("{{ obj.title }}_{{ obj.classes }}").submit();>{{ obj.title }}_{{ obj.classes }}</a>
 				</form>
 			</td>
 		</tr>
 		{% endfor %}
-
-
 	</table>
-
 </div>
 {% endblock content %}
