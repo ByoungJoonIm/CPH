@@ -22,10 +22,12 @@ class HomeView(TemplateView):
             
             user_group_id = request.user.groups.get().id
             
-            if user_group_id == student_group_id:
-                return redirect(reverse_lazy('judge:student'))
-            elif user_group_id == professor_group_id:
-                return redirect(reverse_lazy('judge:professor'))
+            if user_group_id == professor_group_id:
+                request.session['isProfessor'] = True
+            else:
+                request.session['isProfessor'] = False
+            return redirect(reverse_lazy('judge:common_subject_list'))
+            
 
         return render(request, self.template_name)
 

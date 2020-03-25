@@ -16,7 +16,7 @@ from django.urls import reverse
 
 from django.db import connection
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from judge.models import *
@@ -52,36 +52,30 @@ class ProfessorAssignmentLV(LoginRequiredMixin, ListView):
         subject = Subject.objects.get(id = subject_id)
         
         return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
+    
+# This is test View for common area between professor and student
+class UserMainLV(LoginRequiredMixin, ListView):
+    template_name = 'judge/common/common_subject_list.html'
+    
+    def get(self, request, *args, **kwargs):
+        signup_class = Signup_class.objects.filter(user_id=self.request.user.id).values_list('subject_id')
+        subject = Subject.objects.filter(pk__in = signup_class)
+        
+        return render(request, self.template_name, { 'subject' : subject })
+    
+class AssignmentLV(LoginRequiredMixin, ListView):
+    template_name = 'judge/common/common_assignment_list.html'
+    paginate_by = 10
+    
+    def post(self, request, *args, **kwargs):
+        subject_id = request.POST.get('subject_id')
+        assignment = Assignment.objects.filter(subject_id = subject_id)
+        subject = Subject.objects.get(id = subject_id)
+        
+        return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
+    
 
-    # def common(self, request):
-    #     if request.session['subject_id']:
-    #         sql = 'SELECT * \
-    #                 FROM judge_subject_has_professor, judge_professor, judge_assignment, judge_subject \
-    #                 WHERE judge_subject_has_professor.sub_seq_id = judge_assignment.sub_seq_id \
-    #                 AND judge_professor.professor_id = judge_subject_has_professor.professor_id \
-    #                 AND judge_subject.pri_key = judge_subject_has_professor.sub_seq_id \
-    #                 AND judge_subject.pri_key = "{0}" \
-    #                 AND judge_professor.professor_id = "{1}" \
-    #                 ORDER BY judge_subject.title;'.format(request.session['subject_id'], request.session['professor_id'])
 
-    #         subject_list_sql = Professor.objects.raw(sql)
-
-    #         return render(request, self.template_name, { 'subject_list_sql': subject_list_sql})
-
-    #     else:
-    #         return HttpResponse('This is wrong way!')
-
-    # def get(self, request, *args, **kwargs):
-    #     return self.common(request)
-
-
-    # def post(self, request, *args, **kwargs):
-    #     form = request.POST
-    #     request.session['title'] = form.get('title')
-    #     request.session['classes'] = form.get('classes')
-    #     request.session['subject_id'] = form.get('subject_id')
-
-    #     return self.common(request)
 '''
 # This page shows result of a assiginment.
 class ProfessorResultLV(ListView, LoginManager):
@@ -141,7 +135,7 @@ class ProfessorDeleteView(TemplateView, LoginManager):
 class ProfessorSettingsView(TemplateView, LoginManager):
     template_name = 'judge/professor/professor_subject_settings.html'
 
-
+'''
 #-- student
 class StudentMainLV(ListView, LoginManager):
     queryset = None
@@ -158,7 +152,7 @@ class StudentMainLV(ListView, LoginManager):
         subject_list_sql = Student.objects.raw(sql)
 
         return render(request, self.template_name, {'subject_list_sql': subject_list_sql})
-
+'''
 class StudentSubjectLV(TemplateView, LoginManager):
     queryset = None
     template_name = 'judge/student/student_subject_list.html'

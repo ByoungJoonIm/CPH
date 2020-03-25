@@ -1,12 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}professor_assignment_list.html{% endblock %}
+{% block title %}common_assignment_list.html{% endblock %}
 
 {% block content %}
 <div id="content">
 	<h1> {{ subject.title }}_{{ subject.classes}} </h1>
-	<h3><input type="button" value="Add"/></h3>
-	<h3><input type="button" value="settings"/></h3>
+    {% if request.session.isProfessor %}
+	    <h3><input type="button" value="Add"/></h3>
+	    <h3><input type="button" value="settings"/></h3>
+    {% endif %}
 	<table>
 		<tr>
 			<th>assginment_name</th>
