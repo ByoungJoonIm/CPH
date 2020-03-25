@@ -6,7 +6,7 @@
     classes: '01'
     title: 'Algorithm'
     grade: 1
-    lang: 'C'
+    language: 'C'
 - model: judge.Subject
   fields:
     year: '2019'
@@ -15,7 +15,7 @@
     classes: '01'
     title: 'Python'
     grade: 2
-    lang: 'PY3'
+    language: 'PY3'
 - model: judge.Subject
   fields:
     year: '2019'
@@ -24,7 +24,7 @@
     classes: '02'
     title: 'Python'
     grade: 2
-    lang: 'PY3'
+    language: 'PY3'
 - model: judge.Subject
   fields:
     year: '2019'
@@ -33,7 +33,7 @@
     classes: '01'
     title: 'C'
     grade: 2
-    lang: 'C'
+    language: 'C'
 - model: judge.Subject
   fields:
     year: '2019'
@@ -42,4 +42,4 @@
     classes: '01'
     title: 'Java'
     grade: 1
-    lang: 'JAVA8'
+    language: 'JAVA8'

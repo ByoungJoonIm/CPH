@@ -8,10 +8,8 @@
   fields:
     name: 'c'
     extension: 'c'
-    lang_id: 'C'
 - model: judge.Language
   pk: 'JAVA8'
   fields:
     name: 'java'
     extension: 'java'
-    lang_id: 'JAVA8'
