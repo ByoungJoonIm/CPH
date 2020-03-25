@@ -12,11 +12,8 @@
 		{% for obj in object_list %}
 		<tr>
 			<td>
-			{# <form id='{{ obj.title }}_{{ obj.classes}}' method="post" action="{% url 'judge:subject' obj.title obj.classes %}">{% csrf_token %} #}
-				<form id='{{ obj.title }}_{{ obj.classes}}' method="post">{% csrf_token %}
-					<input type="hidden" name="title" value="{{ obj.title }}"/>
-					<input type="hidden" name="classes" value="{{ obj.classes }}"/>
-					<input type="hidden" name="subject_cd" value="{{ obj.subject_cd }}"/>
+				<form id='{{ obj.title }}_{{ obj.classes}}' method="post" action="{% url 'judge:assignment' obj.title obj.classes %}">{% csrf_token %}
+					<input type="hidden" name="subject_id" value="{{ obj.id }}"/>
 					<a href="javascript:{}" onclick=document.getElementById("{{ obj.title }}_{{ obj.classes }}").submit();>{{ obj.title }}_{{ obj.classes }}</a>
 				</form>
 			</td>

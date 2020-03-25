@@ -1,0 +1,7 @@
+- model: judge.Assignment
+  fields:
+    name: 'first assignment'
+    desc: 'your first assignment'
+    deadline: "2020-09-01T13:20:30+09:00"
+    max_score: 100
+    subject: 1

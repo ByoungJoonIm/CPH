@@ -34,7 +34,6 @@ class Signup_class(models.Model):
 
 class Assignment(models.Model):
     id = models.AutoField(primary_key=True)
-    sequence = models.IntegerField(null=False)
     name = models.CharField(max_length=100)
     desc = models.TextField()
     deadline = models.DateTimeField(null=False)

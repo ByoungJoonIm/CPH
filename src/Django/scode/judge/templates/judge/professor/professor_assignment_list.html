@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}professor_assignment_list.html{% endblock %}
+
+{% block content %}
+<div id="content">
+	<h1> {{ subject.title }}_{{ subject.classes}} </h1>
+	<h3><input type="button" value="Add"/></a></h3>
+	<h3><input type=button value="settings"/></h3>
+	<table>
+		<tr>
+			<th>assginment_name</th>
+			<th>deadline</th>
+		</tr>
+
+		{% for obj in assignment %}
+		<tr>
+			<td>{{ obj.name }}</a></td>
+			<td>{{ obj.deadline | date:"Y-m-d(D)" }} {{ obj.deadline | time:"H:i:s" }}</td>
+		</tr>
+		{% endfor %}
+
+
+	</table>
+
+</div>
+{% endblock content %}

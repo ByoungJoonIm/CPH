@@ -40,45 +40,49 @@ class ProfessorMainLV(LoginRequiredMixin, ListView):
         signup_class = Signup_class.objects.filter(user_id=self.request.user.id).values_list('subject_id')
         subject = Subject.objects.filter(pk__in = signup_class)
         return subject
-'''
+
 # This page shows a list of assignment in selected subject
-class ProfessorSubjectLV(ListView, LoginManager):
-    #It doesn't used.
-    queryset = None
-
-    template_name = 'judge/professor/professor_subject_list.html'
+class ProfessorAssignmentLV(LoginRequiredMixin, ListView):
+    template_name = 'judge/professor/professor_assignment_list.html'
     paginate_by = 10
-
-    def common(self, request):
-        if request.session['subject_id']:
-            sql = 'SELECT * \
-                    FROM judge_subject_has_professor, judge_professor, judge_assignment, judge_subject \
-                    WHERE judge_subject_has_professor.sub_seq_id = judge_assignment.sub_seq_id \
-                    AND judge_professor.professor_id = judge_subject_has_professor.professor_id \
-                    AND judge_subject.pri_key = judge_subject_has_professor.sub_seq_id \
-                    AND judge_subject.pri_key = "{0}" \
-                    AND judge_professor.professor_id = "{1}" \
-                    ORDER BY judge_subject.title;'.format(request.session['subject_id'], request.session['professor_id'])
-
-            subject_list_sql = Professor.objects.raw(sql)
-
-            return render(request, self.template_name, { 'subject_list_sql': subject_list_sql})
-
-        else:
-            return HttpResponse('This is wrong way!')
-
-    def get(self, request, *args, **kwargs):
-        return self.common(request)
-
-
+    
     def post(self, request, *args, **kwargs):
-        form = request.POST
-        request.session['title'] = form.get('title')
-        request.session['classes'] = form.get('classes')
-        request.session['subject_id'] = form.get('subject_id')
+        subject_id = request.POST.get('subject_id')
+        assignment = Assignment.objects.filter(subject_id = subject_id)
+        subject = Subject.objects.get(id = subject_id)
+        
+        return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
 
-        return self.common(request)
+    # def common(self, request):
+    #     if request.session['subject_id']:
+    #         sql = 'SELECT * \
+    #                 FROM judge_subject_has_professor, judge_professor, judge_assignment, judge_subject \
+    #                 WHERE judge_subject_has_professor.sub_seq_id = judge_assignment.sub_seq_id \
+    #                 AND judge_professor.professor_id = judge_subject_has_professor.professor_id \
+    #                 AND judge_subject.pri_key = judge_subject_has_professor.sub_seq_id \
+    #                 AND judge_subject.pri_key = "{0}" \
+    #                 AND judge_professor.professor_id = "{1}" \
+    #                 ORDER BY judge_subject.title;'.format(request.session['subject_id'], request.session['professor_id'])
 
+    #         subject_list_sql = Professor.objects.raw(sql)
+
+    #         return render(request, self.template_name, { 'subject_list_sql': subject_list_sql})
+
+    #     else:
+    #         return HttpResponse('This is wrong way!')
+
+    # def get(self, request, *args, **kwargs):
+    #     return self.common(request)
+
+
+    # def post(self, request, *args, **kwargs):
+    #     form = request.POST
+    #     request.session['title'] = form.get('title')
+    #     request.session['classes'] = form.get('classes')
+    #     request.session['subject_id'] = form.get('subject_id')
+
+    #     return self.common(request)
+'''
 # This page shows result of a assiginment.
 class ProfessorResultLV(ListView, LoginManager):
     # We need to revise sub_seq_id
