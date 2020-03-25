@@ -27,12 +27,6 @@
 					<a href="javascript:{}" onclick=document.getElementById("{{ obj.id }}").submit();>{{ obj.name }}</a>
 			    </form>
             </td>
-        {% if request.session.isProfessor %}
-			<td><a>{{ obj.name }}</a></td>
-
-        {% else %}
-            <td><a>{{ obj.name }}</a></td>
-        {% endif %}
 			<td>{{ obj.deadline | date:"Y-m-d(D)" }} {{ obj.deadline | time:"H:i:s" }}</td>
 		</tr>
 		{% endfor %}
