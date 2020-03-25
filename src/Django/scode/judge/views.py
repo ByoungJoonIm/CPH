@@ -31,29 +31,8 @@ import os
 import datetime
 
 
-#-- Here is developing area
-# This page shows a list of subjects that professor has.
-class ProfessorMainLV(LoginRequiredMixin, ListView):
-    template_name = 'judge/professor/professor_main_list.html'
-    
-    def get_queryset(self):
-        signup_class = Signup_class.objects.filter(user_id=self.request.user.id).values_list('subject_id')
-        subject = Subject.objects.filter(pk__in = signup_class)
-        return subject
-
-# This page shows a list of assignment in selected subject
-class ProfessorAssignmentLV(LoginRequiredMixin, ListView):
-    template_name = 'judge/professor/professor_assignment_list.html'
-    paginate_by = 10
-    
-    def post(self, request, *args, **kwargs):
-        subject_id = request.POST.get('subject_id')
-        assignment = Assignment.objects.filter(subject_id = subject_id)
-        subject = Subject.objects.get(id = subject_id)
-        
-        return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
-    
-# This is test View for common area between professor and student
+#-- Here is developing area    
+# common area 
 class UserMainLV(LoginRequiredMixin, ListView):
     template_name = 'judge/common/common_subject_list.html'
     
@@ -74,7 +53,21 @@ class AssignmentLV(LoginRequiredMixin, ListView):
         
         return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
     
+# professor area
+#class ProfessorUpdateView(UpdateView):
+class ProfessorUpdateView(LoginRequiredMixin, TemplateView):
+    template_name = 'judge/professor/professor_assignment_update.html'
+    
+    def post(self, request, * args, **kwarges):
+        return render(request, self.template_name)
 
+# student area
+class StudentAssignment(LoginRequiredMixin, FormView):
+    template_name = 'judge/student/student_assignment.html'
+    form_class = CodingForm
+
+    def post(self, request, * args, **kwarges):
+        return render(request, self.template_name)
 
 '''
 # This page shows result of a assiginment.
@@ -136,22 +129,6 @@ class ProfessorSettingsView(TemplateView, LoginManager):
     template_name = 'judge/professor/professor_subject_settings.html'
 
 '''
-#-- student
-class StudentMainLV(ListView, LoginManager):
-    queryset = None
-    template_name = 'judge/student/student_main_list.html'
-
-    def get(self, request, *args, **kwargs):
-        sql = 'SELECT judge_student.student_id as student_id, title, classes, judge_subject.pri_key as subject_id \
-                FROM judge_subject, judge_signup_class, judge_student \
-                WHERE judge_subject.pri_key = judge_signup_class.sub_seq_id \
-                AND judge_signup_class.student_id = judge_student.student_id \
-                AND judge_student.student_id = "{0}" \
-                ORDER BY judge_subject.title;'.format(request.session['student_id'])
-
-        subject_list_sql = Student.objects.raw(sql)
-
-        return render(request, self.template_name, {'subject_list_sql': subject_list_sql})
 '''
 class StudentSubjectLV(TemplateView, LoginManager):
     queryset = None
