@@ -28,6 +28,7 @@ from scode.loginManager import LoginManager
 
 import pymysql
 import os
+import pathlib
 import datetime
 
 
@@ -54,6 +55,48 @@ class AssignmentLV(LoginRequiredMixin, ListView):
         return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
     
 # professor area
+
+class ProfessorAddView(LoginRequiredMixin, FormView):
+    template_name = 'judge/professor/professor_assignment_add.html'
+    form_class = AssignmentForm
+
+#    def form_valid(self, form):
+        #return render(self.request, self.template_name, {'form': self.form})
+#        return super().form_valid(form)
+
+    def handle_uploaded_file(self, files, path):
+        uploaded_file_name = ['in', 'out']
+        for f in files:
+            with open(path + '/temp/' + uploaded_file_name[files.index(f)], 'wb+') as dest:
+                for chunk in f.chunks():
+                    dest.write(chunk)
+
+    def handle_file_contruct(self, subject_id):
+        subject = Subject.objects.get(subject_id = subject_id)
+        print(subject.id)
+        print(subject.year)
+        print(subject.semester)
+        print(subject.title)
+
+    # def post(self, request, *args, **kwargs):
+    #     judgeManager = JudgeManager()
+    #     judgeManager.construct(request.session['professor_id'])
+    #     base_file_path = judgeManager.get_file_path(request.session['subject_id'], request.session['professor_id'])
+    #     self.handle_uploaded_file([request.FILES['in_file'], request.FILES['out_file']], base_file_path)
+
+    #     #judgeManager.create_problem(request.session['professor_id'], request.session['subject_id'])
+    #     judgeManager.add_assignment(request.session['subject_id'], request.POST.get('assignment_name'),
+    #             request.POST.get('assignment_desc'), int(request.POST.get('deadline')))
+
+
+    #     # we need next step which is inserting db.
+
+    #     return redirect(reverse_lazy('judge:subject', args=[request.session['title'], request.session['classes']]))
+
+    def post(self, request, *args, **kwargs):
+        #self.handle_file_construct(request.subject_id)
+        return render(request, self.template_name)
+
 #class ProfessorUpdateView(UpdateView):
 class ProfessorUpdateView(LoginRequiredMixin, TemplateView):
     template_name = 'judge/professor/professor_assignment_update.html'
@@ -61,7 +104,9 @@ class ProfessorUpdateView(LoginRequiredMixin, TemplateView):
     def post(self, request, * args, **kwarges):
         return render(request, self.template_name)
 
+
 # student area
+#-----------------------I'm working here.
 class StudentAssignment(LoginRequiredMixin, FormView):
     template_name = 'judge/student/student_assignment.html'
     form_class = CodingForm

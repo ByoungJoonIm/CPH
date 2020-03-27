@@ -6,7 +6,11 @@
 <div id="content">
 	<h1> {{ subject.title }}_{{ subject.classes}} </h1>
     {% if request.session.isProfessor %}
-	    <h3><input type="button" value="Add"/></h3>
+		<form id='assignment_add' method="post" action="{% url 'judge:professor_assignment_add' %}">{% csrf_token %}
+	        <input type="hidden" name="subject_id" value="{{ subject.id }}"/>
+			<input type="button" value="Add" onclick="document.getElementById('assignment_add').submit();"/>
+		</form>
+
 	    <h3><input type="button" value="settings"/></h3>
     {% endif %}
 	<table>
@@ -19,19 +23,19 @@
 		<tr>
             <td>
                 {% if request.session.isProfessor %}
-                    <form id='{{ obj.id }}' method="post" action="{% url 'judge:professor_assignment_update' obj.id %}">{% csrf_token %}
+                    <form id='assignment_update' method="post" action="{% url 'judge:professor_assignment_update' %}">{% csrf_token %}
+                    	<input type="hidden" name="subject_id" value="{{ subject.id }}"/>
+						<a href="javascript:{}" onclick="document.getElementById('assignment_update').submit()";>{{ obj.name }}</a>
                 {% else %}
-                    <form id='{{ obj.id }}' method="post" action="{% url 'judge:student_assignment' obj.id %}">{% csrf_token %}
+                    <form id='solve' method="post" action="{% url 'judge:student_assignment' obj.id %}">{% csrf_token %}
+	                	<input type="hidden" name="assignment_id" value="{{ obj.id }}"/>
+						<a href="javascript:{}" onclick=document.getElementById("solve").submit();>{{ obj.name }}</a>
                 {% endif %}
-                    <input type="hidden" name="assignment_id" value="{{ obj.id }}"/>
-					<a href="javascript:{}" onclick=document.getElementById("{{ obj.id }}").submit();>{{ obj.name }}</a>
-			    </form>
+			    	</form>
             </td>
 			<td>{{ obj.deadline | date:"Y-m-d(D)" }} {{ obj.deadline | time:"H:i:s" }}</td>
 		</tr>
 		{% endfor %}
-
-
 	</table>
 
 </div>
