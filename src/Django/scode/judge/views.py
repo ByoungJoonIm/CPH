@@ -49,6 +49,16 @@ class AssignmentLV(LoginRequiredMixin, ListView):
     
     def post(self, request, *args, **kwargs):
         subject_id = request.POST.get('subject_id')
+        request.session['subject_id'] = subject_id
+        
+        return self.get(request, args, kwargs)
+
+    @classmethod
+    def get(self, request, *args, **kwargs):
+        if('subject_id' not in request.session):
+            return redirect(reverse_lazy('judge:common_subject_list'))
+        
+        subject_id = request.session.get('subject_id')
         assignment = Assignment.objects.filter(subject_id = subject_id)
         subject = Subject.objects.get(id = subject_id)
         
@@ -60,23 +70,19 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_assignment_add.html'
     form_class = AssignmentForm
 
-#    def form_valid(self, form):
-        #return render(self.request, self.template_name, {'form': self.form})
-#        return super().form_valid(form)
+    def form_valid(self, form):
+        # return render(self.request, self.template_name, {'form': self.form})
+        return super().form_valid(form)
 
-    def handle_uploaded_file(self, files, path):
-        uploaded_file_name = ['in', 'out']
-        for f in files:
-            with open(path + '/temp/' + uploaded_file_name[files.index(f)], 'wb+') as dest:
-                for chunk in f.chunks():
-                    dest.write(chunk)
+    # def handle_uploaded_file(self, files, path):
+    #     uploaded_file_name = ['in', 'out']
+    #     for f in files:
+    #         with open(path + '/temp/' + uploaded_file_name[files.index(f)], 'wb+') as dest:
+    #             for chunk in f.chunks():
+    #                 dest.write(chunk)
 
-    def handle_file_contruct(self, subject_id):
-        subject = Subject.objects.get(subject_id = subject_id)
-        print(subject.id)
-        print(subject.year)
-        print(subject.semester)
-        print(subject.title)
+    def handle_file_construct(self, subject_id):
+        subject = Subject.objects.get(id = subject_id)
 
     # def post(self, request, *args, **kwargs):
     #     judgeManager = JudgeManager()
@@ -94,9 +100,15 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
     #     return redirect(reverse_lazy('judge:subject', args=[request.session['title'], request.session['classes']]))
 
     def post(self, request, *args, **kwargs):
-        #self.handle_file_construct(request.subject_id)
-        return render(request, self.template_name)
-
+        if("assignment_name" in request.POST):  # submit it self
+            if("subject_id" in request.session):
+                return AssignmentLV.get(request, args, kwargs)
+            return redirect(reverse_lazy('judge:common_subject_list'))
+        else:
+            print("not found!")    
+            
+        return render(request, self.template_name, {'form' : self.form_class})
+        
 #class ProfessorUpdateView(UpdateView):
 class ProfessorUpdateView(LoginRequiredMixin, TemplateView):
     template_name = 'judge/professor/professor_assignment_update.html'
