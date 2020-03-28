@@ -30,6 +30,7 @@ import pymysql
 import os
 import pathlib
 import datetime
+import zipfile
 
 
 #-- Here is developing area    
@@ -74,16 +75,6 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
         # return render(self.request, self.template_name, {'form': self.form})
         return super().form_valid(form)
 
-    # def handle_uploaded_file(self, files, path):
-    #     uploaded_file_name = ['in', 'out']
-    #     for f in files:
-    #         with open(path + '/temp/' + uploaded_file_name[files.index(f)], 'wb+') as dest:
-    #             for chunk in f.chunks():
-    #                 dest.write(chunk)
-
-    def handle_file_construct(self, subject_id):
-        subject = Subject.objects.get(id = subject_id)
-
     # def post(self, request, *args, **kwargs):
     #     judgeManager = JudgeManager()
     #     judgeManager.construct(request.session['professor_id'])
@@ -99,15 +90,116 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
 
     #     return redirect(reverse_lazy('judge:subject', args=[request.session['title'], request.session['classes']]))
 
-    def post(self, request, *args, **kwargs):
-        if("assignment_name" in request.POST):  # submit it self
-            if("subject_id" in request.session):
-                return AssignmentLV.get(request, args, kwargs)
-            return redirect(reverse_lazy('judge:common_subject_list'))
-        else:
-            print("not found!")    
+    def get_base_dir_path(self, request):
+        subject = Subject.objects.get(id = request.session.get('subject_id'))
             
-        return render(request, self.template_name, {'form' : self.form_class})
+        #/user/student_codes/2019_1/00001/Algorithm_01/temp
+        base_dir_path = os.path.expanduser('~')
+        base_dir_path = os.path.join(base_dir_path, "student_codes")
+        base_dir_path = os.path.join(base_dir_path, str(subject.year) + "_" + str(subject.semester))
+        base_dir_path = os.path.join(base_dir_path, request.user.username)
+        base_dir_path = os.path.join(base_dir_path, subject.title + "_" + subject.classes)
+        return base_dir_path    
+
+    def construct_dir(self, base_dir_path):
+        if not os.path.exists(base_dir_path):
+            dir_elem = ['students', 'temp', 'problems', 'settings']
+            pathlib.Path(base_dir_path).mkdir(parents=True, exist_ok=True)
+            for de in dir_elem:
+                os.mkdir(os.path.join(base_dir_path, de))
+        
+    def upload_files(self, request, base_dir_path):
+        origin_file_name = ['in_file', 'out_file']
+        uploaded_file_name = ['in', 'out']
+            
+        for seq in range(0, 2):
+            with open(os.path.join(os.path.join(base_dir_path, "temp"), uploaded_file_name[seq]), 'wb+') as dest:
+                for chunk in request.FILES[origin_file_name[seq]].chunks():
+                    dest.write(chunk)
+                    
+    def generate_problem_file(self, request, base_dir_path):
+        sequence = str(len(Assignment.objects.filter(subject = request.session.get('subject_id'))) + 1)
+        
+        #when delete assignment, error will be occured. It need to fix
+        for dir in ["problems", "students"]:
+            os.mkdir(os.path.join(os.path.join(base_dir_path, dir), sequence))
+        
+        os.chdir(os.path.join(base_dir_path, 'temp'))
+        
+
+        #--- separate files
+        in_file = open("in", "r")
+        out_file = open("out", "r")
+        cnt = 1
+
+        zip_name = sequence + ".zip"
+        myzip = zipfile.ZipFile(zip_name, "w")
+
+        file_list = ["in", "out"]
+
+        while True:
+            in_line = in_file.readline().rstrip()
+            out_line = out_file.readline().rstrip()
+            if not in_line or not out_line:
+                break
+
+            in_file_rs_name = sequence + "." + str(cnt) + ".in"
+            in_file_rs = open(in_file_rs_name, "w")
+            in_file_rs.write('1\n')
+            in_file_rs.write(str(in_line) + '\n')
+            in_file_rs.close()
+
+            out_file_rs_name = sequence + "." + str(cnt) + ".out"
+            out_file_rs = open(out_file_rs_name, "w")
+            out_file_rs.write(str(out_line) + '\n')
+            out_file_rs.close()
+
+            myzip.write(in_file_rs_name)
+            myzip.write(out_file_rs_name)
+
+            file_list.append(in_file_rs_name)
+            file_list.append(out_file_rs_name)
+
+            cnt = cnt + 1
+
+        in_file.close()
+        out_file.close()
+
+        myzip.close()
+
+        #--- remove files
+        for f in file_list:
+            os.remove(os.path.join(os.path.join(base_dir_path, "temp"), f))
+
+        problem_path = os.path.join(os.path.join(base_dir_path, "problems"), sequence)
+        #--- generate init file
+        init_file_name = "init.yml"
+        init_file_path = os.path.join(problem_path, init_file_name)
+        init_file = open(init_file_path, "w")
+        init_file.write("archive: {0}.zip\ntest_cases:".format(sequence))
+
+        for i in range(1, cnt):
+            init_file.write("\n- {" + "in: {0}.{1}.in, out: {0}.{1}.out, points: 1".format(sequence, i) + "}")
+
+        init_file.close()
+        os.rename(zip_name, os.path.join(problem_path, zip_name))
+
+    def post(self, request, *args, **kwargs):
+        if "subject_id" not in request.session:
+            return redirect(reverse_lazy('judge:common_subject_list'))
+        
+        if "assignment_name" in request.POST:  # submit itself
+            subject = Subject.objects.get(id = request.session.get('subject_id'))
+            
+            base_dir_path = self.get_base_dir_path(self.request)
+            self.construct_dir(base_dir_path)
+            self.upload_files(self.request, base_dir_path)
+            self.generate_problem_file(self.request, base_dir_path)
+            
+            # done
+            return AssignmentLV.get(request, args, kwargs)
+        else:                                   # common_assignment_list to here
+            return render(request, self.template_name, {'form' : self.form_class})
         
 #class ProfessorUpdateView(UpdateView):
 class ProfessorUpdateView(LoginRequiredMixin, TemplateView):
