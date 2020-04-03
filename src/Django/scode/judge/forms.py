@@ -7,5 +7,10 @@ class AssignmentForm(forms.Form):
     assignment_in_file = forms.FileField(label="assignment_in_file")
     assignment_out_file = forms.FileField(label="assignment_out_file")
 
+class AssignmentUpdateForm(AssignmentForm):
+    assignment_deadline = forms.IntegerField(label="assignment_deadline", required=False)
+    assignment_in_file = forms.FileField(label="assignment_in_file", required=False)
+    assignment_out_file = forms.FileField(label="assignment_out_file", required=False)
+
 class CodingForm(forms.Form):
     code = forms.CharField(widget=forms.Textarea(), label="code")

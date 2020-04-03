@@ -20,7 +20,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from judge.models import *
-from judge.forms import AssignmentForm, CodingForm
+from judge.forms import AssignmentForm, AssignmentUpdateForm, CodingForm
 
 
 from judge.judgeManager import JudgeManager
@@ -74,9 +74,15 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_assignment_add.html'
     form_class = AssignmentForm
 
-    def form_valid(self, form):
-        # return render(self.request, self.template_name, {'form': self.form})
-        return super().form_valid(form)
+    def post(self, request, *args, **kwargs):
+        subject = Subject.objects.get(id = request.session.get('subject_id'))
+            
+        base_dir_path = self.get_base_dir_path(self.request)
+        self.construct_dir(base_dir_path)
+        self.upload_files(self.request, base_dir_path)
+        self.generate_problem_file(self.request, base_dir_path)
+            
+        return AssignmentLV.get(request, args, kwargs)
 
     def get_base_dir_path(self, request):
         subject = Subject.objects.get(id = request.session.get('subject_id'))
@@ -114,7 +120,6 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
         
         os.chdir(os.path.join(base_dir_path, 'temp'))
         
-
         #--- separate files
         in_file = open("in", "r")
         out_file = open("out", "r")
@@ -181,20 +186,15 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
         assignment_instance.subject = Subject.objects.get(id=int(request.session.get('subject_id')))
         assignment_instance.save()
 
-    def post(self, request, *args, **kwargs):
-        subject = Subject.objects.get(id = request.session.get('subject_id'))
-            
-        base_dir_path = self.get_base_dir_path(self.request)
-        self.construct_dir(base_dir_path)
-        self.upload_files(self.request, base_dir_path)
-        self.generate_problem_file(self.request, base_dir_path)
-            
-        return AssignmentLV.get(request, args, kwargs)
         
 #class ProfessorUpdateView(UpdateView):
-class ProfessorUpdateView(LoginRequiredMixin, TemplateView):
+class ProfessorUpdateView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_assignment_update.html'
-    
+    form_class = AssignmentUpdateForm
+        
+    def get(self, request, * args, **kwarges):
+        return render(request, self.template_name, {'form' : form_class})   # + current assignment object
+
     def post(self, request, * args, **kwarges):
         return render(request, self.template_name)
 
