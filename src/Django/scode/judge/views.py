@@ -8,7 +8,6 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from django.urls import reverse_lazy
 
 from django.views.generic.base import TemplateView
-#from .forms import PostForm
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -37,7 +36,7 @@ from django.utils import timezone
 
 
 #-- Here is developing area    
-# common area 
+# common area------------------------------------------------------------------------------------------------------------------------
 class UserMainLV(LoginRequiredMixin, ListView):
     template_name = 'judge/common/common_subject_list.html'
     
@@ -68,8 +67,7 @@ class AssignmentLV(LoginRequiredMixin, ListView):
         
         return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
     
-# professor area
-
+# professor area------------------------------------------------------------------------------------------------------------------------
 class ProfessorAddView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_assignment_add.html'
     form_class = AssignmentForm
@@ -187,25 +185,34 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
         assignment_instance.save()
 
         
-#class ProfessorUpdateView(UpdateView):
 class ProfessorUpdateView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_assignment_update.html'
     form_class = AssignmentUpdateForm
         
-    def get(self, request, * args, **kwarges):
-        return render(request, self.template_name, {'form' : form_class})   # + current assignment object
+    def get(self, request, * args, **kwargs):
+        assignment_id = request.GET.get('assignment_id')
+        request.session['assignment_id'] = assignment_id
+        return render(request, self.template_name, {'form' : self.form_class, 'assignment' : Assignment.objects.get(id=assignment_id)})   # + current assignment object
 
-    def post(self, request, * args, **kwarges):
-        return render(request, self.template_name)
+    def post(self, request, * args, **kwargs):
+        assignment_instance = Assignment.objects.get(id=request.session.get('assignment_id'))
+        assignment_instance.name = request.POST.get('assignment_name')
+        assignment_instance.desc = request.POST.get('assignment_desc')
+        assignment_deadline = request.POST.get('assignment_deadline')
+        if assignment_deadline is not '':
+            assignment_instance.deadline = timezone.make_aware(datetime.datetime.now() + datetime.timedelta(days=int(assignment_deadline)))
+        assignment_instance.save()
+        return AssignmentLV.get(request, args, kwargs)
 
+class ProfessorDeleteView(LoginRequiredMixin, TemplateView):
+    template_name = 'judge/professor/professor_assignment_delete.html'
 
-# student area
-#-----------------------I'm working here.
+# Student area------------------------------------------------------------------------------------------------------------------------
 class StudentAssignment(LoginRequiredMixin, FormView):
     template_name = 'judge/student/student_assignment.html'
     form_class = CodingForm
 
-    def post(self, request, * args, **kwarges):
+    def post(self, request, * args, **kwargs):
         return render(request, self.template_name)
 
 '''

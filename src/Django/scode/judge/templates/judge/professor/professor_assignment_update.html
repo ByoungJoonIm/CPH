@@ -20,10 +20,11 @@
 
 			<div class="form-row">
 				{{ form.assignment_name.label_tag }} 
-				<input type="text" name="assignment_name" required="" id="id_assignment_name" value="test" />
+				<input type="text" name="assignment_name" required="" id="id_assignment_name" value='{{ assignment.name }}' />
 			</div>
 			<div class="form-row">
-				{{ form.assignment_desc.label_tag }} {{ form.assignment_desc }}
+				{{ form.assignment_desc.label_tag }}
+				<textarea name="assignment_desc" cols="40" rows="10" required="" id="id_assignment_desc">{{assignment.desc}}</textarea>
 			</div>
 
 			<div class="form-row">
@@ -31,11 +32,13 @@
 			</div>
 
 			<div class="form-row">
-				{{ form.assignment_in_file.label_tag }} {{ form.assignment_in_file }}
+				{{ form.assignment_in_file.label_tag }}
+				<input type="file" name="assignment_in_file" id="id_assignment_in_file" disabled/> <p> * Sorry, replacing files is not support in current version.</p>
 			</div>
 
 			<div class="form-row">
-				{{ form.assignment_out_file.label_tag }} {{ form.assignment_out_file }}
+				{{ form.assignment_out_file.label_tag }}
+				<input type="file" name="assignment_out_file" id="id_assignment_out_file" disabled/>
 			</div>
 		</fieldset>
 

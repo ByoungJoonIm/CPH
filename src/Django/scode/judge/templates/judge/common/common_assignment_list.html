@@ -22,13 +22,13 @@
 		<tr>
             <td>
                 {% if request.session.isProfessor %}
-                    <form id='assignment_update' method="get" action="{% url 'judge:professor_assignment_update' %}">{% csrf_token %}
+                    <form id='assignment_update{{ obj.id }}' method="get" action="{% url 'judge:professor_assignment_update' %}">{% csrf_token %}
                     	<input type="hidden" name="assignment_id" value="{{ obj.id }}"/>
-						<a href="javascript:{}" onclick="document.getElementById('assignment_update').submit()";>{{ obj.name }}</a>
+						<a href="javascript:{}" onclick="document.getElementById('assignment_update{{ obj.id }}').submit()";>{{ obj.name }}</a>
                 {% else %}
-                    <form id='solve' method="post" action="{% url 'judge:student_assignment' obj.id %}">{% csrf_token %}
+                    <form id='solve{{ obj.id }}' method="post" action="{% url 'judge:student_assignment' obj.id %}">{% csrf_token %}
 	                	<input type="hidden" name="assignment_id" value="{{ obj.id }}"/>
-						<a href="javascript:{}" onclick=document.getElementById("solve").submit();>{{ obj.name }}</a>
+						<a href="javascript:{}" onclick=document.getElementById("solve{{ obj.id }}").submit();>{{ obj.name }}</a>
                 {% endif %}
 			    	</form>
             </td>
