@@ -78,21 +78,6 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
         # return render(self.request, self.template_name, {'form': self.form})
         return super().form_valid(form)
 
-    # def post(self, request, *args, **kwargs):
-    #     judgeManager = JudgeManager()
-    #     judgeManager.construct(request.session['professor_id'])
-    #     base_file_path = judgeManager.get_file_path(request.session['subject_id'], request.session['professor_id'])
-    #     self.handle_uploaded_file([request.FILES['in_file'], request.FILES['out_file']], base_file_path)
-
-    #     #judgeManager.create_problem(request.session['professor_id'], request.session['subject_id'])
-    #     judgeManager.add_assignment(request.session['subject_id'], request.POST.get('assignment_name'),
-    #             request.POST.get('assignment_desc'), int(request.POST.get('deadline')))
-
-
-    #     # we need next step which is inserting db.
-
-    #     return redirect(reverse_lazy('judge:subject', args=[request.session['title'], request.session['classes']]))
-
     def get_base_dir_path(self, request):
         subject = Subject.objects.get(id = request.session.get('subject_id'))
             
@@ -187,10 +172,7 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
         init_file.close()
         os.rename(zip_name, os.path.join(problem_path, zip_name))
         
-        #--- insert to database
-        # request.POST.get('assignment_name'),
-    #request.POST.get('assignment_desc'), int(request.POST.get('deadline')))
-    
+        #--- insert to database    
         assignment_instance = Assignment()
         assignment_instance.name = request.POST.get('assignment_name')
         assignment_instance.desc = request.POST.get('assignment_desc')
@@ -200,21 +182,14 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
         assignment_instance.save()
 
     def post(self, request, *args, **kwargs):
-        if "subject_id" not in request.session:
-            return redirect(reverse_lazy('judge:common_subject_list'))
-        
-        if "assignment_name" in request.POST:  # submit itself
-            subject = Subject.objects.get(id = request.session.get('subject_id'))
+        subject = Subject.objects.get(id = request.session.get('subject_id'))
             
-            base_dir_path = self.get_base_dir_path(self.request)
-            self.construct_dir(base_dir_path)
-            self.upload_files(self.request, base_dir_path)
-            self.generate_problem_file(self.request, base_dir_path)
+        base_dir_path = self.get_base_dir_path(self.request)
+        self.construct_dir(base_dir_path)
+        self.upload_files(self.request, base_dir_path)
+        self.generate_problem_file(self.request, base_dir_path)
             
-            # done
-            return AssignmentLV.get(request, args, kwargs)
-        else:                                   # common_assignment_list to here
-            return render(request, self.template_name, {'form' : self.form_class})
+        return AssignmentLV.get(request, args, kwargs)
         
 #class ProfessorUpdateView(UpdateView):
 class ProfessorUpdateView(LoginRequiredMixin, TemplateView):

@@ -6,8 +6,7 @@
 <div id="content">
 	<h1> {{ subject.title }}_{{ subject.classes}} </h1>
     {% if request.session.isProfessor %}
-		<form id='assignment_add' method="post" action="{% url 'judge:professor_assignment_add' %}">{% csrf_token %}
-	        <input type="hidden" name="subject_id" value="{{ subject.id }}"/>
+		<form id='assignment_add' method="get" action="{% url 'judge:professor_assignment_add' %}">{% csrf_token %}
 			<input type="button" value="Add" onclick="document.getElementById('assignment_add').submit();"/>
 		</form>
 
