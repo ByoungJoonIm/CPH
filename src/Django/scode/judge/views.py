@@ -33,6 +33,7 @@ import zipfile
 import time
 import datetime
 import subprocess
+import yaml
 from django.utils import timezone
 
 
@@ -170,7 +171,6 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
             
             in_file_rs_name = sequence + "." + str(cnt) + ".in"
             in_file_rs = open(in_file_rs_name, "w")
-            in_file_rs.write('1\n')
             in_file_rs.write(str(in_line) + '\n')
             in_file_rs.close()
 
@@ -201,7 +201,7 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
         init_file = open(init_file_path, "w")
         init_file.write("archive: {0}.zip\ntest_cases:".format(sequence))
 
-        for i in range(1, cnt):
+        for i in range(1, cnt + 1):
             init_file.write("\n- {" + "in: {0}.{1}.in, out: {0}.{1}.out, points: 1".format(sequence, i) + "}")
 
         init_file.close()
@@ -258,9 +258,11 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         code = request.POST.get('code')
         
         base_dir_path = self.get_base_dir_path(request)
-        lang_extension = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id).extension
+        assignment = Assignment.objects.get(id=request.session.get('assignment_id'))
+        language = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id)
         
-        self.create_src_file(code, os.path.join(base_dir_path, "students"), lang_extension, request)
+        self.create_src_file(code, os.path.join(base_dir_path, "students"),assignment, language, request)
+        self.judge_student_src_file(base_dir_path, assignment, language, request)
         
         return render(request, self.template_name)
     
@@ -277,14 +279,63 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         base_dir_path = os.path.join(base_dir_path, subject.title + "_" + subject.classes)
         return base_dir_path
     
-    def create_src_file(self, code, student_dir_path, lang_extension, request):        
-        src_path = os.path.join(student_dir_path, str(Assignment.objects.get(id=request.session.get('assignment_id')).sequence))
-        src_path = os.path.join(src_path, request.user.username + "." + lang_extension)
+    def create_src_file(self, code, student_dir_path, assignment, language, request):        
+        src_path = os.path.join(student_dir_path, str(assignment.sequence))
+        src_path = os.path.join(src_path, request.user.username + "." + language.extension)
         
         src_file = open(src_path, "w")
         src_file.write(code)
         src_file.close()
         
+    def judge_student_src_file(self, base_dir_path, assignment, language, request):
+        sequence = str(assignment.sequence)
+        
+        config_file_path = os.path.join(base_dir_path, "settings")
+        config_file_path = os.path.join(config_file_path, "config.yml")
+        
+        init_file_path = os.path.join(base_dir_path, "problems")
+        init_file_path = os.path.join(init_file_path, sequence)
+        init_file_path = os.path.join(init_file_path, "init.yml")
+        
+        student_file_path = os.path.join(base_dir_path, "students")
+        student_file_path = os.path.join(student_file_path, sequence)
+        student_file_path = os.path.join(student_file_path, request.user.username + "." + language.extension)
+        
+        
+        points = []
+        with open(init_file_path, 'r') as stream:
+            try:
+                prob_info = yaml.safe_load(stream)
+                tc = prob_info['test_cases']
+                for t in tc:
+                    points.append(t['points'])
+            except yaml.YAMLError as exc:
+                print(exc)
+
+        # Make parsed result of dmoj-judge
+        a = subprocess.check_output(["dmoj-cli", "-c", config_file_path, "--no-ansi", "-e", language.lang_id, "submit", sequence, language.lang_id, student_file_path ])
+        sp = a.split()
+
+        i = 0
+        total_get = 0
+
+        while True:
+            if i >= len(sp):
+                break
+            if sp[i] == "Done":
+                break
+            if sp[i].decode("utf-8") == "Test":
+                if str(sp[i+3].decode("utf-8")) == "AC":
+                    total_get = total_get + points[int(sp[i + 2]) - 1]
+
+            i = i + 1
+
+        #execute insert into or update set in database
+        print(total_get)
+        #self.change_score(subject_id, sequence, student_id, total_get)
+
+        #return total_get
+
         
 
 '''
