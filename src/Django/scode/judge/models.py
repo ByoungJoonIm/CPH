@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 
 # You can see follow address for checking schema
 # https://github.com/BJ-Lim/Capstone_Design/blob/master/database/db_schema_v2.PNG
-
 class Language(models.Model):
     lang_id = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=10)
@@ -39,6 +38,7 @@ class Assignment(models.Model):
     deadline = models.DateTimeField(null=False)
     max_score = models.IntegerField()
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, db_column = 'subject_id')
+    sequence = models.IntegerField()
 
 class Submit(models.Model):
     id = models.AutoField(primary_key=True)

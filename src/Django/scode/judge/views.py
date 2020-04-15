@@ -182,9 +182,9 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
         assignment_instance.deadline = timezone.make_aware(datetime.datetime.now() + datetime.timedelta(days=int(request.POST.get('assignment_deadline'))))
         assignment_instance.max_score = cnt
         assignment_instance.subject = Subject.objects.get(id=int(request.session.get('subject_id')))
+        assignment_instance.sequence = sequence
         assignment_instance.save()
 
-        
 class ProfessorUpdateView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_assignment_update.html'
     form_class = AssignmentUpdateForm
@@ -211,9 +211,53 @@ class ProfessorDeleteView(LoginRequiredMixin, TemplateView):
 class StudentAssignment(LoginRequiredMixin, FormView):
     template_name = 'judge/student/student_assignment.html'
     form_class = CodingForm
+    
+    def get(self, request, * args, **kwargs):
+        assignment_id = request.GET.get('assignment_id')
+        request.session['assignment_id'] = assignment_id
+        
+        return render(request, self.template_name,
+                       {'form' : self.form_class,
+                         'assignment' : Assignment.objects.get(id=assignment_id),
+                         'lang' : Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id)})   # + current assignment object
 
     def post(self, request, * args, **kwargs):
+        coding_form = CodingForm(request.POST)
+        student_dir_path = os.path.join(self.get_base_dir_path(request), "students")
+        
+        code = request.POST.get('code')
+        
+        self.create_src_file(code, student_dir_path, request)
+        #judgeManager.create_src_file(code, request.session['student_id'], request.session['subject_id'], sequence)
+        # we are here
+        #judgeManager.judge(request.session['subject_id'], request.session['student_id'], sequence)
+
         return render(request, self.template_name)
+    
+    def get_base_dir_path(self, request):
+        subject = Subject.objects.get(id=request.session.get('subject_id'))
+        professor_id = Signup_class.objects.filter(subject_id=subject.id)
+        professor_number = User.objects.filter(groups__name="professor").filter(pk__in=professor_id.values_list('user_id')).values('username')[0]['username']
+        
+        #/user/student_codes/2019_1/00001/Algorithm_01/temp
+        base_dir_path = os.path.expanduser('~')
+        base_dir_path = os.path.join(base_dir_path, "student_codes")
+        base_dir_path = os.path.join(base_dir_path, str(subject.year) + "_" + str(subject.semester))
+        base_dir_path = os.path.join(base_dir_path, professor_number)
+        base_dir_path = os.path.join(base_dir_path, subject.title + "_" + subject.classes)
+        return base_dir_path
+    
+    def create_src_file(self, code, student_dir_path, request):
+        lang_extension = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id).extension
+        
+        src_path = os.path.join(student_dir_path, str(Assignment.objects.get(id=request.session.get('assignment_id')).sequence))
+        src_path = os.path.join(src_path, request.user.username + "." + lang_extension)
+        
+        src_file = open(src_path, "w")
+        src_file.write(code)
+        src_file.close()
+        
+        
 
 '''
 # This page shows result of a assiginment.

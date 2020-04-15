@@ -26,7 +26,7 @@
                     	<input type="hidden" name="assignment_id" value="{{ obj.id }}"/>
 						<a href="javascript:{}" onclick="document.getElementById('assignment_update{{ obj.id }}').submit()";>{{ obj.name }}</a>
                 {% else %}
-                    <form id='solve{{ obj.id }}' method="post" action="{% url 'judge:student_assignment' obj.id %}">{% csrf_token %}
+                    <form id='solve{{ obj.id }}' method="get" action="{% url 'judge:student_assignment' obj.id %}">{% csrf_token %}
 	                	<input type="hidden" name="assignment_id" value="{{ obj.id }}"/>
 						<a href="javascript:{}" onclick=document.getElementById("solve{{ obj.id }}").submit();>{{ obj.name }}</a>
                 {% endif %}
