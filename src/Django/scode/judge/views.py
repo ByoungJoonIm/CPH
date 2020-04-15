@@ -32,6 +32,7 @@ import datetime
 import zipfile
 import time
 import datetime
+import subprocess
 from django.utils import timezone
 
 
@@ -77,6 +78,7 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
             
         base_dir_path = self.get_base_dir_path(self.request)
         self.construct_dir(base_dir_path)
+        self.generate_config_file(base_dir_path)
         self.upload_files(self.request, base_dir_path)
         self.generate_problem_file(self.request, base_dir_path)
             
@@ -99,7 +101,37 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
             pathlib.Path(base_dir_path).mkdir(parents=True, exist_ok=True)
             for de in dir_elem:
                 os.mkdir(os.path.join(base_dir_path, de))
+    
+    def create_base_autoconf(self):
+        base_config_path = os.path.expanduser('~')
+        base_config_path = os.path.join(base_config_path, 'settings')
+        base_config_path = os.path.join(base_config_path, 'base_config.yml')
         
+        cmd = "dmoj-autoconf 1>" + base_config_path + " 2>/dev/null" 
+        subprocess.call(cmd, shell=True)
+    
+    def generate_config_file(self, base_dir_path):
+        base_config_path = os.path.join(os.path.join(os.path.expanduser('~'), "settings"), "base_config.yml")
+        if not os.path.exists(base_config_path):
+            self.create_base_autoconf()
+            
+        config_path = os.path.join(base_dir_path, "settings")
+        config_path = os.path.join(config_path, "config.yml")
+        
+        config_file = open(config_path, "w")
+        base_config_file = open(base_config_path, "r")
+        
+        config_file.write("problem_storage_root:\n  -  " + os.path.join(base_dir_path, 'problems') + "\n")
+
+        while True:
+            line = base_config_file.readline()
+            if not line:
+                break
+            config_file.write(line)
+            
+        config_file.close()
+        base_config_file.close()
+    
     def upload_files(self, request, base_dir_path):
         origin_file_name = ['assignment_in_file', 'assignment_out_file']
         uploaded_file_name = ['in', 'out']
@@ -223,15 +255,13 @@ class StudentAssignment(LoginRequiredMixin, FormView):
 
     def post(self, request, * args, **kwargs):
         coding_form = CodingForm(request.POST)
-        student_dir_path = os.path.join(self.get_base_dir_path(request), "students")
-        
         code = request.POST.get('code')
         
-        self.create_src_file(code, student_dir_path, request)
-        #judgeManager.create_src_file(code, request.session['student_id'], request.session['subject_id'], sequence)
-        # we are here
-        #judgeManager.judge(request.session['subject_id'], request.session['student_id'], sequence)
-
+        base_dir_path = self.get_base_dir_path(request)
+        lang_extension = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id).extension
+        
+        self.create_src_file(code, os.path.join(base_dir_path, "students"), lang_extension, request)
+        
         return render(request, self.template_name)
     
     def get_base_dir_path(self, request):
@@ -247,9 +277,7 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         base_dir_path = os.path.join(base_dir_path, subject.title + "_" + subject.classes)
         return base_dir_path
     
-    def create_src_file(self, code, student_dir_path, request):
-        lang_extension = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id).extension
-        
+    def create_src_file(self, code, student_dir_path, lang_extension, request):        
         src_path = os.path.join(student_dir_path, str(Assignment.objects.get(id=request.session.get('assignment_id')).sequence))
         src_path = os.path.join(src_path, request.user.username + "." + lang_extension)
         
