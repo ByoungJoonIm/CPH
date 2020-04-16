@@ -330,6 +330,16 @@ class StudentAssignment(LoginRequiredMixin, FormView):
 
             i = i + 1
 
+        
+        submit_instance = None
+        try:
+            submit_instance = Submit.objects.filter(assignment_id = assignment.id).get(user_id=request.user.id)
+            submit_instance.score = max(submit_instance.score, total_get)
+        except Submit.DoesNotExist:
+            submit_instance = Submit(assignment = assignment, user=request.user, score = total_get)
+        finally:
+            submit_instance.save()
+        
         #execute insert into or update set in database
         print(total_get)
         #self.change_score(subject_id, sequence, student_id, total_get)

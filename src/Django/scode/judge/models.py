@@ -44,5 +44,5 @@ class Submit(models.Model):
     id = models.AutoField(primary_key=True)
     comment = models.CharField(max_length=100, null=True)
     score = models.IntegerField()
-    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, db_column = 'assignment_id')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, db_column = 'user_id')
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
