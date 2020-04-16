@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'judge.apps.JudgeConfig',
+    'django-ace',
 ]
 
 MIDDLEWARE = [
