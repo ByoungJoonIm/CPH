@@ -17,4 +17,9 @@ class AssignmentUpdateForm(AssignmentForm):
 #    code = forms.CharField(widget=forms.Textarea(), label="code")
 
 class CodingForm(forms.Form):
-    code = forms.CharField(widget=AceWidget(mode='c_cpp', theme='twilight'))
+    code = forms.CharField(widget=AceWidget(mode='javascript', theme='twilight'), label='code')
+    
+    def __init__(self, *args, **kwargs):
+        mode = kwargs.pop('mode')
+        super().__init__(*args, **kwargs)
+        self.fields['code'].widget.mode = mode
