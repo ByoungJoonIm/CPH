@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<title>{% block title %}Django Web Programming{% endblock %}</title>
+    {% block head %}{% endblock %}
+<title>{% block title %}{% endblock %}</title>
 
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static "css/base.css" %}" />

@@ -1,4 +1,5 @@
 from django import forms
+from django_ace import AceWidget
 
 class AssignmentForm(forms.Form):
     assignment_name = forms.CharField(label="assignment_name")
@@ -12,5 +13,8 @@ class AssignmentUpdateForm(AssignmentForm):
     assignment_in_file = forms.FileField(label="assignment_in_file", required=False)
     assignment_out_file = forms.FileField(label="assignment_out_file", required=False)
 
+#class CodingForm(forms.Form):
+#    code = forms.CharField(widget=forms.Textarea(), label="code")
+
 class CodingForm(forms.Form):
-    code = forms.CharField(widget=forms.Textarea(), label="code")
+    code = forms.CharField(widget=AceWidget(mode='c_cpp', theme='twilight'))

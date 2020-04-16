@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block head %} {{ form.media }}{% endblock %}
+
 {% block title %}student_assignment.html{% endblock %}
 
 {% load static %}
@@ -25,7 +27,7 @@
 				desc {{ assignment.desc }}
                         </div>
                         <div class="form-row">
-                                {{ form.code.label_tag }} {{ form.code }}
+                                {{ form.code }}
                         </div>
                 </fieldset>
 
@@ -34,7 +36,6 @@
                         <input type="submit" value="Submit"/>
                 </div>
                 <script type="text/javascript">document.getElementById('id_code').focus();</script>
-
+        </form>
 </div>
 {% endblock content %}
-
