@@ -45,5 +45,4 @@ class Submit(models.Model):
     comment = models.CharField(max_length=100, null=True)
     score = models.IntegerField()
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, db_column = 'assignment_id')
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, db_column = 'subject_id')
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_column = 'user_id')
