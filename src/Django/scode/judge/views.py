@@ -262,12 +262,21 @@ class StudentAssignment(LoginRequiredMixin, FormView):
     def post(self, request, * args, **kwargs):
         code = request.POST.get('code')
         
+        # time_weight has to be deleted. Now, docker container doesn't have correct time.
+        time_weight = datetime.timedelta(hours=9)
+        submit_time = timezone.make_aware(datetime.datetime.now() + time_weight)
+        
         base_dir_path = self.get_base_dir_path(request)
         assignment = Assignment.objects.get(id=request.session.get('assignment_id'))
         language = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id)
         
+        if submit_time > assignment.deadline:
+            print("Deadline is alreay expired!")
+        else:
+            print("This submit_itme is valid!")
+        
         self.create_src_file(code, os.path.join(base_dir_path, "students"),assignment, language, request)
-        self.judge_student_src_file(base_dir_path, assignment, language, request)
+        self.judge_student_src_file(submit_time, code, base_dir_path, assignment, language, request)
         
         return render(request, self.template_name)
     
@@ -292,7 +301,7 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         src_file.write(code)
         src_file.close()
         
-    def judge_student_src_file(self, base_dir_path, assignment, language, request):
+    def judge_student_src_file(self, submit_time, code, base_dir_path, assignment, language, request):
         sequence = str(assignment.sequence)
         
         config_file_path = os.path.join(base_dir_path, "settings")
@@ -321,8 +330,6 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         a = subprocess.check_output(["dmoj-cli", "-c", config_file_path, "--no-ansi", "-e", language.lang_id, "submit", sequence, language.lang_id, student_file_path ])
         sp = a.split()
 
-        print(a)
-
         i = 0
         total_get = 0
 
@@ -345,6 +352,9 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         except Submit.DoesNotExist:
             submit_instance = Submit(assignment = assignment, user=request.user, score = total_get)
         finally:
+            if submit_instance.score <= total_get:
+                submit_instance.code = code
+                submit_instance.submit_time = submit_time
             submit_instance.save()
             
             

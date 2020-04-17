@@ -44,5 +44,7 @@ class Submit(models.Model):
     id = models.AutoField(primary_key=True)
     comment = models.CharField(max_length=100, null=True)
     score = models.IntegerField()
+    submit_time = models.DateTimeField()
+    code = models.TextField()
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
