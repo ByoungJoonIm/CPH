@@ -1,11 +1,16 @@
 #!/bin/bash
 
+epath=initializer/essential
+
 rm judge/migrations/000* > /dev/null 2>&1
-mysql < initializer/essential/recreate_db
+mysql < $epath/recreate_db
 
 python3 manage.py makemigrations
 python3 manage.py migrate
 
 echo "Creating config file..."
-python3 initializer/essential/initialize_auto_conf.py
+python3 $epath/initialize_auto_conf.py
 echo "Config file was created!"
+
+rm -r ~/assignment_cache > /dev/null 2>&1
+python3 $epath/create_directories.py
