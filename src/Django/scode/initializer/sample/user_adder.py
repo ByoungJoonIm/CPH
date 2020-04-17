@@ -1,9 +1,8 @@
 def add_users_init():
     from django.contrib.auth.models import User, Group
     
-    #----------------------group setting
-    student_group = Group.objects.create(name="student")
-    professor_group = Group.objects.create(name="professor")
+    student_group = Group.objects.get(name="student")
+    professor_group = Group.objects.get(name="professor")
 
     #----------------------initial user setting
     for i in range(20160001, 20160004):
