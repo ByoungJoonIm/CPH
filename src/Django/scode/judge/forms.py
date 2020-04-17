@@ -13,9 +13,6 @@ class AssignmentUpdateForm(AssignmentForm):
     assignment_in_file = forms.FileField(label="assignment_in_file", required=False)
     assignment_out_file = forms.FileField(label="assignment_out_file", required=False)
 
-#class CodingForm(forms.Form):
-#    code = forms.CharField(widget=forms.Textarea(), label="code")
-
 class CodingForm(forms.Form):
     code = forms.CharField(widget=AceWidget(mode='javascript', theme='twilight'), label='code')
     

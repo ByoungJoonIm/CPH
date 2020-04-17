@@ -1,15 +1,15 @@
 - model: judge.Language
   pk: 'PY3'
   fields:
-    name: 'python'
+    mode: 'python'
     extension: 'py'
 - model: judge.Language
   pk: 'C'
   fields:
-    name: 'c'
+    mode: 'c_cpp'
     extension: 'c'
 - model: judge.Language
   pk: 'JAVA8'
   fields:
-    name: 'java'
+    mode: 'java'
     extension: 'java'

@@ -242,19 +242,24 @@ class ProfessorDeleteView(LoginRequiredMixin, TemplateView):
 # Student area------------------------------------------------------------------------------------------------------------------------
 class StudentAssignment(LoginRequiredMixin, FormView):
     template_name = 'judge/student/student_assignment.html'
-    form_class = CodingForm
+    form_class = CodingForm(mode='c_cpp')
+    #we need to change mode by language in get or post(maybe get)
+    #Is form_class variable necessary?
     
     def get(self, request, * args, **kwargs):
         assignment_id = request.GET.get('assignment_id')
         request.session['assignment_id'] = assignment_id
         
+        assignment = Assignment.objects.get(id=assignment_id)
+        language = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id)
+        coding_form = CodingForm(mode=language.mode)
+        
         return render(request, self.template_name,
-                       {'form' : self.form_class,
-                         'assignment' : Assignment.objects.get(id=assignment_id),
-                         'lang' : Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id)})   # + current assignment object
+                       {'form' : coding_form,
+                         'assignment' : assignment,
+                         'lang' : language})   # + current assignment object
 
     def post(self, request, * args, **kwargs):
-        coding_form = CodingForm(request.POST)
         code = request.POST.get('code')
         
         base_dir_path = self.get_base_dir_path(request)
@@ -315,6 +320,8 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         # Make parsed result of dmoj-judge
         a = subprocess.check_output(["dmoj-cli", "-c", config_file_path, "--no-ansi", "-e", language.lang_id, "submit", sequence, language.lang_id, student_file_path ])
         sp = a.split()
+
+        print(a)
 
         i = 0
         total_get = 0

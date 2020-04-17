@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 # https://github.com/BJ-Lim/Capstone_Design/blob/master/database/db_schema_v2.PNG
 class Language(models.Model):
     lang_id = models.CharField(max_length=10, primary_key=True)
-    name = models.CharField(max_length=10)
+    mode = models.CharField(max_length=10)
     extension = models.CharField(max_length=10)
 
 class Subject(models.Model):
