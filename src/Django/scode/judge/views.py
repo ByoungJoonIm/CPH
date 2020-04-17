@@ -205,7 +205,11 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
             init_file.write("\n- {" + "in: {0}.{1}.in, out: {0}.{1}.out, points: 1".format(sequence, i) + "}")
 
         init_file.close()
-        os.rename(zip_name, os.path.join(problem_path, zip_name))
+        
+        #save zip file as binary
+        zip_temp_name = zip_name
+        zip_name = os.path.join(problem_path, zip_name)
+        os.rename(zip_temp_name, os.path.join(problem_path, zip_temp_name))
         
         #--- insert to database    
         assignment_instance = Assignment()
@@ -215,7 +219,12 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
         assignment_instance.max_score = cnt
         assignment_instance.subject = Subject.objects.get(id=int(request.session.get('subject_id')))
         assignment_instance.sequence = sequence
+        assignment_instance.problem_upload(zip_name)
         assignment_instance.save()
+        
+        #read zip file as binary
+        assignment_instance.problem_download(os.path.join(os.path.expanduser('~'), "testzip.zip"))
+        
 
 class ProfessorUpdateView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_assignment_update.html'

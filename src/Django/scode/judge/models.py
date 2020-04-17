@@ -39,6 +39,19 @@ class Assignment(models.Model):
     max_score = models.IntegerField()
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, db_column = 'subject_id')
     sequence = models.IntegerField()
+    problem = models.BinaryField()
+
+    #It will work like setter
+    def problem_upload(self, file_path):
+        file_binary = open(file_path, "rb")
+        self.problem = file_binary.read()
+        file_binary.close()
+
+    #It will work like getter
+    def problem_download(self, file_path):
+        dest = open(file_path, "wb")
+        dest.write(self.problem)
+        dest.close()
 
 class Submit(models.Model):
     id = models.AutoField(primary_key=True)
