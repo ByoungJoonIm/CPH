@@ -75,78 +75,36 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
     form_class = AssignmentForm
 
     def post(self, request, *args, **kwargs):
-        subject = Subject.objects.get(id = request.session.get('subject_id'))
+        self.generate_assignment(self.request)
             
-        base_dir_path = self.get_base_dir_path(self.request)
-        self.construct_dir(base_dir_path)
-        self.generate_config_file(base_dir_path)
-        self.upload_files(self.request, base_dir_path)
-        self.generate_problem_file(self.request, base_dir_path)
-            
-        return AssignmentLV.get(request, args, kwargs)
+        return AssignmentLV.get(request, args, kwargs)  
 
-    def get_base_dir_path(self, request):
-        subject = Subject.objects.get(id = request.session.get('subject_id'))
-            
-        #/user/student_codes/2019_1/00001/Algorithm_01/temp
-        base_dir_path = os.path.expanduser('~')
-        base_dir_path = os.path.join(base_dir_path, "student_codes")
-        base_dir_path = os.path.join(base_dir_path, str(subject.year) + "_" + str(subject.semester))
-        base_dir_path = os.path.join(base_dir_path, request.user.username)
-        base_dir_path = os.path.join(base_dir_path, subject.title + "_" + subject.classes)
-        return base_dir_path    
-
-    def construct_dir(self, base_dir_path):
-        if not os.path.exists(base_dir_path):
-            dir_elem = ['students', 'temp', 'problems', 'settings']
-            pathlib.Path(base_dir_path).mkdir(parents=True, exist_ok=True)
-            for de in dir_elem:
-                os.mkdir(os.path.join(base_dir_path, de))
-    
-    def generate_config_file(self, base_dir_path):
-        base_config_path = os.path.join(os.path.join(os.path.expanduser('~'), "settings"), "base_config.yml")
-            
-        config_path = os.path.join(base_dir_path, "settings")
-        config_path = os.path.join(config_path, "config.yml")
+    def generate_assignment(self, request):
+        #--- Creating assignment directory 
+        assignment_path = os.path.join(os.path.join(os.path.expanduser('~'), 'assignment_cache'), request.user.username + "_temp")
+        os.mkdir(assignment_path)
         
-        config_file = open(config_path, "w")
-        base_config_file = open(base_config_path, "r")
+        origin_path = os.getcwd()
+        os.chdir(assignment_path)
         
-        config_file.write("problem_storage_root:\n  -  " + os.path.join(base_dir_path, 'problems') + "\n")
-
-        while True:
-            line = base_config_file.readline()
-            if not line:
-                break
-            config_file.write(line)
-            
-        config_file.close()
-        base_config_file.close()
-    
-    def upload_files(self, request, base_dir_path):
+        for dirs in ["problem", "students"]:
+            os.mkdir(dirs)
+        
+        #--- upload files
         origin_file_name = ['assignment_in_file', 'assignment_out_file']
         uploaded_file_name = ['in', 'out']
             
         for seq in range(0, 2):
-            with open(os.path.join(os.path.join(base_dir_path, "temp"), uploaded_file_name[seq]), 'wb+') as dest:
+            with open(uploaded_file_name[seq], 'wb+') as dest:
                 for chunk in request.FILES[origin_file_name[seq]].chunks():
-                    dest.write(chunk)
+                    dest.write(chunk)                    
                     
-    def generate_problem_file(self, request, base_dir_path):
-        sequence = str(len(Assignment.objects.filter(subject = request.session.get('subject_id'))) + 1)
-        
-        #when delete assignment, error will be occured. It need to fix
-        for dir in ["problems", "students"]:
-            os.mkdir(os.path.join(os.path.join(base_dir_path, dir), sequence))
-        
-        os.chdir(os.path.join(base_dir_path, 'temp'))
-        
         #--- separate files
         in_file = open("in", "r")
         out_file = open("out", "r")
         cnt = 0
 
-        zip_name = sequence + ".zip"
+        zip_name = "problem.zip"
         myzip = zipfile.ZipFile(zip_name, "w")
 
         file_list = ["in", "out"]
@@ -159,12 +117,12 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
 
             cnt = cnt + 1
             
-            in_file_rs_name = sequence + "." + str(cnt) + ".in"
+            in_file_rs_name = str(cnt) + ".in"
             in_file_rs = open(in_file_rs_name, "w")
             in_file_rs.write(str(in_line) + '\n')
             in_file_rs.close()
 
-            out_file_rs_name = sequence + "." + str(cnt) + ".out"
+            out_file_rs_name = str(cnt) + ".out"
             out_file_rs = open(out_file_rs_name, "w")
             out_file_rs.write(str(out_line) + '\n')
             out_file_rs.close()
@@ -182,39 +140,47 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
 
         #--- remove files
         for f in file_list:
-            os.remove(os.path.join(os.path.join(base_dir_path, "temp"), f))
+            os.remove(f)
 
-        problem_path = os.path.join(os.path.join(base_dir_path, "problems"), sequence)
         #--- generate init file
-        init_file_name = "init.yml"
-        init_file_path = os.path.join(problem_path, init_file_name)
-        init_file = open(init_file_path, "w")
-        init_file.write("archive: {0}.zip\ntest_cases:".format(sequence))
+        init_file = open(os.path.join("problem", "init.yml"), "w")
+        init_file.write("archive: {0}\ntest_cases:".format(zip_name))
 
         for i in range(1, cnt + 1):
-            init_file.write("\n- {" + "in: {0}.{1}.in, out: {0}.{1}.out, points: 1".format(sequence, i) + "}")
+            init_file.write("\n- {" + "in: {0}.in, out: {0}.out, points: 1".format(i) + "}")
 
         init_file.close()
         
-        #save zip file as binary
-        zip_temp_name = zip_name
-        zip_name = os.path.join(problem_path, zip_name)
-        os.rename(zip_temp_name, os.path.join(problem_path, zip_temp_name))
-        
-        #--- insert to database    
-        assignment_instance = Assignment()
+        #--- insert to database
+        assignment_instance = Assignment()    
         assignment_instance.name = request.POST.get('assignment_name')
         assignment_instance.desc = request.POST.get('assignment_desc')
         assignment_instance.deadline = timezone.make_aware(datetime.datetime.now() + datetime.timedelta(days=int(request.POST.get('assignment_deadline'))))
         assignment_instance.max_score = cnt
         assignment_instance.subject = Subject.objects.get(id=int(request.session.get('subject_id')))
-        assignment_instance.sequence = sequence
         assignment_instance.problem_upload(zip_name)
         assignment_instance.save()
         
-        #read zip file as binary
-        #assignment_instance.problem_download(os.path.join(os.path.expanduser('~'), "testzip.zip"))
+        os.rename(zip_name, os.path.join("problem", zip_name))
+        assignment_id_path = os.path.join(os.path.join(os.path.expanduser('~'), 'assignment_cache'), str(assignment_instance.id))
+        os.rename(assignment_path, assignment_id_path)
         
+        #--- generate config file
+        config_file = open("config.yml", "w")
+        base_config_file = open(os.path.join(os.path.join(os.path.expanduser('~'), "settings"), "base_config.yml"), "r")
+        
+        config_file.write("problem_storage_root:\n  -  " + assignment_id_path + "\n")
+
+        while True:
+            line = base_config_file.readline()
+            if not line:
+                break
+            config_file.write(line)
+            
+        config_file.close()
+        base_config_file.close()
+        
+        os.chdir(origin_path)
 
 class ProfessorUpdateView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_assignment_update.html'
@@ -265,9 +231,9 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         time_weight = datetime.timedelta(hours=9)
         submit_time = timezone.make_aware(datetime.datetime.now() + time_weight)
         
-        base_dir_path = self.get_base_dir_path(request)
         assignment = Assignment.objects.get(id=request.session.get('assignment_id'))
         language = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id)
+        base_dir_path = os.path.join(os.path.join(os.path.expanduser('~'), 'assignment_cache'), str(assignment.id))
         
         # This code will be changed to do something
         if submit_time > assignment.deadline:
@@ -280,41 +246,19 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         
         return render(request, self.template_name)
     
-    def get_base_dir_path(self, request):
-        subject = Subject.objects.get(id=request.session.get('subject_id'))
-        professor_id = Signup_class.objects.filter(subject_id=subject.id)
-        professor_number = User.objects.filter(groups__name="professor").filter(pk__in=professor_id.values_list('user_id')).values('username')[0]['username']
-        
-        #/user/student_codes/2019_1/00001/Algorithm_01/temp
-        base_dir_path = os.path.expanduser('~')
-        base_dir_path = os.path.join(base_dir_path, "student_codes")
-        base_dir_path = os.path.join(base_dir_path, str(subject.year) + "_" + str(subject.semester))
-        base_dir_path = os.path.join(base_dir_path, professor_number)
-        base_dir_path = os.path.join(base_dir_path, subject.title + "_" + subject.classes)
-        return base_dir_path
-    
     def create_src_file(self, code, student_dir_path, assignment, language, request):        
-        src_path = os.path.join(student_dir_path, str(assignment.sequence))
-        src_path = os.path.join(src_path, request.user.username + "." + language.extension)
+        src_path = os.path.join(student_dir_path, request.user.username + "." + language.extension)
         
         src_file = open(src_path, "w")
         src_file.write(code)
         src_file.close()
         
     def judge_student_src_file(self, submit_time, code, base_dir_path, assignment, language, request):
-        sequence = str(assignment.sequence)
-        
-        config_file_path = os.path.join(base_dir_path, "settings")
-        config_file_path = os.path.join(config_file_path, "config.yml")
-        
-        init_file_path = os.path.join(base_dir_path, "problems")
-        init_file_path = os.path.join(init_file_path, sequence)
-        init_file_path = os.path.join(init_file_path, "init.yml")
+        config_file_path = os.path.join(base_dir_path, "config.yml")
+        init_file_path = os.path.join(os.path.join(base_dir_path, "problem"), "init.yml")
         
         student_file_path = os.path.join(base_dir_path, "students")
-        student_file_path = os.path.join(student_file_path, sequence)
         student_file_path = os.path.join(student_file_path, request.user.username + "." + language.extension)
-        
         
         points = []
         with open(init_file_path, 'r') as stream:
@@ -327,7 +271,7 @@ class StudentAssignment(LoginRequiredMixin, FormView):
                 print(exc)
 
         # Make parsed result of dmoj-judge
-        a = subprocess.check_output(["dmoj-cli", "-c", config_file_path, "--no-ansi", "-e", language.lang_id, "submit", sequence, language.lang_id, student_file_path ])
+        a = subprocess.check_output(["dmoj-cli", "-c", config_file_path, "--no-ansi", "-e", language.lang_id, "submit", "problem", language.lang_id, student_file_path ])
         sp = a.split()
 
         i = 0

@@ -38,7 +38,6 @@ class Assignment(models.Model):
     deadline = models.DateTimeField(null=False)
     max_score = models.IntegerField()
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, db_column = 'subject_id')
-    sequence = models.IntegerField()
     problem = models.BinaryField()
 
     #It will work like setter
