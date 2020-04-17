@@ -103,18 +103,8 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
             for de in dir_elem:
                 os.mkdir(os.path.join(base_dir_path, de))
     
-    def create_base_autoconf(self):
-        base_config_path = os.path.expanduser('~')
-        base_config_path = os.path.join(base_config_path, 'settings')
-        base_config_path = os.path.join(base_config_path, 'base_config.yml')
-        
-        cmd = "dmoj-autoconf 1>" + base_config_path + " 2>/dev/null" 
-        subprocess.call(cmd, shell=True)
-    
     def generate_config_file(self, base_dir_path):
         base_config_path = os.path.join(os.path.join(os.path.expanduser('~'), "settings"), "base_config.yml")
-        if not os.path.exists(base_config_path):
-            self.create_base_autoconf()
             
         config_path = os.path.join(base_dir_path, "settings")
         config_path = os.path.join(config_path, "config.yml")
@@ -223,7 +213,7 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
         assignment_instance.save()
         
         #read zip file as binary
-        assignment_instance.problem_download(os.path.join(os.path.expanduser('~'), "testzip.zip"))
+        #assignment_instance.problem_download(os.path.join(os.path.expanduser('~'), "testzip.zip"))
         
 
 class ProfessorUpdateView(LoginRequiredMixin, FormView):
@@ -266,7 +256,7 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         return render(request, self.template_name,
                        {'form' : coding_form,
                          'assignment' : assignment,
-                         'lang' : language})   # + current assignment object
+                         'lang' : language})
 
     def post(self, request, * args, **kwargs):
         code = request.POST.get('code')
@@ -279,6 +269,7 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         assignment = Assignment.objects.get(id=request.session.get('assignment_id'))
         language = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id)
         
+        # This code will be changed to do something
         if submit_time > assignment.deadline:
             print("Deadline is alreay expired!")
         else:

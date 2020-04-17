@@ -42,14 +42,14 @@ class Assignment(models.Model):
     problem = models.BinaryField()
 
     #It will work like setter
-    def problem_upload(self, file_path):
-        file_binary = open(file_path, "rb")
+    def problem_upload(self, file_src_path):
+        file_binary = open(file_src_path, "rb")
         self.problem = file_binary.read()
         file_binary.close()
 
     #It will work like getter
-    def problem_download(self, file_path):
-        dest = open(file_path, "wb")
+    def problem_download(self, file_dest_path):
+        dest = open(file_dest_path, "wb")
         dest.write(self.problem)
         dest.close()
 
