@@ -37,6 +37,7 @@ import datetime
 import subprocess
 import yaml
 from django.utils import timezone
+from ansi2html import Ansi2HTMLConverter
 
 
 #-- Here is developing area    
@@ -293,7 +294,7 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         i = 0
         total_get = 0
         result_output = "\n".join(a.decode("utf-8").split("\n")[6:-3])
-        messages.info(request, result_output)
+        messages.info(request, Ansi2HTMLConverter(line_wrap=False).convert(result_output))
         
         # here is for save result_output as message
         
