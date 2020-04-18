@@ -15,6 +15,8 @@ from django.urls import reverse
 
 from django.db import connection
 
+from django.contrib import messages
+
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -221,7 +223,7 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         #------------------------------------------------------we are here
         # next is adding result page
         
-        return render(request, self.template_name)
+        return render(request, 'judge/student/student_result_list.html')
     
     def create_structure(self, base_dir_path, assignment):
         origin_path = os.getcwd()
@@ -285,19 +287,21 @@ class StudentAssignment(LoginRequiredMixin, FormView):
                 print(exc)
 
         # Make parsed result of dmoj-judge
-        a = subprocess.check_output(["dmoj-cli", "-c", config_file_path, "--no-ansi", "-e", language.lang_id, "submit", "problem", language.lang_id, student_file_path ])
-        sp = a.split()
+        a = subprocess.check_output(["dmoj-cli", "-c", config_file_path, "-e", language.lang_id, "submit", "problem", language.lang_id, student_file_path ])
+        sp = [s.decode("utf-8") for s in a.split()] #convert byte to string
 
         i = 0
         total_get = 0
-
+        result_output = "\n".join(a.decode("utf-8").split("\n")[6:-3])
+        messages.info(request, result_output)
+        
+        # here is for save result_output as message
+        
         while True:
-            if i >= len(sp):
-                break
             if sp[i] == "Done":
                 break
-            if sp[i].decode("utf-8") == "Test":
-                if str(sp[i+3].decode("utf-8")) == "AC":
+            if sp[i] == "Test":
+                if sp[i+3] == "AC":
                     total_get = total_get + points[int(sp[i + 2]) - 1]
 
             i = i + 1
@@ -314,6 +318,15 @@ class StudentAssignment(LoginRequiredMixin, FormView):
                 submit_instance.code = code
                 submit_instance.submit_time = submit_time
             submit_instance.save()
-            
+
+
+class StudentResultLV(LoginRequiredMixin, TemplateView):
+    template_name = 'judge/student/student_result_list.html'
+    
+    # def get(self, request, * args, **kwargs):
+    #     return render(request, self.template_name,
+    #                    {'form' : coding_form,
+    #                      'assignment' : assignment,
+    #                      'lang' : language})
             
             

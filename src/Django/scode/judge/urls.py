@@ -18,4 +18,8 @@ urlpatterns = [
 
     # example : /student/assignment_id
     url(r'^student/(?P<assignment_id>[0-9]+)$', StudentAssignment.as_view(), name='student_assignment'),
+    
+    # example : /student/result
+    url(r'^student/result$', StudentResultLV.as_view(), name='student_result'),
+    
 ]
