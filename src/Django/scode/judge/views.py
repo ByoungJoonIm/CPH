@@ -81,14 +81,11 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
 
     def generate_assignment(self, request):
         #--- Creating assignment directory 
-        assignment_path = os.path.join(os.path.join(os.path.expanduser('~'), 'assignment_cache'), request.user.username + "_temp")
-        os.mkdir(assignment_path)
+        temp_path = os.path.join(os.path.join(os.path.expanduser('~'), 'assignment_cache'), request.user.username + "_temp")
+        os.mkdir(temp_path)
         
         origin_path = os.getcwd()
-        os.chdir(assignment_path)
-        
-        for dirs in ["problem", "students"]:
-            os.mkdir(dirs)
+        os.chdir(temp_path)
         
         #--- upload files
         origin_file_name = ['assignment_in_file', 'assignment_out_file']
@@ -107,7 +104,7 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
         zip_name = "problem.zip"
         myzip = zipfile.ZipFile(zip_name, "w")
 
-        file_list = ["in", "out"]
+        file_list = ["in", "out", "problem.zip"]
 
         while True:
             in_line = in_file.readline().rstrip()
@@ -138,19 +135,6 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
 
         myzip.close()
 
-        #--- remove files
-        for f in file_list:
-            os.remove(f)
-
-        #--- generate init file
-        init_file = open(os.path.join("problem", "init.yml"), "w")
-        init_file.write("archive: {0}\ntest_cases:".format(zip_name))
-
-        for i in range(1, cnt + 1):
-            init_file.write("\n- {" + "in: {0}.in, out: {0}.out, points: 1".format(i) + "}")
-
-        init_file.close()
-        
         #--- insert to database
         assignment_instance = Assignment()    
         assignment_instance.name = request.POST.get('assignment_name')
@@ -160,28 +144,13 @@ class ProfessorAddView(LoginRequiredMixin, FormView):
         assignment_instance.subject = Subject.objects.get(id=int(request.session.get('subject_id')))
         assignment_instance.problem_upload(zip_name)
         assignment_instance.save()
-        
-        os.rename(zip_name, os.path.join("problem", zip_name))
-        assignment_id_path = os.path.join(os.path.join(os.path.expanduser('~'), 'assignment_cache'), str(assignment_instance.id))
-        os.rename(assignment_path, assignment_id_path)
-        
-        #--- generate config file
-        config_file = open("config.yml", "w")
-        base_config_file = open(os.path.join(os.path.join(os.path.expanduser('~'), "settings"), "base_config.yml"), "r")
-        
-        config_file.write("problem_storage_root:\n  -  " + assignment_id_path + "\n")
 
-        while True:
-            line = base_config_file.readline()
-            if not line:
-                break
-            config_file.write(line)
-            
-        config_file.close()
-        base_config_file.close()
-        
+        #--- remove files
+        for f in file_list:
+            os.remove(f)
         os.chdir(origin_path)
-
+        os.rmdir(temp_path)
+        
 class ProfessorUpdateView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_assignment_update.html'
     form_class = AssignmentUpdateForm
@@ -241,10 +210,55 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         else:
             print("This submit_itme is valid!")
         
+        # here, we need to clone file that is needed from db
+        
+        if not os.path.exists(base_dir_path):
+            self.create_structure(base_dir_path, assignment)
+        
         self.create_src_file(code, os.path.join(base_dir_path, "students"),assignment, language, request)
         self.judge_student_src_file(submit_time, code, base_dir_path, assignment, language, request)
         
+        #------------------------------------------------------we are here
+        # next is adding result page
+        
         return render(request, self.template_name)
+    
+    def create_structure(self, base_dir_path, assignment):
+        origin_path = os.getcwd()
+        
+        os.mkdir(base_dir_path)
+        os.chdir(base_dir_path)
+        
+        for dirs in ["problem", "students"]:
+            os.mkdir(dirs)
+        
+        #--- generate init and problem.zip file
+        init_file = open(os.path.join("problem", "init.yml"), "w")
+        init_file.write("archive: problem.zip\ntest_cases:")
+
+        for i in range(1, assignment.max_score + 1):
+            init_file.write("\n- {" + "in: {0}.in, out: {0}.out, points: 1".format(i) + "}")
+
+        init_file.close()
+        assignment.problem_download(os.path.join("problem", "problem.zip"))
+        
+        #--- generate config file
+        config_file = open("config.yml", "w")
+        base_config_file = open(os.path.join(os.path.join(os.path.expanduser('~'), "settings"), "base_config.yml"), "r")
+        
+        config_file.write("problem_storage_root:\n  -  {0}\n".format(base_dir_path))
+
+        while True:
+            line = base_config_file.readline()
+            if not line:
+                break
+            config_file.write(line)
+            
+        config_file.close()
+        base_config_file.close()
+        
+        os.chdir(origin_path)
+
     
     def create_src_file(self, code, student_dir_path, assignment, language, request):        
         src_path = os.path.join(student_dir_path, request.user.username + "." + language.extension)
