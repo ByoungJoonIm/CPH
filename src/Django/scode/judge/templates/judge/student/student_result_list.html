@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
+
 {% block title %}student_result.html{% endblock %}
 
+
 {% block content %}
-
-{% if messages %}
-{% for message in messages%}
-    {{ message}}
-{% endfor %}
-{% endif %}
-
+<div id="content">
+    {% if result %}
+        {% autoescape on %} {{ result | safe }} {% endautoescape %}
+    {% endif %}
+</div>
 {% endblock content %}

@@ -39,6 +39,7 @@ import yaml
 from django.utils import timezone
 from ansi2html import Ansi2HTMLConverter
 
+from bs4 import BeautifulSoup
 
 #-- Here is developing area    
 # common area------------------------------------------------------------------------------------------------------------------------
@@ -219,12 +220,15 @@ class StudentAssignment(LoginRequiredMixin, FormView):
             self.create_structure(base_dir_path, assignment)
         
         self.create_src_file(code, os.path.join(base_dir_path, "students"),assignment, language, request)
-        self.judge_student_src_file(submit_time, code, base_dir_path, assignment, language, request)
+        
+        context = dict()
+        self.judge_student_src_file(submit_time, code, base_dir_path, assignment, language, request, context)
+        
         
         #------------------------------------------------------we are here
         # next is adding result page
         
-        return render(request, 'judge/student/student_result_list.html')
+        return render(request, 'judge/student/student_result_list.html', context)
     
     def create_structure(self, base_dir_path, assignment):
         origin_path = os.getcwd()
@@ -270,7 +274,7 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         src_file.write(code)
         src_file.close()
         
-    def judge_student_src_file(self, submit_time, code, base_dir_path, assignment, language, request):
+    def judge_student_src_file(self, submit_time, code, base_dir_path, assignment, language, request, context):
         config_file_path = os.path.join(base_dir_path, "config.yml")
         init_file_path = os.path.join(os.path.join(base_dir_path, "problem"), "init.yml")
         
@@ -294,7 +298,20 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         i = 0
         total_get = 0
         result_output = "\n".join(a.decode("utf-8").split("\n")[6:-3])
-        messages.info(request, Ansi2HTMLConverter(line_wrap=False).convert(result_output))
+        # messages.info(request, Ansi2HTMLConverter(line_wrap=False).convert(result_output))
+        
+        result_html = Ansi2HTMLConverter().convert(result_output)
+        
+        
+        bs = BeautifulSoup(result_html,'html.parser')
+        
+        result_style = bs.find('style')
+        result_body_pre = bs.find('pre')
+        
+        print(result_body_pre)
+        context['result'] = result_body_pre
+        
+        messages.info(request, result_body_pre)
         
         # here is for save result_output as message
         

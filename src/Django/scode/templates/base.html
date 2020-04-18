@@ -2,10 +2,12 @@
 <html lang="ko">
 <head>
     {% block head %}{% endblock %}
+
 <title>{% block title %}{% endblock %}</title>
 
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static "css/base.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "css/ansi.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% block extrastyle %}{% endblock %}" />
 
 </head>
