@@ -10,6 +10,9 @@ urlpatterns = [
     # example : /assignment/subject_id
     url(r'^assignment/(?P<subject_id>[0-9]+)$', AssignmentLV.as_view(), name='common_assignment_list'),
 
+    # example : /assignment/subject_add
+    url(r'^assignment/subject_add$', ProfessorAddSubjectView.as_view(), name='professor_subject_add'),
+
     # example : /professor/assignment_add
     url(r'^professor/assignment_add$', ProfessorAddView.as_view(), name='professor_assignment_add'),
 

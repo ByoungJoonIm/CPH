@@ -1,5 +1,11 @@
 from django import forms
 from django_ace import AceWidget
+from judge.choices import *
+
+
+class SubjectForm(forms.Form):
+    title = forms.CharField(label="title", widget=forms.TextInput(), required=True)
+    language = forms.ChoiceField(choices = LANGUAGE_CHOICES, label="language", widget=forms.Select(), required=True)   
 
 class AssignmentForm(forms.Form):
     assignment_name = forms.CharField(label="assignment_name")

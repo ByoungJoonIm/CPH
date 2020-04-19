@@ -27,12 +27,13 @@ def add_languages():
     ]
     
     for r in relation:
-        language = Language.objects.create(
+        Language.objects.create(
             lang_id = r[0],
             mode = r[1],
             extension = r[2],
-            template = r[3])
-        language.save()
+            template = r[3]
+        )
+        
     
 add_languages()
 
@@ -54,7 +55,6 @@ def add_subject():
             title=title,
             language=Language.objects.get(lang_id=lang_id)
         )
-        subject.save()
     
 add_subject()
 
@@ -80,7 +80,6 @@ def add_signup_class():
             subject = subject,
             user = user
         )
-        signup_class.save()
         
 add_signup_class()
 
@@ -111,7 +110,6 @@ def add_assignment():
             subject = Subject.objects.get(id=r[1]),
             problem = problem_bin_code
         )
-        assignment.save()
 
         
 add_assignment()

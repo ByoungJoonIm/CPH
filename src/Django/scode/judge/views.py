@@ -21,7 +21,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from judge.models import *
-from judge.forms import AssignmentForm, AssignmentUpdateForm, CodingForm
+from judge.forms import AssignmentForm, AssignmentUpdateForm, CodingForm, SubjectForm
 
 
 from judge.judgeManager import JudgeManager
@@ -46,8 +46,9 @@ from bs4 import BeautifulSoup
 class UserMainLV(LoginRequiredMixin, ListView):
     template_name = 'judge/common/common_subject_list.html'
     
+    @classmethod
     def get(self, request, *args, **kwargs):
-        signup_class = Signup_class.objects.filter(user_id=self.request.user.id).values_list('subject_id')
+        signup_class = Signup_class.objects.filter(user_id=request.user.id).values_list('subject_id')
         subject = Subject.objects.filter(pk__in = signup_class)
         
         return render(request, self.template_name, { 'subject' : subject })
@@ -74,6 +75,26 @@ class AssignmentLV(LoginRequiredMixin, ListView):
         return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
     
 # professor area------------------------------------------------------------------------------------------------------------------------
+class ProfessorAddSubjectView(LoginRequiredMixin, FormView):
+    template_name = 'judge/professor/professor_subject_add.html'
+    form_class = SubjectForm
+    
+    def post(self, request, *args, **kwargs):
+        title = request.POST.get('title')
+        lang_id = request.POST.get('language')
+        
+        subject_instance = Subject.objects.create(
+            title = title,
+            language = Language.objects.get(lang_id=lang_id)
+        )
+        
+        signup_class_instance = Signup_class.objects.create(
+            subject = subject_instance,
+            user = request.user
+        )
+        
+        return UserMainLV.get(request)
+    
 class ProfessorAddView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_assignment_add.html'
     form_class = AssignmentForm
