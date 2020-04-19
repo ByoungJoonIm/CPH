@@ -24,6 +24,14 @@
 					<a href="javascript:{}" onclick=document.getElementById("{{ obj.id }}").submit();>{{ obj.title }}</a>
 			    </form>	
 			</td>
+			{% if request.session.isProfessor %}
+			<td>
+				<form method="post" action="?">{% csrf_token %}
+					<input type="hidden" name="subject_id" value="{{ obj.id }}"/>
+					<input type="submit" value="hide"/>
+			    </form>	
+			</td>
+			{% endif %}
 		</tr>
 		{% endfor %}
 	</table>

@@ -49,9 +49,16 @@ class UserMainLV(LoginRequiredMixin, ListView):
     @classmethod
     def get(self, request, *args, **kwargs):
         signup_class = Signup_class.objects.filter(user_id=request.user.id).values_list('subject_id')
-        subject = Subject.objects.filter(pk__in = signup_class)
+        subject = Subject.objects.filter(pk__in = signup_class).filter(hided=False)
         
         return render(request, self.template_name, { 'subject' : subject })
+    
+    def post(self, request, *args, **kwargs):
+        subject = Subject.objects.get(id=int(request.POST.get('subject_id')))
+        subject.hided = True;
+        subject.save()
+        
+        return UserMainLV.get(request)
     
 class AssignmentLV(LoginRequiredMixin, ListView):
     template_name = 'judge/common/common_assignment_list.html'

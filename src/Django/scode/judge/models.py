@@ -18,6 +18,7 @@ class Subject(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=100)
     language = models.ForeignKey(Language, on_delete=models.CASCADE, db_column = 'language_id')
+    hided = models.BooleanField(default=False)
 
 class Signup_class(models.Model):
     id = models.AutoField(primary_key=True)
