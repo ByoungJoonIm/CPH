@@ -101,6 +101,24 @@ class ProfessorAddSubjectView(LoginRequiredMixin, FormView):
         )
         
         return UserMainLV.get(request)
+
+class ProfessorHidedSubjectLV(LoginRequiredMixin, ListView):
+    template_name = 'judge/professor/professor_hided_subject_list.html'
+    paginate_by = 10
+    
+    def get(self, request, *args, **kwargs):
+        signup_class = Signup_class.objects.filter(user_id=request.user.id).values_list('subject_id')
+        subject = Subject.objects.filter(pk__in = signup_class).filter(hided=True)
+        
+        return render(request, self.template_name, { 'subject' : subject })
+    
+    def post(self, request, *args, **kwargs):
+        subject = Subject.objects.get(id=int(request.POST.get('subject_id')))
+        subject.hided = False;
+        subject.save()
+        
+        return self.get(request)
+    
     
 class ProfessorAddView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_assignment_add.html'
