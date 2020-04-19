@@ -186,19 +186,26 @@ class StudentAssignment(LoginRequiredMixin, FormView):
     
     def get(self, request, * args, **kwargs):
         assignment_id = request.GET.get('assignment_id')
-        request.session['assignment_id'] = assignment_id
+        
+        if not assignment_id:
+            assignment_id = request.session.get('assignment_id')
+        else:
+           request.session['assignment_id'] = assignment_id
         
         assignment = Assignment.objects.get(id=assignment_id)
         language = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id)
         coding_form = CodingForm(mode=language.mode, template=language.template)
         
-        print(language.template)
-        
+        # If get page with wrong answer
         if 'judge_result' in kwargs.keys():
-            print("here")
-        else:
-            print("there is no judge_result")
+            judge_result = kwargs.pop('judge_result')
+            return render(request, self.template_name,
+                       {'form' : CodingForm(mode=language.mode, template=judge_result['last_code']),
+                         'assignment' : assignment,
+                         'lang' : language,
+                         'result' : judge_result['result']})
         
+        # basic get
         return render(request, self.template_name,
                        {'form' : coding_form,
                          'assignment' : assignment,
@@ -234,14 +241,11 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         if judge_result:
             return AssignmentLV.get(request)
         
-        print("You have some problem...")
-            
-        #------------------------------------------------------we are here
-        # next is adding result page
-        # and then think about redirecting
+        context['judge_result'] = judge_result
+        context['last_code'] = code
         
-        return render(request, 'judge/student/student_result_list.html', context)
-    
+        return self.get(request, judge_result=context)
+        
     def create_structure(self, base_dir_path, assignment):
         origin_path = os.getcwd()
         
@@ -303,6 +307,7 @@ class StudentAssignment(LoginRequiredMixin, FormView):
             except yaml.YAMLError as exc:
                 print(exc)
 
+        max_score = sum(points)
         # Make parsed result of dmoj-judge
         a = subprocess.check_output(["dmoj-cli", "-c", config_file_path, "-e", language.lang_id, "submit", "problem", language.lang_id, student_file_path ])
         sp = [s.decode("utf-8") for s in a.split()] #convert byte to string
@@ -338,16 +343,4 @@ class StudentAssignment(LoginRequiredMixin, FormView):
                 submit_instance.submit_time = submit_time
             submit_instance.save()
             
-        return total_get == submit_instance.score
-
-
-class StudentResultLV(LoginRequiredMixin, TemplateView):
-    template_name = 'judge/student/student_result_list.html'
-    
-    # def get(self, request, * args, **kwargs):
-    #     return render(request, self.template_name,
-    #                    {'form' : coding_form,
-    #                      'assignment' : assignment,
-    #                      'lang' : language})
-            
-            
+        return total_get == max_score
