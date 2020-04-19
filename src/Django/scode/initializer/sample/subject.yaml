@@ -1,45 +1,12 @@
 - model: judge.Subject
   fields:
-    year: '2019'
-    semester: 1
-    subject_cd: '123450'
-    classes: '01'
-    title: 'Algorithm'
-    grade: 1
+    title: 'C_Sample'
     language: 'C'
 - model: judge.Subject
   fields:
-    year: '2019'
-    semester: 1
-    subject_cd: '123451'
-    classes: '01'
-    title: 'Python'
-    grade: 2
+    title: 'Python_Sample'
     language: 'PY3'
 - model: judge.Subject
   fields:
-    year: '2019'
-    semester: 1
-    subject_cd: '123451'
-    classes: '02'
-    title: 'Python'
-    grade: 2
-    language: 'PY3'
-- model: judge.Subject
-  fields:
-    year: '2019'
-    semester: 1
-    subject_cd: '123453'
-    classes: '01'
-    title: 'C'
-    grade: 2
-    language: 'C'
-- model: judge.Subject
-  fields:
-    year: '2019'
-    semester: 1
-    subject_cd: '123454'
-    classes: '01'
-    title: 'Java'
-    grade: 1
+    title: 'Java_Sample'
     language: 'JAVA8'

@@ -7,8 +7,8 @@ urlpatterns = [
     # example : /mainPage
     url(r'^mainPage$', UserMainLV.as_view(), name='common_subject_list'),
     
-    # example : /assignment/Algorithm_01
-    url(r'^assignment/(?P<subject_title>[a-zA-Z0-9]+)_(?P<classes>[0-9][0-9])$', AssignmentLV.as_view(), name='common_assignment_list'),
+    # example : /assignment/subject_id
+    url(r'^assignment/(?P<subject_id>[0-9]+)$', AssignmentLV.as_view(), name='common_assignment_list'),
 
     # example : /professor/assignment_add
     url(r'^professor/assignment_add$', ProfessorAddView.as_view(), name='professor_assignment_add'),

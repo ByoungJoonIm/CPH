@@ -16,16 +16,8 @@ class Language(models.Model):
 
 class Subject(models.Model):
     id = models.AutoField(primary_key=True)
-    year = models.CharField(max_length=4, null=False)
-    semester = models.IntegerField(null=False)
-    subject_cd = models.CharField(max_length=20, null=False)
-    classes = models.CharField(max_length=2, null=False)
     title = models.CharField(max_length=100)
-    grade = models.IntegerField()
     language = models.ForeignKey(Language, on_delete=models.CASCADE, db_column = 'language_id')
-
-    class Meta:
-        unique_together = ('year', 'semester', 'subject_cd', 'classes')
 
 class Signup_class(models.Model):
     id = models.AutoField(primary_key=True)

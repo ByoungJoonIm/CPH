@@ -8,24 +8,8 @@
     user_id: 1
 - model: 'judge.Signup_class'
   fields:
-    subject_id: 4
-    user_id: 1
-- model: 'judge.Signup_class'
-  fields:
     subject_id: 3
-    user_id: 2
-- model: 'judge.Signup_class'
-  fields:
-    subject_id: 4
-    user_id: 2
-- model: 'judge.Signup_class'
-  fields:
-    subject_id: 1
-    user_id: 3
-- model: 'judge.Signup_class'
-  fields:
-    subject_id: 5
-    user_id: 3
+    user_id: 1
 
 - model: 'judge.Signup_class'
   fields:
@@ -39,11 +23,3 @@
   fields:
     subject_id: 3
     user_id: 4
-- model: 'judge.Signup_class'
-  fields:
-    subject_id: 4
-    user_id: 5
-- model: 'judge.Signup_class'
-  fields:
-    subject_id: 5
-    user_id: 5

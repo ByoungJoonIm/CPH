@@ -12,9 +12,9 @@
 		{% for obj in subject %}
 		<tr>
 			<td>
-                <form id='{{ obj.title }}_{{ obj.classes}}' method="post" action="{% url 'judge:common_assignment_list' obj.title obj.classes %}">{% csrf_token %}
+                <form id='{{ obj.id }}' method="post" action="{% url 'judge:common_assignment_list' obj.id %}">{% csrf_token %}
 					<input type="hidden" name="subject_id" value="{{ obj.id }}"/>
-					<a href="javascript:{}" onclick=document.getElementById("{{ obj.title }}_{{ obj.classes }}").submit();>{{ obj.title }}_{{ obj.classes }}</a>
+					<a href="javascript:{}" onclick=document.getElementById("{{ obj.id }}").submit();>{{ obj.title }}</a>
 			    </form>	
 			</td>
 		</tr>
