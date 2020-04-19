@@ -23,6 +23,3 @@ class CodingForm(forms.Form):
         self.fields['code'].widget.mode = mode
         self.fields['code'].initial = template
         
-        print(len(template))
-        print(len('#include <stdio.h>\n\nint main(int argc, char *argv[]){\n\t\n}'))
-            
