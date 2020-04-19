@@ -37,5 +37,11 @@
                 </div>
                 <script type="text/javascript">document.getElementById('id_code').focus();</script>
         </form>
+
+        {% if result %}
+                <div>
+                {% autoescape on %} {{ result | safe }} {% endautoescape %}
+                </div>
+        {% endif %}
 </div>
 {% endblock content %}

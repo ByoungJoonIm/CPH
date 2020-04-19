@@ -180,7 +180,7 @@ class ProfessorDeleteView(LoginRequiredMixin, TemplateView):
 # Student area------------------------------------------------------------------------------------------------------------------------
 class StudentAssignment(LoginRequiredMixin, FormView):
     template_name = 'judge/student/student_assignment.html'
-    form_class = CodingForm(mode='c_cpp')
+    form_class = CodingForm(mode='c_cpp', template='#It is not general way')
     #we need to change mode by language in get or post(maybe get)
     #Is form_class variable necessary?
     
@@ -190,7 +190,14 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         
         assignment = Assignment.objects.get(id=assignment_id)
         language = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id)
-        coding_form = CodingForm(mode=language.mode)
+        coding_form = CodingForm(mode=language.mode, template=language.template)
+        
+        print(language.template)
+        
+        if 'judge_result' in kwargs.keys():
+            print("here")
+        else:
+            print("there is no judge_result")
         
         return render(request, self.template_name,
                        {'form' : coding_form,
@@ -222,11 +229,16 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         self.create_src_file(code, os.path.join(base_dir_path, "students"),assignment, language, request)
         
         context = dict()
-        self.judge_student_src_file(submit_time, code, base_dir_path, assignment, language, request, context)
+        judge_result = self.judge_student_src_file(submit_time, code, base_dir_path, assignment, language, request, context)
         
+        if judge_result:
+            return AssignmentLV.get(request)
         
+        print("You have some problem...")
+            
         #------------------------------------------------------we are here
         # next is adding result page
+        # and then think about redirecting
         
         return render(request, 'judge/student/student_result_list.html', context)
     
@@ -298,28 +310,17 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         i = 0
         total_get = 0
         result_output = "\n".join(a.decode("utf-8").split("\n")[6:-3])
-        # messages.info(request, Ansi2HTMLConverter(line_wrap=False).convert(result_output))
-        
         result_html = Ansi2HTMLConverter().convert(result_output)
-        
-        
         bs = BeautifulSoup(result_html,'html.parser')
+        context['result'] = str(bs.find('pre'))
         
-        result_style = bs.find('style')
-        result_body_pre = bs.find('pre')
-        
-        print(result_body_pre)
-        context['result'] = result_body_pre
-        
-        messages.info(request, result_body_pre)
-        
-        # here is for save result_output as message
+        ac_ansi = '\x1b[1m\x1b[32mAC\x1b[0m'
         
         while True:
             if sp[i] == "Done":
                 break
             if sp[i] == "Test":
-                if sp[i+3] == "AC":
+                if sp[i+3] == ac_ansi:
                     total_get = total_get + points[int(sp[i + 2]) - 1]
 
             i = i + 1
@@ -336,6 +337,8 @@ class StudentAssignment(LoginRequiredMixin, FormView):
                 submit_instance.code = code
                 submit_instance.submit_time = submit_time
             submit_instance.save()
+            
+        return total_get == submit_instance.score
 
 
 class StudentResultLV(LoginRequiredMixin, TemplateView):

@@ -12,6 +12,7 @@ class Language(models.Model):
     lang_id = models.CharField(max_length=10, primary_key=True)
     mode = models.CharField(max_length=10)
     extension = models.CharField(max_length=10)
+    template = models.TextField()
 
 class Subject(models.Model):
     id = models.AutoField(primary_key=True)

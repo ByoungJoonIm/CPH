@@ -3,13 +3,26 @@
   fields:
     mode: 'python'
     extension: 'py'
+    template: '#python template is not supported yet\n'
 - model: judge.Language
   pk: 'C'
   fields:
     mode: 'c_cpp'
     extension: 'c'
+    template: '#include <stdio.h>
+
+void main(){
+	
+}'
 - model: judge.Language
   pk: 'JAVA8'
   fields:
     mode: 'java'
     extension: 'java'
+    template: 'import java.util.*;
+    
+public class Main{
+  public static void main(String *args[]){
+
+  }
+}'

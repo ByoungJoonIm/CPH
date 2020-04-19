@@ -18,5 +18,11 @@ class CodingForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         mode = kwargs.pop('mode')
+        template = kwargs.pop('template')
         super().__init__(*args, **kwargs)
         self.fields['code'].widget.mode = mode
+        self.fields['code'].initial = template
+        
+        print(len(template))
+        print(len('#include <stdio.h>\n\nint main(int argc, char *argv[]){\n\t\n}'))
+            
