@@ -42,18 +42,20 @@ def add_subject():
     from judge.models import Language, Subject
     
     relation = [
-        ['C_Sample','C'],
-        ['Python_Sample','PY3'],
-        ['Java_Sample','JAVA8'],
+        ['C_Sample','C', 'access01'],
+        ['Python_Sample','PY3', 'access02'],
+        ['Java_Sample','JAVA8', 'access03'],
     ]
     
     for r in relation:
         title = r[0]
         lang_id = r[1]
+        access_code = r[2]
         
         subject = Subject.objects.create(
             title=title,
-            language=Language.objects.get(lang_id=lang_id)
+            language=Language.objects.get(lang_id=lang_id),
+            access_code = access_code
         )
     
 add_subject()

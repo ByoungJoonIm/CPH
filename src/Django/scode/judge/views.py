@@ -90,13 +90,19 @@ class ProfessorAddSubjectView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_subject_add.html'
     form_class = SubjectForm
     
+    def __randomString(self, stringLength = 8):
+        import random, string
+        letters = string.ascii_letters +'0123456789'
+        return ''.join(random.choice(letters) for i in range(stringLength))
+    
     def post(self, request, *args, **kwargs):
         title = request.POST.get('title')
         lang_id = request.POST.get('language')
         
         subject_instance = Subject.objects.create(
             title = title,
-            language = Language.objects.get(lang_id=lang_id)
+            language = Language.objects.get(lang_id=lang_id),
+            access_code = self.__randomString()
         )
         
         Signup_class_professor.objects.create(
