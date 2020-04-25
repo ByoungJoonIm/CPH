@@ -51,12 +51,16 @@ class UserMainLV(LoginRequiredMixin, ListView):
     def get(self, request, *args, **kwargs):
         signup_class = None
         if request.session.get('isProfessor'):
-            signup_class = Signup_class_professor.objects.filter(user_id=request.user.id).filter(accepted=True).values_list('subject_id')
+            signup_class = Signup_class_professor.objects.filter(user_id=request.user.id)
         else:
-            signup_class = Signup_class_student.objects.filter(user_id=request.user.id).filter(accepted=True).values_list('subject_id')
-        subject = Subject.objects.filter(pk__in = signup_class).filter(hided=False)
+            signup_class = Signup_class_student.objects.filter(user_id=request.user.id)
         
-        return render(request, self.template_name, { 'subject' : subject})
+        signup_class_available = signup_class.filter(accepted=True)
+        signup_class_waiting = signup_class.filter(accepted=False) 
+        
+        return render(request, self.template_name, 
+                      { 'signup_class_available' : signup_class_available,
+                       'signup_class_waiting' : signup_class_waiting})
     
     def post(self, request, *args, **kwargs):
         subject = Subject.objects.get(id=int(request.POST.get('subject_id')))
@@ -109,6 +113,7 @@ class ProfessorAddSubjectView(LoginRequiredMixin, FormView):
         Signup_class_professor.objects.create(
             subject = subject_instance,
             user = request.user,
+            accepted = True,
             owner = True
         )
         

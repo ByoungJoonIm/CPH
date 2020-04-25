@@ -16,23 +16,37 @@
 		<tr>
 			<th>title</th>
 		</tr>
-		{% for obj in subject %}
+		{% for obj in signup_class_available %}
 		<tr>
 			<td>
-                <form id='{{ obj.id }}' method="post" action="{% url 'judge:common_assignment_list' obj.id %}">{% csrf_token %}
-					<input type="hidden" name="subject_id" value="{{ obj.id }}"/>
-					<a href="javascript:{}" onclick=document.getElementById("{{ obj.id }}").submit();>{{ obj.title }}</a>
+                <form id='{{ obj.subject.id }}' method="post" action="{% url 'judge:common_assignment_list' obj.subject.id %}">{% csrf_token %}
+					<input type="hidden" name="subject_id" value="{{ obj.subject.id }}"/>
+					<a href="javascript:{}" onclick=document.getElementById("{{ obj.subject.id }}").submit();>{{ obj.subject.title }}</a>
 			    </form>	
 			</td>
 			{% if request.session.isProfessor %}
 			<td>
 				<form method="post" action="?">{% csrf_token %}
-					<input type="hidden" name="subject_id" value="{{ obj.id }}"/>
+					<input type="hidden" name="subject_id" value="{{ obj.subject.id }}"/>
 					<input type="submit" value="hide"/>
 			    </form>	
 			</td>
 			{% endif %}
 		</tr>
+		{% endfor %}
+	</table>
+
+	<h1> Test </h1>
+	<table>
+		<tr>
+			<th> title </th>
+			<th> state </th>
+		</tr>
+		{% for scw in signup_class_waiting %}
+			<tr>
+			<td>{{ scw.subject.title}}</td>
+			<td>{{ scw.accepted }}</td>
+			</tr>
 		{% endfor %}
 	</table>
 </div>
