@@ -28,4 +28,3 @@ class CodingForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['code'].widget.mode = mode
         self.fields['code'].initial = template
-        

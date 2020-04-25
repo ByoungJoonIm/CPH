@@ -21,13 +21,20 @@ class Subject(models.Model):
     hided = models.BooleanField(default=False)
     access_code = models.CharField(max_length = 10)
 
+    #def __eq__(self, obj):
+    #    return self.id == obj.id
+
 class Signup_class_base(models.Model):
     id = models.AutoField(primary_key=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, db_column = 'subject_id')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-class Signup_class_student(Signup_class_base):
     accepted = models.BooleanField(default = False)
+
+    class Meta:
+        unique_together=['subject', 'user']
+        
+class Signup_class_student(Signup_class_base):
+    pass
 
 class Signup_class_professor(Signup_class_base):
     owner = models.BooleanField(default = False)

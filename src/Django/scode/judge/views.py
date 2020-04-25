@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 from django.db import connection
+from django.db.utils import IntegrityError
 
 from django.contrib import messages
 
@@ -50,12 +51,12 @@ class UserMainLV(LoginRequiredMixin, ListView):
     def get(self, request, *args, **kwargs):
         signup_class = None
         if request.session.get('isProfessor'):
-            signup_class = Signup_class_professor.objects.filter(user_id=request.user.id).values_list('subject_id')
+            signup_class = Signup_class_professor.objects.filter(user_id=request.user.id).filter(accepted=True).values_list('subject_id')
         else:
-            signup_class = Signup_class_student.objects.filter(user_id=request.user.id).values_list('subject_id')
+            signup_class = Signup_class_student.objects.filter(user_id=request.user.id).filter(accepted=True).values_list('subject_id')
         subject = Subject.objects.filter(pk__in = signup_class).filter(hided=False)
         
-        return render(request, self.template_name, { 'subject' : subject })
+        return render(request, self.template_name, { 'subject' : subject})
     
     def post(self, request, *args, **kwargs):
         subject = Subject.objects.get(id=int(request.POST.get('subject_id')))
@@ -233,6 +234,56 @@ class ProfessorUpdateView(LoginRequiredMixin, FormView):
 
 class ProfessorDeleteView(LoginRequiredMixin, TemplateView):
     template_name = 'judge/professor/professor_assignment_delete.html'
+
+class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
+    template_name = 'judge/professor/professor_subject_management.html'
+    #form_class = SubjectForm
+    
+    def get(self, request, * args, **kwargs):
+        subject = Subject.objects.get(id = int(request.session.get('subject_id')))
+        participated_professor_list = Signup_class_professor.objects.filter(subject_id=subject.id, owner=False).order_by('accepted')
+        
+        print(participated_professor_list)
+        
+        return render(request, self.template_name, 
+                      {'form' : SubjectForm(initial={'title': subject.title,
+                                                     'language': subject.language.lang_id}),
+                       'subject' : subject,
+                       'participated_professor_list': participated_professor_list}
+                      )
+        
+    def post(self, request, * args, **kwargs):
+        form = request.POST
+        
+        if "professor_id" in form.keys():
+            
+            try:
+                Signup_class_professor.objects.create(
+                    subject = Subject.objects.get(id=int(request.session.get('subject_id'))),
+                    user = User.objects.get(username=form.get('professor_id')),
+                    accepted = False,
+                    owner = False
+                )
+            except User.DoesNotExist:
+                print("user does not exist")
+                messages.info(request, "User does not exist")
+            except IntegrityError:
+                print("Duplicated...You already invited")
+                messages.info(request, "You already invited")
+            
+            return self.get(request)
+        else:
+            subject = Subject.objects.get(id = int(request.session.get('subject_id')))
+            subject.title = form.get('title')
+            subject.language = Language.objects.get(lang_id=form.get('language'))
+            subject.save()
+        
+        
+        return AssignmentLV.get(request)
+
+    
+    
+
 
 # Student area------------------------------------------------------------------------------------------------------------------------
 class StudentAssignment(LoginRequiredMixin, FormView):

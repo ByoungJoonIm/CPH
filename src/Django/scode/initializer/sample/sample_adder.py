@@ -72,9 +72,9 @@ def add_signup_class():
     ]
     
     relation_professor = [
-        [1, 4, True],
-        [2, 4, True],
-        [3, 4, True]
+        [1, 4, True, True],
+        [2, 4, True, True],
+        [3, 4, True, True]
     ]
     
     for r in relation_student:
@@ -91,11 +91,13 @@ def add_signup_class():
     for r in relation_professor:
         subject = Subject.objects.get(id=r[0])
         user = User.objects.get(id=r[1])
-        owner = r[2]
+        accepted = r[2]
+        owner = r[3]
         
         Signup_class_professor.objects.create(
             subject = subject,
             user = user,
+            accepted = accepted,
             owner = owner
         ) 
         

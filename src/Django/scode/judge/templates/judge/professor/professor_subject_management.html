@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}professor_subject_management.html{% endblock %}
+{% load static %}
+{% block extrastyle %}{% static "css/forms.css" %}{% endblock %}
+
+{% block content %}
+<div id="content">
+	<h3> - Subject ID / access code</h3>
+	<h1>{{ subject.id}} / {{ subject.access_code }}</h1>
+	<h3> - Subject Information </h3>
+	<form method="post" action="?">{% csrf_token %}			
+		<fieldset class="aligned">
+			<div class="form-row">
+				{{ form.title.label_tag }} {{ form.title }}
+			</div>
+			<div class="form-row">
+				{{ form.language.label_tag }} {{ form.language }}
+			</div>
+		</fieldset>
+
+		<div class="submit-row">
+			<input type="submit" value="Revise"/>
+		</div>
+	</form>
+
+	<div>
+	<h3> - People who lead this subject with you </h3>
+	{% if participated_professor_list %}
+		<table>
+			<tr>
+				<th>id</th>
+				<th>state</th>
+			</tr>
+		{% for ppl in participated_professor_list %}
+			<tr>
+				<td> {{ ppl.user.username }} </td>
+				{% if ppl.accepted %}
+					<td>Accepted</td>
+				{% else %}
+					<td>Waiting</td>
+				{% endif %}
+			</tr>
+		{% endfor%}
+		</table>
+	{% else %}
+		<h3> There are no people :(</h3>
+	{% endif %}
+
+	<h3> - Invite people for managing this subject together.</h3>
+	<form method="post" action="?" id="abcd" name="bcde">{% csrf_token %}
+		<table>
+			<tr>
+				<th> Professor_id </th>
+				<td><input type="text" name="professor_id"><td>
+				<td><input type="submit" value="invite"/></td>
+			</tr>
+		</table>
+	</form>
+	</div>
+
+
+	{% if messages %}
+		{% for message in messages %}
+            <h2>[{{ message.message }}]</h2>
+		{% endfor %}
+	{% endif %}
+
+</div>
+
+
+{% endblock content %}
