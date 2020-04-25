@@ -243,8 +243,6 @@ class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
         subject = Subject.objects.get(id = int(request.session.get('subject_id')))
         participated_professor_list = Signup_class_professor.objects.filter(subject_id=subject.id, owner=False).order_by('accepted')
         
-        print(participated_professor_list)
-        
         return render(request, self.template_name, 
                       {'form' : SubjectForm(initial={'title': subject.title,
                                                      'language': subject.language.lang_id}),
@@ -265,10 +263,8 @@ class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
                     owner = False
                 )
             except User.DoesNotExist:
-                print("user does not exist")
                 messages.info(request, "User does not exist")
             except IntegrityError:
-                print("Duplicated...You already invited")
                 messages.info(request, "You already invited")
             
             return self.get(request)
