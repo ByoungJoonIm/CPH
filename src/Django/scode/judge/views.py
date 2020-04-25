@@ -48,7 +48,11 @@ class UserMainLV(LoginRequiredMixin, ListView):
     
     @classmethod
     def get(self, request, *args, **kwargs):
-        signup_class = Signup_class.objects.filter(user_id=request.user.id).values_list('subject_id')
+        signup_class = None
+        if request.session.get('isProfessor'):
+            signup_class = Signup_class_professor.objects.filter(user_id=request.user.id).values_list('subject_id')
+        else:
+            signup_class = Signup_class_student.objects.filter(user_id=request.user.id).values_list('subject_id')
         subject = Subject.objects.filter(pk__in = signup_class).filter(hided=False)
         
         return render(request, self.template_name, { 'subject' : subject })
@@ -95,9 +99,10 @@ class ProfessorAddSubjectView(LoginRequiredMixin, FormView):
             language = Language.objects.get(lang_id=lang_id)
         )
         
-        signup_class_instance = Signup_class.objects.create(
+        Signup_class_professor.objects.create(
             subject = subject_instance,
-            user = request.user
+            user = request.user,
+            owner = True
         )
         
         return UserMainLV.get(request)
@@ -107,7 +112,7 @@ class ProfessorHidedSubjectLV(LoginRequiredMixin, ListView):
     paginate_by = 10
     
     def get(self, request, *args, **kwargs):
-        signup_class = Signup_class.objects.filter(user_id=request.user.id).values_list('subject_id')
+        signup_class = Signup_class_professor.objects.filter(user_id=request.user.id).values_list('subject_id')
         subject = Subject.objects.filter(pk__in = signup_class).filter(hided=True)
         
         return render(request, self.template_name, { 'subject' : subject })

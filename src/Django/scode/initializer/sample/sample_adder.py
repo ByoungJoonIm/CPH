@@ -60,26 +60,42 @@ add_subject()
 
 #------add signup_class
 def add_signup_class():
-    from judge.models import Subject, Signup_class
+    from judge.models import Subject, Signup_class_student, Signup_class_professor
     from django.contrib.auth.models import User
 
-    relation = [
-        [1, 1],
-        [2, 1],
-        [3, 1],
-        [1, 4],
-        [2, 4],
-        [3, 4]
+    relation_student = [
+        [1, 1, True],
+        [2, 1, True],
+        [3, 1, True]
     ]
     
-    for r in relation:
+    relation_professor = [
+        [1, 4, True],
+        [2, 4, True],
+        [3, 4, True]
+    ]
+    
+    for r in relation_student:
         subject = Subject.objects.get(id=r[0])
         user = User.objects.get(id=r[1])
+        accepted = r[2]
         
-        signup_class = Signup_class.objects.create(
+        Signup_class_student.objects.create(
             subject = subject,
-            user = user
+            user = user,
+            accepted = accepted
         )
+        
+    for r in relation_professor:
+        subject = Subject.objects.get(id=r[0])
+        user = User.objects.get(id=r[1])
+        owner = r[2]
+        
+        Signup_class_professor.objects.create(
+            subject = subject,
+            user = user,
+            owner = owner
+        ) 
         
 add_signup_class()
 

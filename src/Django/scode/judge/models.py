@@ -20,10 +20,16 @@ class Subject(models.Model):
     language = models.ForeignKey(Language, on_delete=models.CASCADE, db_column = 'language_id')
     hided = models.BooleanField(default=False)
 
-class Signup_class(models.Model):
+class Signup_class_base(models.Model):
     id = models.AutoField(primary_key=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, db_column = 'subject_id')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+class Signup_class_student(Signup_class_base):
+    accepted = models.BooleanField(default = False)
+
+class Signup_class_professor(Signup_class_base):
+    owner = models.BooleanField(default = False)
 
 class Assignment(models.Model):
     id = models.AutoField(primary_key=True)
