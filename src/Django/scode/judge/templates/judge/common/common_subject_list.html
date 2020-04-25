@@ -7,7 +7,7 @@
 	<h1>Welcome, ({{ request.user.username }})!</h1>
 	{% if request.session.isProfessor %}
 		<form id='subject_add' method="get" action="{% url 'judge:professor_subject_add' %}">{% csrf_token %}
-			<input type="button" value="add subject" onclick="document.getElementById('subject_add').submit();"/>
+			<input type="submit" value="add subject"/>
 		</form>
 
 	    <h3><input type="button" value="management" onclick="location.href='{% url 'judge:professor_hided_subject'%}'"/></h3>
@@ -36,18 +36,22 @@
 		{% endfor %}
 	</table>
 
-	<h1> Test </h1>
-	<table>
-		<tr>
-			<th> title </th>
-			<th> state </th>
-		</tr>
-		{% for scw in signup_class_waiting %}
+	{% if signup_class_waiting %}
+		<h1> Waiting subject list </h1>
+		<form>
+		</form>
+		<table>
 			<tr>
-			<td>{{ scw.subject.title}}</td>
-			<td>{{ scw.accepted }}</td>
+				<th> title </th>
+				<th> state </th>
 			</tr>
-		{% endfor %}
-	</table>
+			{% for scw in signup_class_waiting %}
+				<tr>
+				<td>{{ scw.subject.title}}</td>
+				<td>{{ scw.accepted }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% endif %}
 </div>
 {% endblock content %}
