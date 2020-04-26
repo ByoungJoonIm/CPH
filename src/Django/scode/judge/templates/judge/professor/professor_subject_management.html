@@ -35,9 +35,11 @@
 		{% for ppl in participated_professor_list %}
 			<tr>
 				<td> {{ ppl.user.username }} </td>
-				{% if ppl.accepted %}
+				{% if ppl.state == 1 %}
 					<td>Accepted</td>
-				{% else %}
+				{% elif ppl.state == 2 %}
+					<td>Rejected</td>	
+				{% elif ppl.state == 3 %}
 					<td>Waiting</td>
 				{% endif %}
 			</tr>

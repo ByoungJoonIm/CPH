@@ -15,6 +15,7 @@ from django.urls import reverse
 
 from django.db import connection
 from django.db.utils import IntegrityError
+from django.db.models import Q
 
 from django.contrib import messages
 
@@ -23,7 +24,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from judge.models import *
 from judge.forms import *
-
 
 from judge.judgeManager import JudgeManager
 from scode.loginManager import LoginManager
@@ -42,6 +42,8 @@ from ansi2html import Ansi2HTMLConverter
 
 from bs4 import BeautifulSoup
 
+
+
 #-- Here is developing area    
 # common area------------------------------------------------------------------------------------------------------------------------
 class UserMainLV(LoginRequiredMixin, ListView):
@@ -55,7 +57,7 @@ class UserMainLV(LoginRequiredMixin, ListView):
         else:
             signup_class = Signup_class_student.objects.filter(user_id=request.user.id)
         
-        signup_class_available = signup_class.filter(accepted=True)
+        signup_class_available = signup_class.filter(accepted=Si)
         signup_class_waiting = signup_class.filter(accepted=False) 
         
         return render(request, self.template_name, 
@@ -102,14 +104,11 @@ class ProfessorSubjectLV(LoginRequiredMixin, ListView):
     
     @classmethod
     def get(self, request, *args, **kwargs):
-        signup_class = None
-        if request.session.get('isProfessor'):
-            signup_class = Signup_class_professor.objects.filter(user_id=request.user.id)
-        else:
-            signup_class = Signup_class_student.objects.filter(user_id=request.user.id)
+        signup_class = Signup_class_professor.objects.filter(user_id=request.user.id)
         
-        signup_class_available = signup_class.filter(accepted=True)
-        signup_class_waiting = signup_class.filter(accepted=False) 
+        q = Q(state=Signup_class_base.State.Accepted) | Q(state=Signup_class_base.State.Owned)
+        signup_class_available = signup_class.filter(q)
+        signup_class_waiting = signup_class.filter(state=Signup_class_base.State.Waiting) 
         
         return render(request, self.template_name, 
                       { 'signup_class_available' : signup_class_available,
@@ -120,10 +119,19 @@ class ProfessorSubjectLV(LoginRequiredMixin, ListView):
         
         if "accept" in form.keys():
             accept = form.get('accept')
-            if accept == "accept":
-                print(0)
-            elif accept == "reject":
-                print(1)
+            
+            if accept == "accept" or accept == "reject":
+                converter = {"accept" : Signup_class_base.State.Accepted,
+                             "reject" : Signup_class_base.State.Rejected}
+                subject = Subject.objects.get(id=int(form.get("subject_id")))
+                print(form.get("subject_id"))
+                print(subject)
+                state = converter.get(accept)
+                
+                signup_class_professor_instance = Signup_class_professor.objects.get(user=request.user.id, subject=int(form.get("subject_id")))
+                
+                signup_class_professor_instance.state = state
+                signup_class_professor_instance.save()
             elif accept == "Accept all":
                 print(2)
             elif accept == "Reject all":
@@ -159,8 +167,7 @@ class ProfessorAddSubjectView(LoginRequiredMixin, FormView):
         Signup_class_professor.objects.create(
             subject = subject_instance,
             user = request.user,
-            accepted = True,
-            owner = True
+            state = Signup_class_base.State.Owned
         )
         
         return ProfessorSubjectLV.get(request)
@@ -291,8 +298,10 @@ class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
     #form_class = SubjectForm
     
     def get(self, request, * args, **kwargs):
+        
         subject = Subject.objects.get(id = int(request.session.get('subject_id')))
-        participated_professor_list = Signup_class_professor.objects.filter(subject_id=subject.id, owner=False).order_by('accepted')
+        q = ~Q(state=Signup_class_base.State.Owned)
+        participated_professor_list = Signup_class_professor.objects.filter(subject_id=subject.id).filter(q).order_by('state')
         
         return render(request, self.template_name, 
                       {'form' : SubjectForm(initial={'title': subject.title,
@@ -305,13 +314,11 @@ class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
         form = request.POST
         
         if "professor_id" in form.keys():
-            
             try:
                 Signup_class_professor.objects.create(
                     subject = Subject.objects.get(id=int(request.session.get('subject_id'))),
                     user = User.objects.get(username=form.get('professor_id')),
-                    accepted = False,
-                    owner = False
+                    state = Signup_class_base.State.Waiting
                 )
             except User.DoesNotExist:
                 messages.info(request, "User does not exist")
