@@ -25,19 +25,25 @@ class Subject(models.Model):
     #    return self.id == obj.id
 
 class Signup_class_base(models.Model):
+    class State(models.IntegerChoices):
+        Accepted = 1
+        Rejected = 2
+        Waiting = 3
+        Owned = 4
+    
     id = models.AutoField(primary_key=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, db_column = 'subject_id')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    accepted = models.BooleanField(default = False)
+    state = models.IntegerField(choices=State.choices, null=False)
 
     class Meta:
         unique_together=['subject', 'user']
-        
+    
 class Signup_class_student(Signup_class_base):
     pass
 
 class Signup_class_professor(Signup_class_base):
-    owner = models.BooleanField(default = False)
+    pass
 
 class Assignment(models.Model):
     id = models.AutoField(primary_key=True)

@@ -9,7 +9,7 @@ def add_users():
         user = User.objects.create_user(username = str(i), password = str(i))
         student_group.user_set.add(user)
 
-    for i in range(1, 3):
+    for i in range(1, 9):
         user = User.objects.create_user(username = "0000" + str(i), password = "0000" + str(i))
         professor_group.user_set.add(user)
         
@@ -66,39 +66,37 @@ def add_signup_class():
     from django.contrib.auth.models import User
 
     relation_student = [
-        [1, 1, True],
-        [2, 1, True],
-        [3, 1, True]
+        [1, 1, 1],
+        [2, 1, 1],
+        [3, 1, 1]
     ]
     
     relation_professor = [
-        [1, 4, True, True],
-        [2, 4, True, True],
-        [3, 4, True, True]
+        [1, 4, 4],
+        [2, 4, 4],
+        [3, 4, 4]
     ]
     
     for r in relation_student:
         subject = Subject.objects.get(id=r[0])
         user = User.objects.get(id=r[1])
-        accepted = r[2]
+        state = r[2]
         
         Signup_class_student.objects.create(
             subject = subject,
             user = user,
-            accepted = accepted
+            state = state
         )
         
     for r in relation_professor:
         subject = Subject.objects.get(id=r[0])
         user = User.objects.get(id=r[1])
-        accepted = r[2]
-        owner = r[3]
+        state = state
         
         Signup_class_professor.objects.create(
             subject = subject,
             user = user,
-            accepted = accepted,
-            owner = owner
+            state = state
         ) 
         
 add_signup_class()
