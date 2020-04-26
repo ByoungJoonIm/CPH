@@ -22,7 +22,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from judge.models import *
-from judge.forms import AssignmentForm, AssignmentUpdateForm, CodingForm, SubjectForm
+from judge.forms import *
 
 
 from judge.judgeManager import JudgeManager
@@ -63,12 +63,18 @@ class UserMainLV(LoginRequiredMixin, ListView):
                        'signup_class_waiting' : signup_class_waiting})
     
     def post(self, request, *args, **kwargs):
-        subject = Subject.objects.get(id=int(request.POST.get('subject_id')))
-        subject.hided = True;
-        subject.save()
+        form = request.POST
+        
+        if "accept" in form.keys():
+            print("accept key exist")
+        elif "hided" in form.keys():
+            subject = Subject.objects.get(id=int(request.POST.get('subject_id')))
+            subject.hided = True;
+            subject.save()
         
         return UserMainLV.get(request)
-    
+
+
 class AssignmentLV(LoginRequiredMixin, ListView):
     template_name = 'judge/common/common_assignment_list.html'
     paginate_by = 10
@@ -91,6 +97,46 @@ class AssignmentLV(LoginRequiredMixin, ListView):
         return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
     
 # professor area------------------------------------------------------------------------------------------------------------------------
+class ProfessorSubjectLV(LoginRequiredMixin, ListView):
+    template_name = 'judge/professor/professor_subject_list.html'
+    
+    @classmethod
+    def get(self, request, *args, **kwargs):
+        signup_class = None
+        if request.session.get('isProfessor'):
+            signup_class = Signup_class_professor.objects.filter(user_id=request.user.id)
+        else:
+            signup_class = Signup_class_student.objects.filter(user_id=request.user.id)
+        
+        signup_class_available = signup_class.filter(accepted=True)
+        signup_class_waiting = signup_class.filter(accepted=False) 
+        
+        return render(request, self.template_name, 
+                      { 'signup_class_available' : signup_class_available,
+                       'signup_class_waiting' : signup_class_waiting})
+    
+    def post(self, request, *args, **kwargs):
+        form = request.POST
+        
+        if "accept" in form.keys():
+            accept = form.get('accept')
+            if accept == "accept":
+                print(0)
+            elif accept == "reject":
+                print(1)
+            elif accept == "Accept all":
+                print(2)
+            elif accept == "Reject all":
+                print(3)
+            
+        elif "hided" in form.keys():
+            subject = Subject.objects.get(id=int(request.POST.get('subject_id')))
+            subject.hided = True;
+            subject.save()
+        
+        return ProfessorSubjectLV.get(request)
+
+
 class ProfessorAddSubjectView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_subject_add.html'
     form_class = SubjectForm
@@ -117,7 +163,7 @@ class ProfessorAddSubjectView(LoginRequiredMixin, FormView):
             owner = True
         )
         
-        return UserMainLV.get(request)
+        return ProfessorSubjectLV.get(request)
 
 class ProfessorHidedSubjectLV(LoginRequiredMixin, ListView):
     template_name = 'judge/professor/professor_hided_subject_list.html'

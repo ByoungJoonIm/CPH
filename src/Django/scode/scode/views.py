@@ -24,6 +24,7 @@ class HomeView(TemplateView):
             
             if user_group_id == professor_group_id:
                 request.session['isProfessor'] = True
+                return redirect(reverse_lazy('judge:professor_subject_list'))
             else:
                 request.session['isProfessor'] = False
             return redirect(reverse_lazy('judge:common_subject_list'))
