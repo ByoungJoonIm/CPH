@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from dnf.urls import url
 from django.contrib import admin
 
 from judge.views import *
@@ -7,8 +7,8 @@ urlpatterns = [
     # example : /professor/subject_list
     url(r'^professor/subject_list$', ProfessorSubjectLV.as_view(), name='professor_subject_list'),
     
-    # example : /assignment/subject_add
-    url(r'^assignment/subject_add$', ProfessorAddSubjectView.as_view(), name='professor_subject_add'),
+    # example : /professor/subject_add
+    url(r'^professor/subject_add$', ProfessorAddSubjectView.as_view(), name='professor_subject_add'),
 
     # example : /professor/hided_subject
     url(r'^professor/hided_subject$', ProfessorHidedSubjectLV.as_view(), name='professor_hided_subject'),
