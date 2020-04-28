@@ -1,4 +1,4 @@
-from dnf.urls import url
+from django.conf.urls import url
 from django.contrib import admin
 
 from judge.views import *
