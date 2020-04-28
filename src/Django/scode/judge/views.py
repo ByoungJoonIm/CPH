@@ -137,7 +137,7 @@ class ProfessorHidedSubjectLV(LoginRequiredMixin, ListView):
         return self.get(request)
     
     
-class ProfessorAddView(LoginRequiredMixin, FormView):
+class ProfessorAddAssignmentView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_assignment_add.html'
     form_class = AssignmentForm
 

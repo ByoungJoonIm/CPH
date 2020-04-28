@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^professor/hided_subject$', ProfessorHidedSubjectLV.as_view(), name='professor_hided_subject'),
 
     # example : /professor/assignment_add
-    url(r'^professor/assignment_add$', ProfessorAddView.as_view(), name='professor_assignment_add'),
+    url(r'^professor/assignment_add$', ProfessorAddAssignmentView.as_view(), name='professor_assignment_add'),
 
     # example : /professor/assignment_id/update
     url(r'^professor/update$', ProfessorUpdateView.as_view(), name='professor_assignment_update'),
