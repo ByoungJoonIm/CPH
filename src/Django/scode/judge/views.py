@@ -164,7 +164,7 @@ class ProfessorAddAssignmentView(LoginRequiredMixin, FormView):
     def post(self, request, *args, **kwargs):
         self.generate_assignment(self.request)
             
-        return AssignmentLV.get(request, args, kwargs)  
+        return ProfessorAssignmentLV.get(request, args, kwargs)  
 
     def generate_assignment(self, request):
         #--- Creating assignment directory 
@@ -255,7 +255,7 @@ class ProfessorUpdateView(LoginRequiredMixin, FormView):
         if assignment_deadline is not '':
             assignment_instance.deadline = timezone.make_aware(datetime.datetime.now() + datetime.timedelta(days=int(assignment_deadline)))
         assignment_instance.save()
-        return AssignmentLV.get(request, args, kwargs)
+        return ProfessorAssignmentLV.get(request, args, kwargs)
 
 class ProfessorDeleteView(LoginRequiredMixin, TemplateView):
     template_name = 'judge/professor/professor_assignment_delete.html'
@@ -300,7 +300,7 @@ class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
             subject.save()
         
         
-        return AssignmentLV.get(request)
+        return ProfessorAssignmentLV.get(request)
 
     
     
@@ -415,7 +415,7 @@ class StudentAssignment(LoginRequiredMixin, FormView):
         judge_result = self.judge_student_src_file(submit_time, code, base_dir_path, assignment, language, request, context)
         
         if judge_result:
-            return AssignmentLV.get(request)
+            return StudentAssignmentLV.get(request)
         
         context['judge_result'] = judge_result
         context['last_code'] = code
