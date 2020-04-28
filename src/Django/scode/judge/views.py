@@ -340,6 +340,33 @@ class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
 
 
 # Student area------------------------------------------------------------------------------------------------------------------------
+class StudentSubjectLV(LoginRequiredMixin, ListView):
+    template_name = 'judge/student/student_subject_list.html'
+    
+    @classmethod
+    def get(self, request, *args, **kwargs):
+        signup_class = Signup_class_student.objects.filter(user_id=request.user.id)
+        
+        signup_class_available = signup_class.filter(state=Signup_class_base.State.Accepted)
+        signup_class_waiting = signup_class.filter(state=Signup_class_base.State.Waiting) 
+        
+        return render(request, self.template_name, 
+                      { 'signup_class_available' : signup_class_available,
+                       'signup_class_waiting' : signup_class_waiting})
+    
+    def post(self, request, *args, **kwargs):
+        form = request.POST
+        
+        if "accept" in form.keys():
+            print("accept key exist")
+        elif "hided" in form.keys():
+            subject = Subject.objects.get(id=int(request.POST.get('subject_id')))
+            subject.hided = True;
+            subject.save()
+        
+        return UserMainLV.get(request)
+
+
 class StudentAssignment(LoginRequiredMixin, FormView):
     template_name = 'judge/student/student_assignment.html'
     form_class = CodingForm(mode='c_cpp', template='#It is not general way')

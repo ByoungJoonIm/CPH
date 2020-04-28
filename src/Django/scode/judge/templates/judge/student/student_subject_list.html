@@ -4,58 +4,43 @@
 
 {% block content %}
 <div id="content">
-	<h1> {{ request.session.title }}_{{ request.session.classes}} </h1>
+	<h1>Welcome, ({{ request.user.username }})!</h1>
 	<table>
 		<tr>
-			<th>sequence</th>
-			<th>assginment_name</th>
-			<th>deadline</th>
-			<th>state</th>
-			<th>score</th>
+			<th>title</th>
 		</tr>
-
-		{% for obj in expired_assignment_list %}
+		{% for obj in signup_class_available %}
 		<tr>
-			<td>{{ obj.sequence }}</td>
-			<td>{{ obj.assignment_name }}</td>
-			{% comment %} datetime format reference : https://docs.djangoproject.com/en/2.2/ref/templates/builtins/#date {% endcomment%}
-			<td>{{ obj.deadline | date:"Y-m-d(D)" }} {{ obj.deadline | time:"H:i:s" }}</td>
-			<td>expired</td>
-			<td>{% if obj.score %}
-				{{ obj.score }}
-			    {% else %}
-				0
-			    {% endif %}
-			    &nbsp / &nbsp {{ obj.max_score }}
-			</td>
-
-		</tr>
-		{% endfor %}
-
-		{% for obj in not_expired_assignment_list %}
-		<tr>
-			<td>{{ obj.sequence }}</td>
-
 			<td>
-				<form id='{{ obj.sequence }}' method="post" action="{% url 'judge:std_assign' request.session.title request.session.classes obj.sequence%}">{% csrf_token %}
-					<input type="hidden" name="sequence" value="{{ obj.sequence }}"/>
-					<a href="javascript:{}" onclick=document.getElementById("{{ obj.sequence }}").submit();>{{ obj.assignment_name }}</a>
-				</form>
+                <form id='{{ obj.subject.id }}' method="post" action="{% url 'judge:common_assignment_list' obj.subject.id %}">{% csrf_token %}
+					<input type="hidden" name="subject_id" value="{{ obj.subject.id }}"/>
+					<a href="javascript:{}" onclick=document.getElementById("{{ obj.subject.id }}").submit();>{{ obj.subject.title }}</a>
+			    </form>	
 			</td>
-			<td>{{ obj.deadline | date:"Y-m-d(D)" }} {{ obj.deadline | time:"H:i:s" }}</td>
-			<td>working</td>
-			<td>{% if obj.score %}
-				{{ obj.score }}
-			    {% else %}
-				0
-			    {% endif %}
-			    &nbsp / &nbsp {{ obj.max_score }}
-			</td>
-
 		</tr>
 		{% endfor %}
-
 	</table>
 
+	{% if signup_class_waiting %}
+		<h1> Waiting subject list </h1>
+		<form method='post' action="?"> {% csrf_token %}
+			<input type="submit" name="accept" value="Accept all"/>
+		</form>
+		<form method='post' action="?"> {% csrf_token %}
+			<input type="submit" name="accept" value="Reject all"/>
+		</form>
+
+		<table>
+			<tr>
+				<th> title </th>
+			</tr>
+			{% for scw in signup_class_waiting %}
+				<tr>
+					<td>{{ scw.subject.title}}</td>
+					<td> Waiting </td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% endif %}
 </div>
 {% endblock content %}

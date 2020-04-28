@@ -27,10 +27,7 @@ class HomeView(TemplateView):
                 return redirect(reverse_lazy('judge:professor_subject_list'))
             else:
                 request.session['isProfessor'] = False
-            return redirect(reverse_lazy('judge:common_subject_list'))
-            
-
-        return render(request, self.template_name)
+                return redirect(reverse_lazy('judge:student_subject_list'))
 
 class LoginView(LoginView):
     template_name = 'registration/login.html'
