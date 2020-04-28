@@ -91,7 +91,7 @@ def add_signup_class():
     for r in relation_professor:
         subject = Subject.objects.get(id=r[0])
         user = User.objects.get(id=r[1])
-        state = state
+        state = r[2]
         
         Signup_class_professor.objects.create(
             subject = subject,
