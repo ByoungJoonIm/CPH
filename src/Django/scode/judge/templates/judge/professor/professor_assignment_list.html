@@ -1,12 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}professor_assignment_list.html{% endblock %}
+{% block title %}common_assignment_list.html{% endblock %}
 
 {% block content %}
 <div id="content">
-	<h1> {{ subject.title }}_{{ subject.classes}} </h1>
-	<h3><input type="button" value="Add"/></h3>
-	<h3><input type="button" value="settings"/></h3>
+	<h1> {{ subject.title }} </h1>
+		<form id='assignment_add' method="get" action="{% url 'judge:professor_assignment_add' %}">{% csrf_token %}
+			<input type="button" value="add assignment" onclick="document.getElementById('assignment_add').submit();"/>
+		</form>
+		
+	    <h3><input type="button" value="management" onclick="location.href='{% url 'judge:professor_subject_management'%}'"/></h3>
 	<table>
 		<tr>
 			<th>assginment_name</th>
@@ -15,12 +18,15 @@
 
 		{% for obj in assignment %}
 		<tr>
-			<td><a>{{ obj.name }}</a></td>
+            <td>
+                <form id='assignment_update{{ obj.id }}' method="get" action="{% url 'judge:professor_assignment_update' %}">{% csrf_token %}
+                	<input type="hidden" name="assignment_id" value="{{ obj.id }}"/>
+					<a href="javascript:{}" onclick="document.getElementById('assignment_update{{ obj.id }}').submit()";>{{ obj.name }}</a>
+    	    	</form>
+            </td>
 			<td>{{ obj.deadline | date:"Y-m-d(D)" }} {{ obj.deadline | time:"H:i:s" }}</td>
 		</tr>
 		{% endfor %}
-
-
 	</table>
 
 </div>

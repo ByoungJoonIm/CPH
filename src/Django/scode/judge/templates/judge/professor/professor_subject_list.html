@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}common_subject_list.html{% endblock %}
+{% block title %}professor_subject_list.html{% endblock %}
 
 {% block content %}
 <div id="content">
@@ -18,7 +18,7 @@
 		{% if not obj.subject.hided %}
         <tr>
 			<td>
-                <form id='{{ obj.subject.id }}' method="post" action="{% url 'judge:common_assignment_list' obj.subject.id %}">{% csrf_token %}
+                <form id='{{ obj.subject.id }}' method="post" action="{% url 'judge:professor_assignment_list' %}">{% csrf_token %}
 					<input type="hidden" name="subject_id" value="{{ obj.subject.id }}"/>
 					<a href="javascript:{}" onclick=document.getElementById("{{ obj.subject.id }}").submit();>{{ obj.subject.title }}</a>
 			    </form>	

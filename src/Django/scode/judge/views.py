@@ -91,7 +91,27 @@ class ProfessorSubjectLV(LoginRequiredMixin, ListView):
         
         return ProfessorSubjectLV.get(request)
 
+class ProfessorAssignmentLV(LoginRequiredMixin, ListView):
+    template_name = 'judge/professor/professor_assignment_list.html'
+    paginate_by = 10
+    
+    def post(self, request, *args, **kwargs):
+        subject_id = request.POST.get('subject_id')
+        request.session['subject_id'] = subject_id
+        
+        return self.get(request, args, kwargs)
 
+    @classmethod
+    def get(self, request, *args, **kwargs):
+        if('subject_id' not in request.session):
+            return redirect(reverse_lazy('judge:professor_subject_list'))
+        
+        subject_id = request.session.get('subject_id')
+        assignment = Assignment.objects.filter(subject_id = subject_id)
+        subject = Subject.objects.get(id = subject_id)
+        
+        return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
+    
 class ProfessorAddSubjectView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_subject_add.html'
     form_class = SubjectForm
@@ -311,7 +331,7 @@ class StudentSubjectLV(LoginRequiredMixin, ListView):
             subject.hided = True;
             subject.save()
         
-        return UserMainLV.get(request)
+        return self.get(request)
     
 class StudentAssignmentLV(LoginRequiredMixin, ListView):
     template_name = 'judge/student/student_assignment_list.html'
