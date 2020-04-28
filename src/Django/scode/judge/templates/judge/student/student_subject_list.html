@@ -12,7 +12,7 @@
 		{% for obj in signup_class_available %}
 		<tr>
 			<td>
-                <form id='{{ obj.subject.id }}' method="post" action="{% url 'judge:common_assignment_list' obj.subject.id %}">{% csrf_token %}
+                <form id='{{ obj.subject.id }}' method="post" action="{% url 'judge:student_assignment_list' %}">{% csrf_token %}
 					<input type="hidden" name="subject_id" value="{{ obj.subject.id }}"/>
 					<a href="javascript:{}" onclick=document.getElementById("{{ obj.subject.id }}").submit();>{{ obj.subject.title }}</a>
 			    </form>	

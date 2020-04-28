@@ -4,12 +4,6 @@ from django.contrib import admin
 from judge.views import *
 
 urlpatterns = [
-    # example : /mainPage
-    url(r'^mainPage$', UserMainLV.as_view(), name='common_subject_list'),
-    
-    # example : /assignment/subject_id
-    url(r'^assignment/(?P<subject_id>[0-9]+)$', AssignmentLV.as_view(), name='common_assignment_list'),
-
     # example : /professor/subject_list
     url(r'^professor/subject_list$', ProfessorSubjectLV.as_view(), name='professor_subject_list'),
     
@@ -30,6 +24,9 @@ urlpatterns = [
 
     # example : /student/subject_list
     url(r'^student/subject_list$', StudentSubjectLV.as_view(), name='student_subject_list'),
+
+    # example : /student/assignment_list
+    url(r'^student/assignment_list$', StudentAssignmentLV.as_view(), name='student_assignment_list'),
 
     # example : /student/assignment_id
     url(r'^student/(?P<assignment_id>[0-9]+)$', StudentAssignment.as_view(), name='student_assignment'),

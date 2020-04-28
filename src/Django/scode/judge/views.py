@@ -45,59 +45,6 @@ from bs4 import BeautifulSoup
 
 
 #-- Here is developing area    
-# common area------------------------------------------------------------------------------------------------------------------------
-class UserMainLV(LoginRequiredMixin, ListView):
-    template_name = 'judge/common/common_subject_list.html'
-    
-    @classmethod
-    def get(self, request, *args, **kwargs):
-        signup_class = None
-        if request.session.get('isProfessor'):
-            signup_class = Signup_class_professor.objects.filter(user_id=request.user.id)
-        else:
-            signup_class = Signup_class_student.objects.filter(user_id=request.user.id)
-        
-        signup_class_available = signup_class.filter(accepted=Si)
-        signup_class_waiting = signup_class.filter(accepted=False) 
-        
-        return render(request, self.template_name, 
-                      { 'signup_class_available' : signup_class_available,
-                       'signup_class_waiting' : signup_class_waiting})
-    
-    def post(self, request, *args, **kwargs):
-        form = request.POST
-        
-        if "accept" in form.keys():
-            print("accept key exist")
-        elif "hided" in form.keys():
-            subject = Subject.objects.get(id=int(request.POST.get('subject_id')))
-            subject.hided = True;
-            subject.save()
-        
-        return UserMainLV.get(request)
-
-
-class AssignmentLV(LoginRequiredMixin, ListView):
-    template_name = 'judge/common/common_assignment_list.html'
-    paginate_by = 10
-    
-    def post(self, request, *args, **kwargs):
-        subject_id = request.POST.get('subject_id')
-        request.session['subject_id'] = subject_id
-        
-        return self.get(request, args, kwargs)
-
-    @classmethod
-    def get(self, request, *args, **kwargs):
-        if('subject_id' not in request.session):
-            return redirect(reverse_lazy('judge:common_subject_list'))
-        
-        subject_id = request.session.get('subject_id')
-        assignment = Assignment.objects.filter(subject_id = subject_id)
-        subject = Subject.objects.get(id = subject_id)
-        
-        return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
-    
 # professor area------------------------------------------------------------------------------------------------------------------------
 class ProfessorSubjectLV(LoginRequiredMixin, ListView):
     template_name = 'judge/professor/professor_subject_list.html'
@@ -365,7 +312,27 @@ class StudentSubjectLV(LoginRequiredMixin, ListView):
             subject.save()
         
         return UserMainLV.get(request)
+    
+class StudentAssignmentLV(LoginRequiredMixin, ListView):
+    template_name = 'judge/student/student_assignment_list.html'
+    paginate_by = 10
+    
+    def post(self, request, *args, **kwargs):
+        subject_id = request.POST.get('subject_id')
+        request.session['subject_id'] = subject_id
+        
+        return self.get(request, args, kwargs)
 
+    @classmethod
+    def get(self, request, *args, **kwargs):
+        if('subject_id' not in request.session):
+            return redirect(reverse_lazy('judge:student_subject_list'))
+        
+        subject_id = request.session.get('subject_id')
+        assignment = Assignment.objects.filter(subject_id = subject_id)
+        subject = Subject.objects.get(id = subject_id)
+        
+        return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
 
 class StudentAssignment(LoginRequiredMixin, FormView):
     template_name = 'judge/student/student_assignment.html'

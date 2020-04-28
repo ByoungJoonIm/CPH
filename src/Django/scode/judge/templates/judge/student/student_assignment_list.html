@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}common_assignment_list.html{% endblock %}
+
+{% block content %}
+<div id="content">
+	<h1> {{ subject.title }} </h1>
+	<table>
+		<tr>
+			<th>assginment_name</th>
+			<th>deadline</th>
+		</tr>
+
+		{% for obj in assignment %}
+		<tr>
+            <td>
+                <form id='solve{{ obj.id }}' method="get" action="{% url 'judge:student_assignment' obj.id %}">{% csrf_token %}
+	            	<input type="hidden" name="assignment_id" value="{{ obj.id }}"/>
+					<a href="javascript:{}" onclick=document.getElementById("solve{{ obj.id }}").submit();>{{ obj.name }}</a>
+		    	</form>
+            </td>
+			<td>{{ obj.deadline | date:"Y-m-d(D)" }} {{ obj.deadline | time:"H:i:s" }}</td>
+		</tr>
+		{% endfor %}
+	</table>
+
+</div>
+{% endblock content %}
