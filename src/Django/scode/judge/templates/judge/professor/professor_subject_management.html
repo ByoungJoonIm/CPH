@@ -61,6 +61,37 @@
 	</form>
 	</div>
 
+	<h3> - People who want to join this subject </h3>
+	{% if participated_student_list %}
+		<form method='post' action="?"> {% csrf_token %}
+			<input type="submit" name="accept" value="Accept all"/>
+		</form>
+		<form method='post' action="?"> {% csrf_token %}
+			<input type="submit" name="accept" value="Reject all"/>
+		</form>
+		<table>
+			<tr>
+				<th>id</th>
+				<th>state</th>
+			</tr>
+		{% for ppl in participated_student_list %}
+			<tr>
+				<td> {{ ppl.user.username }} </td>
+				{% if ppl.state == 1 %}
+					<td>Accepted</td>
+				{% elif ppl.state == 2 %}
+					<td>Rejected</td>	
+				{% elif ppl.state == 3 %}
+					<td>Waiting</td>
+				{% endif %}
+			</tr>
+		{% endfor%}
+		</table>
+	{% else %}
+		<h3> There are no people :(</h3>
+	{% endif %}
+
+
 
 	{% if messages %}
 		{% for message in messages %}

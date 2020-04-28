@@ -5,6 +5,8 @@
 {% block content %}
 <div id="content">
 	<h1>Welcome, ({{ request.user.username }})!</h1>
+	<h3><input type="button" value="add subject" onclick="location.href='{% url 'judge:student_subject_add'%}'"/></h3>
+
 	<table>
 		<tr>
 			<th>title</th>

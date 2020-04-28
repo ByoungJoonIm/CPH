@@ -262,19 +262,21 @@ class ProfessorDeleteView(LoginRequiredMixin, TemplateView):
 
 class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
     template_name = 'judge/professor/professor_subject_management.html'
-    #form_class = SubjectForm
     
     def get(self, request, * args, **kwargs):
         
         subject = Subject.objects.get(id = int(request.session.get('subject_id')))
         q = ~Q(state=Signup_class_base.State.Owned)
         participated_professor_list = Signup_class_professor.objects.filter(subject_id=subject.id).filter(q).order_by('state')
+        participated_student_list = Signup_class_student.objects.filter(subject=subject.id).filter(q).order_by("state")
         
         return render(request, self.template_name, 
                       {'form' : SubjectForm(initial={'title': subject.title,
                                                      'language': subject.language.lang_id}),
                        'subject' : subject,
-                       'participated_professor_list': participated_professor_list}
+                       'participated_professor_list': participated_professor_list,
+                       'participated_student_list': participated_student_list,
+                       }
                       )
         
     def post(self, request, * args, **kwargs):
@@ -333,6 +335,42 @@ class StudentSubjectLV(LoginRequiredMixin, ListView):
         
         return self.get(request)
     
+class StudentAddSubjectView(LoginRequiredMixin, FormView):    
+    template_name = 'judge/student/student_subject_add.html'
+    form_class = StudentSubjectAddForm
+    
+    def get(self, request, * args, **kwargs):
+        q = ~Q(state=Signup_class_base.State.Owned)
+        participated_student_list = Signup_class_student.objects.filter(user=request.user.id).filter(q).order_by('state')
+        
+        return render(request, self.template_name, 
+                      {'participated_student_list': participated_student_list,
+                      'form': self.form_class
+                      })
+        
+    def post(self, request, * args, **kwargs):
+        subject = None
+        subject_id = request.POST.get('subject_id')
+        access_code = request.POST.get('access_code')
+        
+        try:
+            subject = Subject.objects.get(id=subject_id)
+            if subject.access_code == access_code:
+                Signup_class_student.objects.create(
+                    subject = subject,
+                    user = request.user,
+                    state = Signup_class_base.State.Waiting
+                )
+                messages.info(request, "Request was sent successfully!")
+            else:
+                messages.info(request, "access code is invalid!")    
+        except Subject.DoesNotExist:
+            messages.info(request, "Subject_id is invalid!")
+        except IntegrityError:
+            messages.info(request, "This subject already requested..")
+        
+        return self.get(request)
+
 class StudentAssignmentLV(LoginRequiredMixin, ListView):
     template_name = 'judge/student/student_assignment_list.html'
     paginate_by = 10

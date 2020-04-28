@@ -28,6 +28,9 @@ urlpatterns = [
     # example : /student/subject_list
     url(r'^student/subject_list$', StudentSubjectLV.as_view(), name='student_subject_list'),
 
+    # example : /student/subject_add
+    url(r'^student/subject_add$', StudentAddSubjectView.as_view(), name='student_subject_add'),
+
     # example : /student/assignment_list
     url(r'^student/assignment_list$', StudentAssignmentLV.as_view(), name='student_assignment_list'),
 

@@ -7,6 +7,10 @@ class SubjectForm(forms.Form):
     title = forms.CharField(label="title", widget=forms.TextInput(), required=True)
     language = forms.ChoiceField(choices = LANGUAGE_CHOICES, label="language", widget=forms.Select(), required=True)   
 
+class StudentSubjectAddForm(forms.Form):
+    subject_id = forms.IntegerField(label="subject_id", required=True)
+    access_code = forms.CharField(label="access_code", required=True)
+    
 class AssignmentForm(forms.Form):
     assignment_name = forms.CharField(label="assignment_name")
     assignment_desc = forms.CharField(label="assignment_desc", widget=forms.Textarea)

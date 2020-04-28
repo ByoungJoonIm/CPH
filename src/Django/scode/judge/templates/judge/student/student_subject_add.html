@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Student_subject_add.html{% endblock %}
+{% load static %}
+{% block extrastyle %}{% static "css/forms.css" %}{% endblock %}
+
+{% block content %}
+<div id="content">
+    <h3> - Add new Subject </h3>
+        <form method="post" action="?"> {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="add"/>
+        </form>
+	<h3> - Subject lists </h3>
+	{% if participated_student_list %}
+		<table>
+			<tr>
+				<th>subject id</th>
+                <th>subject title</th>
+				<th>state</th>
+			</tr>
+		{% for ppl in participated_student_list %}
+			<tr>
+                <td>{{ppl.subject.id}}</td>
+                <td>{{ppl.subject.title}}</td>
+				{% if ppl.state == 1 %}
+					<td>Accepted</td>
+				{% elif ppl.state == 2 %}
+					<td>Rejected</td>	
+				{% elif ppl.state == 3 %}
+					<td>Waiting</td>
+				{% endif %}
+			</tr>
+		{% endfor%}
+		</table>
+	{% else %}
+		<h3> There are no lists :(</h3>
+	{% endif %}
+
+	{% if messages %}
+		{% for message in messages %}
+            <h2>[{{ message.message }}]</h2>
+		{% endfor %}
+	{% endif %}
+
+</div>
+
+
+{% endblock content %}
