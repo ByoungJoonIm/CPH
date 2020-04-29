@@ -8,6 +8,7 @@
 <div id="content">
 	<h3> - Subject ID / access code</h3>
 	<h1>{{ subject.id}} / {{ subject.access_code }}</h1>
+	{% if isOwner %}
 	<h3> - Subject Information </h3>
 	<form method="post" action="?">{% csrf_token %}			
 		<fieldset class="aligned">
@@ -60,6 +61,7 @@
 		</table>
 	</form>
 	</div>
+	{% endif %}
 
 	<h3> - People who want to join this subject </h3>
 	{% if participated_student_list %}

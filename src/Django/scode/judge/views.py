@@ -268,12 +268,15 @@ class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
         participated_professor_list = Signup_class_professor.objects.filter(subject_id=subject.id).filter(q).order_by('state')
         participated_student_list = Signup_class_student.objects.filter(subject=subject.id).filter(q).order_by("-state")
         
+        isOwner = Signup_class_professor.objects.get(subject=subject, user=request.user).state == Signup_class_base.State.Owned
+    
         return render(request, self.template_name, 
                       {'form' : SubjectForm(initial={'title': subject.title,
                                                      'language': subject.language.lang_id}),
                        'subject' : subject,
                        'participated_professor_list': participated_professor_list,
                        'participated_student_list': participated_student_list,
+                       'isOwner' : isOwner
                        }
                       )
         
