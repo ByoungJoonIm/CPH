@@ -24,7 +24,7 @@ class AssignmentUpdateForm(AssignmentForm):
     assignment_out_file = forms.FileField(label="assignment_out_file", required=False)
 
 class CodingForm(forms.Form):
-    code = forms.CharField(widget=AceWidget(mode='javascript', theme='twilight'), label='code')
+    code = forms.CharField(widget=AceWidget(mode='javascript', theme='twilight', width="1000px", height="400px"), label='code')
     
     def __init__(self, *args, **kwargs):
         mode = kwargs.pop('mode')
