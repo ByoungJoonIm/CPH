@@ -301,7 +301,26 @@ class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
             subject.language = Language.objects.get(lang_id=form.get('language'))
             subject.save()
         
-        return ProfessorAssignmentLV.get(request)
+        elif "accept" in form.keys():
+            accept = form.get('accept')
+            converter = {"accept" : Signup_class_base.State.Accepted,
+                         "reject" : Signup_class_base.State.Rejected,
+                         "Accept all" : Signup_class_base.State.Accepted,
+                         "Reject all" : Signup_class_base.State.Rejected}
+            
+            if accept == "accept" or accept == "reject":
+                student = User.objects.get(id=int(form.get('student_id')))
+                signup_class_student_instance = Signup_class_student.objects.get(user=student, subject=int(request.session.get("subject_id")))
+                signup_class_student_instance.state = converter.get(accept)
+                signup_class_student_instance.save()
+                
+            else:   # accept = "Accept all" or "Reject all"
+                signup_class_student = Signup_class_student.objects.filter(subject=int(request.session.get("subject_id"))).filter(state=Signup_class_base.State.Waiting)
+                for scp in signup_class_student:
+                    scp.state = converter.get(accept)
+                    scp.save()
+        
+        return self.get(request)
 
 # Student area------------------------------------------------------------------------------------------------------------------------
 class StudentSubjectLV(LoginRequiredMixin, ListView):
