@@ -66,28 +66,26 @@ class ProfessorSubjectLV(LoginRequiredMixin, ListView):
         
         if "accept" in form.keys():
             accept = form.get('accept')
+            converter = {"accept" : Signup_class_base.State.Accepted,
+                         "reject" : Signup_class_base.State.Rejected,
+                         "Accept all" : Signup_class_base.State.Accepted,
+                         "Reject all" : Signup_class_base.State.Rejected}
             
             if accept == "accept" or accept == "reject":
-                converter = {"accept" : Signup_class_base.State.Accepted,
-                             "reject" : Signup_class_base.State.Rejected}
-                subject = Subject.objects.get(id=int(form.get("subject_id")))
-                print(form.get("subject_id"))
-                print(subject)
-                state = converter.get(accept)
-                
                 signup_class_professor_instance = Signup_class_professor.objects.get(user=request.user.id, subject=int(form.get("subject_id")))
-                
-                signup_class_professor_instance.state = state
+                signup_class_professor_instance.state = converter.get(accept)
                 signup_class_professor_instance.save()
-            elif accept == "Accept all":
-                print(2)
-            elif accept == "Reject all":
-                print(3)
+                
+            else:   # accept = "Accept all" or "Reject all"
+                signup_class_professor = Signup_class_professor.objects.filter(user=request.user).filter(state=Signup_class_base.State.Waiting)
+                for scp in signup_class_professor:
+                    scp.state = converter.get(accept)
+                    scp.save()
             
         elif "hided" in form.keys():
-            subject = Subject.objects.get(id=int(request.POST.get('subject_id')))
-            subject.hided = True;
-            subject.save()
+            subject_instance = Subject.objects.get(id=int(request.POST.get('subject_id')))
+            subject_instance.hided = True;
+            subject_instance.save()
         
         return ProfessorSubjectLV.get(request)
 
