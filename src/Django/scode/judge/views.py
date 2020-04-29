@@ -268,7 +268,7 @@ class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
         subject = Subject.objects.get(id = int(request.session.get('subject_id')))
         q = ~Q(state=Signup_class_base.State.Owned)
         participated_professor_list = Signup_class_professor.objects.filter(subject_id=subject.id).filter(q).order_by('state')
-        participated_student_list = Signup_class_student.objects.filter(subject=subject.id).filter(q).order_by("state")
+        participated_student_list = Signup_class_student.objects.filter(subject=subject.id).filter(q).order_by("-state")
         
         return render(request, self.template_name, 
                       {'form' : SubjectForm(initial={'title': subject.title,
@@ -282,7 +282,9 @@ class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
     def post(self, request, * args, **kwargs):
         form = request.POST
         
-        if "professor_id" in form.keys():
+        print(form)
+        
+        if "invite" in form.keys():
             try:
                 Signup_class_professor.objects.create(
                     subject = Subject.objects.get(id=int(request.session.get('subject_id'))),
@@ -295,18 +297,13 @@ class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
                 messages.info(request, "You already invited")
             
             return self.get(request)
-        else:
+        elif "revise" in form.keys():
             subject = Subject.objects.get(id = int(request.session.get('subject_id')))
             subject.title = form.get('title')
             subject.language = Language.objects.get(lang_id=form.get('language'))
             subject.save()
         
-        
         return ProfessorAssignmentLV.get(request)
-
-    
-    
-
 
 # Student area------------------------------------------------------------------------------------------------------------------------
 class StudentSubjectLV(LoginRequiredMixin, ListView):
