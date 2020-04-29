@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 
-from scode.forms import LoginForm
+from ucs.forms import LoginForm
 
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.views import LoginView, LogoutView
@@ -28,6 +28,7 @@ class HomeView(TemplateView):
             else:
                 request.session['isProfessor'] = False
                 return redirect(reverse_lazy('judge:student_subject_list'))
+        return render(request, self.template_name)
 
 class LoginView(LoginView):
     template_name = 'registration/login.html'

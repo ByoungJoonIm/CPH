@@ -25,9 +25,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from judge.models import *
 from judge.forms import *
 
-from judge.judgeManager import JudgeManager
-from scode.loginManager import LoginManager
-
 import pymysql
 import os
 import pathlib

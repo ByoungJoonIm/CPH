@@ -16,7 +16,7 @@
 <div id="header">
 	<h2 class="logo">
 		<a href="{% url 'home' %}"><img src="{% static 'img/programming_icon.png' %}" style="height:30px;"/></a></h2>
-	<h2 class="maintitle"><a href="{% url 'home' %}">Scode</a></h2>
+	<h2 class="maintitle"><a href="{% url 'home' %}">UCS</a></h2>
 	{% if request.user.is_authenticated %}
 	<h4 class="welcome">Welcome, {{ request.session.name }}!
 		<a href="#">Change Password</a> /
@@ -31,7 +31,7 @@
 {% block content %}{% endblock %}
 {% block footer %}
 <div id="footer">
-	&copy; scode team
+	&copy; ByoungJoon Im
 	&nbsp; &nbsp; &nbsp; &nbsp;
 	<a href="https://github.com/BJ-Lim/Capstone_Design">Our git</a>
 	&nbsp; &nbsp; &nbsp; &nbsp;
