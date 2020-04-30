@@ -2,14 +2,18 @@
 
 {% block title %}professor_subject_add.html{% endblock %}
 
+{% load static %}
+
 {% block content %}
 <div id="content">
 	<h1>here is for professor_subject_add.html</h1>
 	<form method="post" action="?">{% csrf_token %}
 			{{ form.as_p }}
-			<input type="submit" value="submit"/>
+			
+			<input type="submit" value="register"/>
 	</form>
 
+	<script type="text/javascript">document.getElementById('id_title').focus();</script>
 	    
 </div>
 {% endblock content %}
