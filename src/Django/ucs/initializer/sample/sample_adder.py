@@ -5,7 +5,7 @@ def add_users():
     student_group = Group.objects.get(name="student")
     professor_group = Group.objects.get(name="professor")
 
-    for i in range(20160001, 20160004):
+    for i in range(20160001, 20160010):
         user = User.objects.create_user(username = str(i), password = str(i))
         student_group.user_set.add(user)
 
@@ -68,13 +68,19 @@ def add_signup_class():
     relation_student = [
         [1, 1, 1],
         [2, 1, 1],
-        [3, 1, 1]
+        [3, 1, 1],
+        [1, 2, 1],
+        [2, 2, 1],
+        [3, 2, 1],
+        [1, 3, 1],
+        [2, 3, 1],
+        [3, 3, 1],
     ]
     
     relation_professor = [
-        [1, 4, 4],
-        [2, 4, 4],
-        [3, 4, 4]
+        [1, 10, 4],
+        [2, 10, 4],
+        [3, 10, 4]
     ]
     
     for r in relation_student:
