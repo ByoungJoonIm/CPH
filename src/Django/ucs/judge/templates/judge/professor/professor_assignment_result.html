@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}professor_assginment_result.html{% endblock %}
+
+{% block content %}
+<div id="content">
+	<h1>here is for professor_assignment_result.html</h1>
+
+	<table>
+		<tr>
+			<th>name</th>
+			<th>submitted time</th>
+			<th>score</th>
+			<th>code</th>
+		</tr>
+
+		{% for s in submitted %}
+		<tr>
+			<td>{{ s.user.username }}</td>
+			<td>{{ s.submit_time | date:"Y-m-d(D)" }} {{ s.submit_time | time:"H:i:s" }}</td>
+			<td>{{ s.score }}</td>
+			<td>...</td>
+		</tr>
+		{% endfor %}
+
+		{% for ns in not_submitted%}
+		<tr>
+			<td>{{ ns.username }}</td>
+			<td>Not Submitted</td>
+			<td>-</td>
+			<td> ...</td>
+		</tr>
+		{% endfor %}
+	</table>
+
+</div>
+{% endblock content %}

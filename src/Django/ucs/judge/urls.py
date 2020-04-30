@@ -16,6 +16,9 @@ urlpatterns = [
     # example : /professor/assignment_list
     url(r'^professor/assignment_list$', ProfessorAssignmentLV.as_view(), name='professor_assignment_list'),
 
+    # example : /professor/assignment_result
+    url(r'^professor/assignment_result$', ProfessorAssignmentResultLV.as_view(), name='professor_assignment_result'),
+
     # example : /professor/assignment_add
     url(r'^professor/assignment_add$', ProfessorAddAssignmentView.as_view(), name='professor_assignment_add'),
 

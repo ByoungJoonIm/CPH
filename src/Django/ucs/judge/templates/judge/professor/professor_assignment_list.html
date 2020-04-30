@@ -25,6 +25,12 @@
     	    	</form>
             </td>
 			<td>{{ obj.deadline | date:"Y-m-d(D)" }} {{ obj.deadline | time:"H:i:s" }}</td>
+			<td>
+			    <form method="get" action="{% url 'judge:professor_assignment_result' %}">{% csrf_token %}
+                	<input type="hidden" name="assignment_id" value="{{ obj.id }}"/>
+					<input type="submit" value="result"/>
+    	    	</form>
+			</td>
 		</tr>
 		{% endfor %}
 	</table>

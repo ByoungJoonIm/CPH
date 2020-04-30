@@ -107,6 +107,26 @@ class ProfessorAssignmentLV(LoginRequiredMixin, ListView):
         
         return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
     
+class ProfessorAssignmentResultLV(LoginRequiredMixin, TemplateView):
+    template_name = "judge/professor/professor_assignment_result.html"
+    paginate_by = 10
+    
+    def get(self, request, *args, **kwargs):
+        assignment_id = int(request.GET.get('assignment_id'))
+    
+        signup_student = Signup_class_student.objects.filter(subject=int(request.session.get("subject_id"))).values('user')
+        
+        submitted_users = Submit.objects.filter(assignment=assignment_id).filter(user__in=signup_student).values('user')        
+        
+        submitted = Submit.objects.filter(user__in=submitted_users)
+        not_submitted = User.objects.filter(~Q(id__in=submitted_users) & Q(id__in=signup_student))
+            
+        return render(request, self.template_name, {
+            'submitted' : submitted,
+            'not_submitted' : not_submitted
+        })
+        
+    
 class ProfessorAddSubjectView(LoginRequiredMixin, FormView):
     template_name = 'judge/professor/professor_subject_add.html'
     form_class = SubjectForm
