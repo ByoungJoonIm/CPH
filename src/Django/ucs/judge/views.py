@@ -181,6 +181,7 @@ class ProfessorAddAssignmentView(LoginRequiredMixin, FormView):
                     
         in_cnt = 1
         out_cnt = 1
+        is_input_file_empty = False
         #--- separate files
         #--- It can't prevent integrity each file
         with open("in", "r") as in_file:
@@ -191,7 +192,22 @@ class ProfessorAddAssignmentView(LoginRequiredMixin, FormView):
                     in_buffer = None
                     out_buffer = None
                     
-                    for out_line in out_file:
+                    in_lines = in_file.readlines()
+                    out_lines = out_file.readlines()
+                    
+                    try:
+                        if in_lines[-1].rstrip() is not None:
+                            in_lines.append("")
+                    except IndexError:
+                        is_input_file_empty = True
+                    
+                    try:
+                        if out_lines[-1].rstrip() is not None:
+                            out_lines.append("")
+                    except IndexError:
+                        pass
+                    
+                    for out_line in out_lines:
                         out_line = out_line.rstrip()
                         
                         if not out_line:
@@ -211,18 +227,16 @@ class ProfessorAddAssignmentView(LoginRequiredMixin, FormView):
                                 out_buffer = out_buffer + "\n" + out_line
                                 
                     # if input is empty
-                    if not in_file.readline():  
-                        for cnt in range(1, out_cnt):
-                            in_file_elem_name = str(cnt) + ".in"
-                            with open(in_file_elem_name, "w"):
-                                pass
+                    if is_input_file_empty:  
+                        in_file_elem_name = "1.in"
+                        with open(in_file_elem_name, "w"):
+                            pass
                             
-                            myzip.write(in_file_elem_name)
-                            file_list.append(in_file_elem_name)
+                        myzip.write(in_file_elem_name)
+                        file_list.append(in_file_elem_name)
                         in_cnt = out_cnt
                     else:
-                        in_file.seek(0)
-                        for in_line in in_file:
+                        for in_line in in_lines:
                             in_line = in_line.rstrip()
                             
                             if not in_line:
@@ -240,21 +254,19 @@ class ProfessorAddAssignmentView(LoginRequiredMixin, FormView):
                                     in_buffer = in_line
                                 else:
                                     in_buffer = in_buffer + "\n" + in_line
-                    
-                    # if in_file's input set and out_file's output set are not corresponded.
-                    if in_cnt != out_cnt:
-                        pass
-                    
         
         #--- insert to database
-        assignment_instance = Assignment()    
-        assignment_instance.name = request.POST.get('assignment_name')
-        assignment_instance.desc = request.POST.get('assignment_desc')
-        assignment_instance.deadline = timezone.make_aware(datetime.datetime.now() + datetime.timedelta(days=int(request.POST.get('assignment_deadline'))))
-        assignment_instance.max_score = in_cnt - 1 #It will be changed
-        assignment_instance.subject = Subject.objects.get(id=int(request.session.get('subject_id')))
-        assignment_instance.problem_upload("problem.zip")
-        assignment_instance.save()
+        if in_cnt == out_cnt:
+            assignment_instance = Assignment()    
+            assignment_instance.name = request.POST.get('assignment_name')
+            assignment_instance.desc = request.POST.get('assignment_desc')
+            assignment_instance.deadline = timezone.make_aware(datetime.datetime.now() + datetime.timedelta(days=int(request.POST.get('assignment_deadline'))))
+            assignment_instance.max_score = out_cnt - 1 #It will be changed
+            assignment_instance.subject = Subject.objects.get(id=int(request.session.get('subject_id')))
+            assignment_instance.problem_upload("problem.zip")
+            assignment_instance.save()
+        else:
+            print("input set and output set are not corresponded..")
 
         #--- remove files
         for f in file_list:
