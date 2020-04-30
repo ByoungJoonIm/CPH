@@ -178,53 +178,82 @@ class ProfessorAddAssignmentView(LoginRequiredMixin, FormView):
                 for chunk in request.FILES[origin_file_name[seq]].chunks():
                     dest.write(chunk)                    
                     
+                    
+        in_cnt = 1
+        out_cnt = 1
         #--- separate files
-        in_file = open("in", "r")
-        out_file = open("out", "r")
-        cnt = 0
-
-        zip_name = "problem.zip"
-        myzip = zipfile.ZipFile(zip_name, "w")
-
-        file_list = ["in", "out", "problem.zip"]
-
-        while True:
-            in_line = in_file.readline().rstrip()
-            out_line = out_file.readline().rstrip()
-            if not in_line or not out_line:
-                break
-
-            cnt = cnt + 1
-            
-            in_file_rs_name = str(cnt) + ".in"
-            in_file_rs = open(in_file_rs_name, "w")
-            in_file_rs.write(str(in_line) + '\n')
-            in_file_rs.close()
-
-            out_file_rs_name = str(cnt) + ".out"
-            out_file_rs = open(out_file_rs_name, "w")
-            out_file_rs.write(str(out_line) + '\n')
-            out_file_rs.close()
-
-            myzip.write(in_file_rs_name)
-            myzip.write(out_file_rs_name)
-
-            file_list.append(in_file_rs_name)
-            file_list.append(out_file_rs_name)
-
-        in_file.close()
-        out_file.close()
-
-        myzip.close()
-
+        #--- It can't prevent integrity each file
+        with open("in", "r") as in_file:
+            with open("out", "r") as out_file:
+                with zipfile.ZipFile("problem.zip", "w") as myzip:
+                    file_list = ["in", "out", "problem.zip"]
+                    
+                    in_buffer = None
+                    out_buffer = None
+                    
+                    for out_line in out_file:
+                        out_line = out_line.rstrip()
+                        
+                        if not out_line:
+                            out_file_elem_name = str(out_cnt) + ".out"
+                            with open(out_file_elem_name, "w") as out_file_elem:
+                                out_file_elem.write(out_buffer)
+                            
+                            myzip.write(out_file_elem_name)
+                            file_list.append(out_file_elem_name)
+                            
+                            out_buffer = None
+                            out_cnt = out_cnt + 1
+                        else:
+                            if not out_buffer:
+                                out_buffer = out_line
+                            else:
+                                out_buffer = out_buffer + "\n" + out_line
+                                
+                    # if input is empty
+                    if not in_file.readline():  
+                        for cnt in range(1, out_cnt):
+                            in_file_elem_name = str(cnt) + ".in"
+                            with open(in_file_elem_name, "w"):
+                                pass
+                            
+                            myzip.write(in_file_elem_name)
+                            file_list.append(in_file_elem_name)
+                        in_cnt = out_cnt
+                    else:
+                        in_file.seek(0)
+                        for in_line in in_file:
+                            in_line = in_line.rstrip()
+                            
+                            if not in_line:
+                                in_file_elem_name = str(in_cnt) + ".in"
+                                with open(in_file_elem_name, "w") as in_file_elem:
+                                    in_file_elem.write(in_buffer)
+                                
+                                myzip.write(in_file_elem_name)
+                                file_list.append(in_file_elem_name)
+                                
+                                in_buffer = None
+                                in_cnt = in_cnt + 1
+                            else:
+                                if not in_buffer:
+                                    in_buffer = in_line
+                                else:
+                                    in_buffer = in_buffer + "\n" + in_line
+                    
+                    # if in_file's input set and out_file's output set are not corresponded.
+                    if in_cnt != out_cnt:
+                        pass
+                    
+        
         #--- insert to database
         assignment_instance = Assignment()    
         assignment_instance.name = request.POST.get('assignment_name')
         assignment_instance.desc = request.POST.get('assignment_desc')
         assignment_instance.deadline = timezone.make_aware(datetime.datetime.now() + datetime.timedelta(days=int(request.POST.get('assignment_deadline'))))
-        assignment_instance.max_score = cnt
+        assignment_instance.max_score = in_cnt - 1 #It will be changed
         assignment_instance.subject = Subject.objects.get(id=int(request.session.get('subject_id')))
-        assignment_instance.problem_upload(zip_name)
+        assignment_instance.problem_upload("problem.zip")
         assignment_instance.save()
 
         #--- remove files
