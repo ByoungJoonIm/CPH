@@ -1,3 +1,3 @@
-drop database if exists CPH;
-create database CPH;
-use CPH;
+drop database if exists UCS;
+create database UCS;
+use UCS;
