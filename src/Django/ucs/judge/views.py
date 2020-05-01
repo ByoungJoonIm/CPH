@@ -152,7 +152,7 @@ class ProfessorAddSubjectView(ProfessorMixin, FormView):
             state = Signup_class_base.State.Owned
         )
         
-        return ProfessorSubjectLV.get(request)
+        return redirect(reverse_lazy('judge:professor_subject_list'))
 
 class ProfessorHidedSubjectLV(ProfessorMixin, ListView):
     template_name = 'judge/professor/professor_hided_subject_list.html'
