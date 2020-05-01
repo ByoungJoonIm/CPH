@@ -20,7 +20,6 @@ from django.db.models import Q
 from django.contrib import messages
 
 from django.contrib.auth.models import User, Group
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from judge.models import *
 from judge.forms import *
@@ -39,11 +38,12 @@ from ansi2html import Ansi2HTMLConverter
 
 from bs4 import BeautifulSoup
 
-
+from judge.mixin import ProfessorMixin, StudentMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 #-- Here is developing area    
 # professor area------------------------------------------------------------------------------------------------------------------------
-class ProfessorSubjectLV(LoginRequiredMixin, ListView):
+class ProfessorSubjectLV(ProfessorMixin, ListView):
     template_name = 'judge/professor/professor_subject_list.html'
     
     @classmethod
@@ -86,7 +86,7 @@ class ProfessorSubjectLV(LoginRequiredMixin, ListView):
         
         return ProfessorSubjectLV.get(request)
 
-class ProfessorAssignmentLV(LoginRequiredMixin, ListView):
+class ProfessorAssignmentLV(ProfessorMixin, ListView):
     template_name = 'judge/professor/professor_assignment_list.html'
     paginate_by = 10
     
@@ -107,7 +107,7 @@ class ProfessorAssignmentLV(LoginRequiredMixin, ListView):
         
         return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
     
-class ProfessorAssignmentResultLV(LoginRequiredMixin, TemplateView):
+class ProfessorAssignmentResultLV(ProfessorMixin, TemplateView):
     template_name = "judge/professor/professor_assignment_result.html"
     paginate_by = 10
     
@@ -127,7 +127,7 @@ class ProfessorAssignmentResultLV(LoginRequiredMixin, TemplateView):
         })
         
     
-class ProfessorAddSubjectView(LoginRequiredMixin, FormView):
+class ProfessorAddSubjectView(ProfessorMixin, FormView):
     template_name = 'judge/professor/professor_subject_add.html'
     form_class = SubjectForm
     
@@ -154,7 +154,7 @@ class ProfessorAddSubjectView(LoginRequiredMixin, FormView):
         
         return ProfessorSubjectLV.get(request)
 
-class ProfessorHidedSubjectLV(LoginRequiredMixin, ListView):
+class ProfessorHidedSubjectLV(ProfessorMixin, ListView):
     template_name = 'judge/professor/professor_hided_subject_list.html'
     paginate_by = 10
     
@@ -172,7 +172,7 @@ class ProfessorHidedSubjectLV(LoginRequiredMixin, ListView):
         return self.get(request)
     
     
-class ProfessorAddAssignmentView(LoginRequiredMixin, FormView):
+class ProfessorAddAssignmentView(ProfessorMixin, FormView):
     template_name = 'judge/professor/professor_assignment_add.html'
     form_class = AssignmentForm
 
@@ -294,7 +294,7 @@ class ProfessorAddAssignmentView(LoginRequiredMixin, FormView):
         os.chdir(origin_path)
         os.rmdir(temp_path)
         
-class ProfessorUpdateView(LoginRequiredMixin, FormView):
+class ProfessorUpdateView(ProfessorMixin, FormView):
     template_name = 'judge/professor/professor_assignment_update.html'
     form_class = AssignmentUpdateForm
         
@@ -313,10 +313,10 @@ class ProfessorUpdateView(LoginRequiredMixin, FormView):
         assignment_instance.save()
         return ProfessorAssignmentLV.get(request, args, kwargs)
 
-class ProfessorDeleteView(LoginRequiredMixin, TemplateView):
+class ProfessorDeleteView(ProfessorMixin, TemplateView):
     template_name = 'judge/professor/professor_assignment_delete.html'
 
-class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
+class ProfessorSubjectManagement(ProfessorMixin, TemplateView):
     template_name = 'judge/professor/professor_subject_management.html'
     
     def get(self, request, * args, **kwargs):
@@ -384,7 +384,7 @@ class ProfessorSubjectManagement(LoginRequiredMixin, TemplateView):
         return self.get(request)
 
 # Student area------------------------------------------------------------------------------------------------------------------------
-class StudentSubjectLV(LoginRequiredMixin, ListView):
+class StudentSubjectLV(StudentMixin, ListView):
     template_name = 'judge/student/student_subject_list.html'
     
     @classmethod
@@ -410,7 +410,7 @@ class StudentSubjectLV(LoginRequiredMixin, ListView):
         
         return self.get(request)
     
-class StudentAddSubjectView(LoginRequiredMixin, FormView):    
+class StudentAddSubjectView(StudentMixin, FormView):    
     template_name = 'judge/student/student_subject_add.html'
     form_class = StudentSubjectAddForm
     
@@ -446,7 +446,7 @@ class StudentAddSubjectView(LoginRequiredMixin, FormView):
         
         return self.get(request)
 
-class StudentAssignmentLV(LoginRequiredMixin, ListView):
+class StudentAssignmentLV(StudentMixin, ListView):
     template_name = 'judge/student/student_assignment_list.html'
     paginate_by = 10
     
@@ -467,7 +467,7 @@ class StudentAssignmentLV(LoginRequiredMixin, ListView):
         
         return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
 
-class StudentAssignment(LoginRequiredMixin, FormView):
+class StudentAssignment(StudentMixin, FormView):
     template_name = 'judge/student/student_assignment.html'
     form_class = CodingForm(mode='c_cpp', template='#It is not general way')
     #we need to change mode by language in get or post(maybe get)

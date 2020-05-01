@@ -16,19 +16,16 @@ class HomeView(TemplateView):
     template_name = 'home.html'
 
     def get(self, request, *args, **kargs):
-        if not request.user.is_anonymous :
-            student_group_id = Group.objects.filter(name='student').get().id
-            professor_group_id = Group.objects.filter(name='professor').get().id
-            
-            user_group_id = request.user.groups.get().id
-            
-            if user_group_id == professor_group_id:
-                request.session['isProfessor'] = True
-                return redirect(reverse_lazy('judge:professor_subject_list'))
-            else:
-                request.session['isProfessor'] = False
-                return redirect(reverse_lazy('judge:student_subject_list'))
-        return render(request, self.template_name)
+        cur_user = request.user
+        if cur_user.is_anonymous :
+            return render(request, self.template_name)
+        
+        if cur_user.has_perm('judge.professor'):
+            return redirect(reverse_lazy('judge:professor_subject_list'))
+        if cur_user.has_perm('judge.student'):
+            return redirect(reverse_lazy('judge:student_subject_list'))
+        
+        return render(request, self.template_name)  #This will not be occured
 
 class LoginView(LoginView):
     template_name = 'registration/login.html'

@@ -8,6 +8,17 @@ from django.contrib.auth.models import User
 
 # You can see follow address for checking schema
 # https://github.com/BJ-Lim/Capstone_Design/blob/master/database/db_schema_v2.PNG
+
+class Professor(User):
+    class Meta:
+        proxy = True
+        permissions = [('professor', 'professor')]
+
+class Student(User):
+    class Meta:
+        proxy = True
+        permissions = [('student', 'student')]
+
 class Language(models.Model):
     lang_id = models.CharField(max_length=10, primary_key=True)
     mode = models.CharField(max_length=10)
