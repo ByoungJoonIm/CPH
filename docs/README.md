@@ -1,4 +1,4 @@
-- [Professor]() : Professor 사용 가이드
-- [Student]() : Student 사용 가이드
+- [Professor](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/Professor_guide.md) : Professor 사용 가이드
+- [Student](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/Student_guide.md) : Student 사용 가이드
 - [Developer](https://github.com/ByoungJoonIm/University-Coding-Site/tree/master/docs/dev) : Developer 가이드
-- [Release]() : 버전 및 앞으로의 개선사항
+- [Release](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/Release.md) : 버전 및 앞으로의 개선사항
