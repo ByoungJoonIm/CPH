@@ -1,18 +1,19 @@
 #------add users
-def add_users():
-    from django.contrib.auth.models import User, Group
+def add_users():    
+    from judge.models import Professor, Student
+    from django.contrib.auth.models import Permission
     
-    student_group = Group.objects.get(name="student")
-    professor_group = Group.objects.get(name="professor")
-
+    student_permission = Permission.objects.get(codename='student')
+    professor_permission = Permission.objects.get(codename='professor')
+    
     for i in range(20160001, 20160010):
-        user = User.objects.create_user(username = str(i), password = str(i))
-        student_group.user_set.add(user)
+        student = Student.objects.create_user(username = str(i), password = str(i))
+        student.user_permissions.add(student_permission)
 
     for i in range(1, 9):
-        user = User.objects.create_user(username = "0000" + str(i), password = "0000" + str(i))
-        professor_group.user_set.add(user)
-        
+        professor = Professor.objects.create_user(username = "0000" + str(i), password = "0000" + str(i))
+        professor.user_permissions.add(professor_permission)
+       
 add_users()
 
 
