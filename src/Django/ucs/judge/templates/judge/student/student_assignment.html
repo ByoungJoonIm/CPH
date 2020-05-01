@@ -24,7 +24,7 @@
 				assign_name {{ assignment.name }}
                         </div>
                         <div class="form-row">
-				desc {{ assignment.desc }}
+				desc {{ assignment.desc | linebreaks }}
                         </div>
                         <div class="form-row">
                                 {{ form.code }}
