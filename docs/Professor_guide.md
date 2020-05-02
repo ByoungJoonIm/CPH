@@ -127,10 +127,10 @@
 
 ## 다른 Professor의 과목 공유 수락하기
 
-  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_accept_professor_1.JPG)  
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_accept_subject_1.JPG)  
 
 1. 다른 Professor에게 공유를 받은 과목 요청은, 로그인 직후에 확인할 수 있습니다. Accept를 눌러 수락합니다.
 
-  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_accept_professor_2.JPG)  
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_accept_subject_2.JPG)  
 
 2. 과목 공유가 되어, 과목 리스트에 해당 과목이 노출됩니다.
