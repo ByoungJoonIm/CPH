@@ -1,5 +1,5 @@
 ## 목차
-- Login하기
+- <a href="https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/Professor_guide.md#login%ED%95%98%EA%B8%B0">Login 하기</a>
 - 과목 추가하기
 - 과제 추가하기
 - 과목 숨기기
