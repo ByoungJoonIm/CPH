@@ -6,6 +6,7 @@
 - 과목ID / access code 공유하기
 - 다른 Professor와 같은 과목을 공동 관리하기
 - 과목 정보 수정하기
+- 학생 수강신청 수락하기
 
 ## Login하기
 1. 우측 상단의 login 버튼을 클릭합니다.
@@ -110,3 +111,13 @@
   ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_revise_subject_2.JPG)  
 
 2. 과목명과 언어를 수정합니다. 언제를 바꿔도, 기존에 채점한 내용을 재채점하지는 않습니다.
+
+## 학생 수강신청 수락하기
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_accept_students_1.JPG)  
+
+1. management 버튼을 클릭합니다.
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_accept_students_2.JPG)  
+
+2. 수강신청한 학생에 대해서, accept나 reject 버튼을 누릅니다. accept를 누른 시점부터, Student에게 해당 과목이 노출됩니다.
