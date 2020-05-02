@@ -5,6 +5,7 @@
 - 과목 숨기기
 - 과목ID / access code 공유하기
 - 다른 Professor와 같은 과목을 공동 관리하기
+- 과목 정보 수정하기
 
 ## Login하기
 1. 우측 상단의 login 버튼을 클릭합니다.
@@ -99,3 +100,13 @@
   ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_add_professor_3.JPG)  
 
 3. 리스트에 추가된 것을 볼 수 있습니다. 상대 Professor가 수락하면, 해당 과목의 과제를 함께 관리할 수 있지만, 과목의 설정을 바꾸거나 다른 Professor는 과목을 개설한 Professor만 가능합니다.
+
+## 과목 정보 수정하기
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_revise_subject_1.JPG)  
+
+1. management 버튼을 클릭합니다.
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_revise_subject_2.JPG)  
+
+2. 과목명과 언어를 수정합니다. 언제를 바꿔도, 기존에 채점한 내용을 재채점하지는 않습니다.
