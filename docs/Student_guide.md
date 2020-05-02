@@ -2,7 +2,7 @@
 - <a href=""></a>Login 하기
 - 과목 관리
   - 과목 추가하기
-- 과제 관리
+- 과제 제출하기
 
 ## Login하기
 1. 우측 상단의 login 버튼을 클릭합니다.
@@ -32,3 +32,21 @@
   ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/student_add_subject_5.JPG)
 
 5. Professor가 수락하면, 과목 리스트에 추가됩니다.
+
+## 과제 제출하기
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/student_submit_assignment_1.JPG)
+
+1. 과제를 제출할 과목을 선택합니다.
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/student_submit_assignment_2.JPG)
+
+2. 풀어야 하는 과제를 선택합니다.
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/student_submit_assignment_3.JPG)
+
+3. 코드를 작성하고 제출합니다.
+  - 에러시 에러 메시지가 출력됩니다.
+  - 오답시 틀린 테스트케이스가 출력됩니다.
+  - 출력 형식은 아직 아름답지 않습니다. 추후 개선될 예정입니다.
+
