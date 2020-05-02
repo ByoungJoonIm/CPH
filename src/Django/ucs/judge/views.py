@@ -86,6 +86,50 @@ class ProfessorSubjectLV(ProfessorMixin, ListView):
         
         return ProfessorSubjectLV.get(request)
 
+class ProfessorSubjectAddView(ProfessorMixin, FormView):
+    template_name = 'judge/professor/professor_subject_add.html'
+    form_class = SubjectForm
+    
+    def __randomString(self, stringLength = 8):
+        import random, string
+        letters = string.ascii_letters +'0123456789'
+        return ''.join(random.choice(letters) for i in range(stringLength))
+    
+    def post(self, request, *args, **kwargs):
+        title = request.POST.get('title')
+        lang_id = request.POST.get('language')
+        
+        subject_instance = Subject.objects.create(
+            title = title,
+            language = Language.objects.get(lang_id=lang_id),
+            access_code = self.__randomString()
+        )
+        
+        Signup_class_professor.objects.create(
+            subject = subject_instance,
+            user = request.user,
+            state = Signup_class_base.State.Owned
+        )
+        
+        return redirect(reverse_lazy('judge:professor_subject_list'))
+
+class ProfessorSubjectHidedLV(ProfessorMixin, ListView):
+    template_name = 'judge/professor/professor_hided_subject_list.html'
+    paginate_by = 10
+    
+    def get(self, request, *args, **kwargs):
+        signup_class = Signup_class_professor.objects.filter(user_id=request.user.id).values_list('subject_id')
+        subject = Subject.objects.filter(pk__in = signup_class).filter(hided=True)
+        
+        return render(request, self.template_name, { 'subject' : subject })
+    
+    def post(self, request, *args, **kwargs):
+        subject = Subject.objects.get(id=int(request.POST.get('subject_id')))
+        subject.hided = False;
+        subject.save()
+        
+        return self.get(request)
+
 class ProfessorAssignmentLV(ProfessorMixin, ListView):
     template_name = 'judge/professor/professor_assignment_list.html'
     paginate_by = 10
@@ -126,53 +170,7 @@ class ProfessorAssignmentResultLV(ProfessorMixin, TemplateView):
             'not_submitted' : not_submitted
         })
         
-    
-class ProfessorAddSubjectView(ProfessorMixin, FormView):
-    template_name = 'judge/professor/professor_subject_add.html'
-    form_class = SubjectForm
-    
-    def __randomString(self, stringLength = 8):
-        import random, string
-        letters = string.ascii_letters +'0123456789'
-        return ''.join(random.choice(letters) for i in range(stringLength))
-    
-    def post(self, request, *args, **kwargs):
-        title = request.POST.get('title')
-        lang_id = request.POST.get('language')
-        
-        subject_instance = Subject.objects.create(
-            title = title,
-            language = Language.objects.get(lang_id=lang_id),
-            access_code = self.__randomString()
-        )
-        
-        Signup_class_professor.objects.create(
-            subject = subject_instance,
-            user = request.user,
-            state = Signup_class_base.State.Owned
-        )
-        
-        return redirect(reverse_lazy('judge:professor_subject_list'))
-
-class ProfessorHidedSubjectLV(ProfessorMixin, ListView):
-    template_name = 'judge/professor/professor_hided_subject_list.html'
-    paginate_by = 10
-    
-    def get(self, request, *args, **kwargs):
-        signup_class = Signup_class_professor.objects.filter(user_id=request.user.id).values_list('subject_id')
-        subject = Subject.objects.filter(pk__in = signup_class).filter(hided=True)
-        
-        return render(request, self.template_name, { 'subject' : subject })
-    
-    def post(self, request, *args, **kwargs):
-        subject = Subject.objects.get(id=int(request.POST.get('subject_id')))
-        subject.hided = False;
-        subject.save()
-        
-        return self.get(request)
-    
-    
-class ProfessorAddAssignmentView(ProfessorMixin, FormView):
+class ProfessorAssignmentAddView(ProfessorMixin, FormView):
     template_name = 'judge/professor/professor_assignment_add.html'
     form_class = AssignmentForm
 
@@ -294,7 +292,7 @@ class ProfessorAddAssignmentView(ProfessorMixin, FormView):
         os.chdir(origin_path)
         os.rmdir(temp_path)
         
-class ProfessorUpdateView(ProfessorMixin, FormView):
+class ProfessorAssignmentUpdateView(ProfessorMixin, FormView):
     template_name = 'judge/professor/professor_assignment_update.html'
     form_class = AssignmentUpdateForm
         
@@ -313,10 +311,10 @@ class ProfessorUpdateView(ProfessorMixin, FormView):
         assignment_instance.save()
         return ProfessorAssignmentLV.get(request, args, kwargs)
 
-class ProfessorDeleteView(ProfessorMixin, TemplateView):
+class ProfessorAssignmentDeleteView(ProfessorMixin, TemplateView):
     template_name = 'judge/professor/professor_assignment_delete.html'
 
-class ProfessorSubjectManagement(ProfessorMixin, TemplateView):
+class ProfessorSubjectManagementView(ProfessorMixin, TemplateView):
     template_name = 'judge/professor/professor_subject_management.html'
     
     def get(self, request, * args, **kwargs):
@@ -410,7 +408,7 @@ class StudentSubjectLV(StudentMixin, ListView):
         
         return self.get(request)
     
-class StudentAddSubjectView(StudentMixin, FormView):    
+class StudentSubjectAddView(StudentMixin, FormView):    
     template_name = 'judge/student/student_subject_add.html'
     form_class = StudentSubjectAddForm
     
