@@ -3,6 +3,7 @@
 - 과목 추가하기
 - 과제 추가하기
 - 과목 숨기기
+- 과목ID / access code 공유하기
 
 ## Login하기
 1. 우측 상단의 login 버튼을 클릭합니다.
@@ -73,4 +74,14 @@
   ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_hide_subject_6.JPG)  
 
 6. 목록에 다시 해당 과목이 보여지는 것을 확인합니다.
+
+## 과목ID / access code 공유하기
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_share_access_code_1.JPG)  
+
+1. management 버튼을 클릭합니다.
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_share_access_code_2.JPG)  
+
+2. 과목ID와 access code를 공유합니다. Student는 이 2개의 정보로 과목 추가를 요청할 수 있습니다.
 
