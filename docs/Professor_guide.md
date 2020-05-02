@@ -6,7 +6,8 @@
 - 과목ID / access code 공유하기
 - 다른 Professor와 같은 과목을 공동 관리하기
 - 과목 정보 수정하기
-- 학생 수강신청 수락하기
+- Student 수강신청 수락하기
+- 다른 Professor의 과목 공유 수락하기
 
 ## Login하기
 1. 우측 상단의 login 버튼을 클릭합니다.
@@ -121,3 +122,13 @@
   ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_accept_students_2.JPG)  
 
 2. 수강신청한 학생에 대해서, accept나 reject 버튼을 누릅니다. accept를 누른 시점부터, Student에게 해당 과목이 노출됩니다.
+
+## 다른 Professor의 과목 공유 수락하기
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_accept_professor_1.JPG)  
+
+1. 다른 Professor에게 공유를 받은 과목 요청은, 로그인 직후에 확인할 수 있습니다. Accept를 눌러 수락합니다.
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_accept_professor_2.JPG)  
+
+2. 과목 공유가 되어, 과목 리스트에 해당 과목이 노출됩니다.
