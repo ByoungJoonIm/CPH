@@ -46,7 +46,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 class ProfessorSubjectLV(ProfessorMixin, ListView):
     template_name = 'judge/professor/professor_subject_list.html'
     
-    @classmethod
     def get(self, request, *args, **kwargs):
         signup_class = Signup_class_professor.objects.filter(user_id=request.user.id)
         
@@ -84,7 +83,7 @@ class ProfessorSubjectLV(ProfessorMixin, ListView):
             subject_instance.hided = True;
             subject_instance.save()
         
-        return ProfessorSubjectLV.get(request)
+        return self.get(request)
 
 class ProfessorSubjectAddView(ProfessorMixin, FormView):
     template_name = 'judge/professor/professor_subject_add.html'
@@ -140,7 +139,6 @@ class ProfessorAssignmentLV(ProfessorMixin, ListView):
         
         return self.get(request, args, kwargs)
 
-    @classmethod
     def get(self, request, *args, **kwargs):
         if('subject_id' not in request.session):
             return redirect(reverse_lazy('judge:professor_subject_list'))
@@ -177,7 +175,8 @@ class ProfessorAssignmentAddView(ProfessorMixin, FormView):
     def post(self, request, *args, **kwargs):
         self.generate_assignment(self.request)
             
-        return ProfessorAssignmentLV.get(request, args, kwargs)  
+        return redirect(reverse_lazy('judge:professor_assignment_list'))
+     
 
     def generate_assignment(self, request):
         #--- Creating assignment directory 
@@ -309,7 +308,7 @@ class ProfessorAssignmentUpdateView(ProfessorMixin, FormView):
         if assignment_deadline is not '':
             assignment_instance.deadline = timezone.make_aware(datetime.datetime.now() + datetime.timedelta(days=int(assignment_deadline)))
         assignment_instance.save()
-        return ProfessorAssignmentLV.get(request, args, kwargs)
+        return redirect(reverse_lazy('judge:professor_assignment_list'))
 
 class ProfessorAssignmentDeleteView(ProfessorMixin, TemplateView):
     template_name = 'judge/professor/professor_assignment_delete.html'
@@ -338,8 +337,6 @@ class ProfessorSubjectManagementView(ProfessorMixin, TemplateView):
         
     def post(self, request, * args, **kwargs):
         form = request.POST
-        
-        print(form)
         
         if "invite" in form.keys():
             try:
@@ -454,7 +451,6 @@ class StudentAssignmentLV(StudentMixin, ListView):
         
         return self.get(request, args, kwargs)
 
-    @classmethod
     def get(self, request, *args, **kwargs):
         if('subject_id' not in request.session):
             return redirect(reverse_lazy('judge:student_subject_list'))
