@@ -25,13 +25,6 @@
 
 	{% if signup_class_waiting %}
 		<h1> Waiting subject list </h1>
-		<form method='post' action="?"> {% csrf_token %}
-			<input type="submit" name="accept" value="Accept all"/>
-		</form>
-		<form method='post' action="?"> {% csrf_token %}
-			<input type="submit" name="accept" value="Reject all"/>
-		</form>
-
 		<table>
 			<tr>
 				<th> title </th>
