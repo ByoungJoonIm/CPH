@@ -9,7 +9,7 @@
   - <a href="https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/Professor_guide.md#%ED%95%99%EC%83%9D-%EC%88%98%EA%B0%95%EC%8B%A0%EC%B2%AD-%EC%88%98%EB%9D%BD%ED%95%98%EA%B8%B0">Student 수강신청 수락하기</a>
   - <a href="">다른 Professor의 과목 공유 수락하기</a>
 - 과제 관리
-  - <a href="https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/Professor_guide.md#%EB%8B%A4%EB%A5%B8-professor%EC%9D%98-%EA%B3%BC%EB%AA%A9-%EA%B3%B5%EC%9C%A0-%EC%88%98%EB%9D%BD%ED%95%98%EA%B8%B0"></a>과제 추가하기
+  - <a href="https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/Professor_guide.md#%EB%8B%A4%EB%A5%B8-professor%EC%9D%98-%EA%B3%BC%EB%AA%A9-%EA%B3%B5%EC%9C%A0-%EC%88%98%EB%9D%BD%ED%95%98%EA%B8%B0">과제 추가하기</a>
 
 ## Login하기
 1. 우측 상단의 login 버튼을 클릭합니다.
