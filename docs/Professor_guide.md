@@ -2,7 +2,7 @@
 - Login하기
 - 과목 추가하기
 - 과제 추가하기
-
+- 과목 숨기기
 
 ## Login하기
 1. 우측 상단의 login 버튼을 클릭합니다.
@@ -47,7 +47,30 @@
 
 5. 업로드된 내용을 확인합니다. Student 입장에서 과제가 어떻게 보이는지 확인하려면, [Student guide](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/Student_guide.md)를 확인하세요.
 
-  
+## 과목 숨기기  
+- 과목 목록에서 더이상 사용하지 않는 과목이나, 보고 싶지 않은 과목을 숨길 수 있습니다.
 
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_hide_subject_1.JPG)  
 
+1. 과목을 숨기려면, hide 버튼을 클릭합니다.
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_hide_subject_2.JPG)  
+
+2. 과목이 사라진것을 확인할 수 있습니다.
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_hide_subject_3.JPG)  
+
+3. 과목을 다시 보이게 하려면, management 버튼을 클릭합니다.
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_hide_subject_4.JPG)  
+
+4. 다시 보여지고자 하는 과목 옆에 show 버튼을 누릅니다.
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_hide_subject_5.JPG)  
+
+5. 다시 과목 리스트 페이지로 돌아옵니다.
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_hide_subject_6.JPG)  
+
+6. 목록에 다시 해당 과목이 보여지는 것을 확인합니다.
 
