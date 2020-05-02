@@ -1,13 +1,15 @@
 ## 목차
 - <a href="https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/Professor_guide.md#login%ED%95%98%EA%B8%B0">Login 하기</a>
-- 과목 추가하기
-- 과제 추가하기
-- 과목 숨기기
-- 과목ID / access code 공유하기
-- 다른 Professor와 같은 과목을 공동 관리하기
-- 과목 정보 수정하기
-- Student 수강신청 수락하기
-- 다른 Professor의 과목 공유 수락하기
+- 과목 관리
+  - 과목 추가하기
+  - 과목 숨기기
+  - 과목ID / access code 공유하기
+  - 다른 Professor와 같은 과목을 공동 관리하기
+  - 과목 정보 수정하기
+  - Student 수강신청 수락하기
+  - 다른 Professor의 과목 공유 수락하기
+- 과제 관리
+  - 과제 추가하기
 
 ## Login하기
 1. 우측 상단의 login 버튼을 클릭합니다.
