@@ -4,6 +4,7 @@
 - 과제 추가하기
 - 과목 숨기기
 - 과목ID / access code 공유하기
+- 다른 Professor와 같은 과목을 공동 관리하기
 
 ## Login하기
 1. 우측 상단의 login 버튼을 클릭합니다.
@@ -85,3 +86,16 @@
 
 2. 과목ID와 access code를 공유합니다. Student는 이 2개의 정보로 과목 추가를 요청할 수 있습니다.
 
+## 다른 Professor와 같은 과목을 공동 관리하기
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_add_professor_1.JPG)  
+
+1. management 버튼을 클릭합니다.
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_add_professor_2.JPG)  
+
+2. Professor ID를 입력하고, Invite 버튼을 클릭합니다.
+
+  ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/professor_add_professor_3.JPG)  
+
+3. 리스트에 추가된 것을 볼 수 있습니다. 상대 Professor가 수락하면, 해당 과목의 과제를 함께 관리할 수 있지만, 과목의 설정을 바꾸거나 다른 Professor는 과목을 개설한 Professor만 가능합니다.
