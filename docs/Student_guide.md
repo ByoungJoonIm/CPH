@@ -1,8 +1,7 @@
 ## 목차
-- <a href=""></a>Login 하기
-- 과목 관리
-  - 과목 추가하기
-- 과제 제출하기
+- <a href="https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/Student_guide.md#login%ED%95%98%EA%B8%B0">Login 하기</a>
+- <a href="https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/Student_guide.md#%EA%B3%BC%EB%AA%A9-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0">과목 추가하기</a>
+- <a href="https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/Student_guide.md#%EA%B3%BC%EC%A0%9C-%EC%A0%9C%EC%B6%9C%ED%95%98%EA%B8%B0">과제 제출하기</a>
 
 ## Login하기
 1. 우측 상단의 login 버튼을 클릭합니다.
