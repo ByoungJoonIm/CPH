@@ -21,13 +21,11 @@
 - (문서) developer guide 작성
 - (문서) main readme 작성
 - (기능) homepage의 footer에 가이드 추가
-- (배포) Docker image 배포
-  - `docker pull ibjsw/ucs:0.21`
+- (배포) Docker image 배포 [0.21](https://hub.docker.com/repository/registry-1.docker.io/ibjsw/ucs/tags?page=1)
   - 개발 버전으로, 성능이나 보안에 주의 필요
 
 # To Do
 - 디자인 개선
-- Docker 이미지 배포
 - Professor의 과제 등록시 파일 분할 방법 개선
 - Student가 과제 수행시, 만료된 과제에 대한 처리
 - 과제 채점의 메모리/시간 제한 추가
