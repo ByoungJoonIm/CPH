@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'judge.apps.JudgeConfig',
     'django_ace',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,9 @@ LOGIN_REDIRECT_URL = '/'
 MEDIA_ROOT = [os.path.join(BASE_DIR, 'temp')]
 
 MEDEA_URL = '/media/'
+
+
+GRAPH_MODELS = {
+    'all_applications' : True,
+    'group_models' : True,
+}
