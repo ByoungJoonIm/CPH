@@ -21,6 +21,9 @@
 - (문서) developer guide 작성
 - (문서) main readme 작성
 - (기능) homepage의 footer에 가이드 추가
+- (배포) Docker image 배포
+  - `docker pull ibjsw/ucs:0.21`
+  - 개발 버전으로, 성능이나 보안에 주의 필요
 
 # To Do
 - 디자인 개선
