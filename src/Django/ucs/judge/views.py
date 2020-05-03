@@ -129,6 +129,73 @@ class ProfessorSubjectHidedLV(ProfessorMixin, ListView):
         
         return self.get(request)
 
+class ProfessorSubjectManagementView(ProfessorMixin, TemplateView):
+    template_name = 'judge/professor/professor_subject_management.html'
+    
+    def get(self, request, * args, **kwargs):
+        
+        subject = Subject.objects.get(id = int(request.session.get('subject_id')))
+        q = ~Q(state=Signup_class_base.State.Owned)
+        participated_professor_list = Signup_class_professor.objects.filter(subject_id=subject.id).filter(q).order_by('state')
+        participated_student_list = Signup_class_student.objects.filter(subject=subject.id).filter(q).order_by("-state")
+        
+        isOwner = Signup_class_professor.objects.get(subject=subject, user=request.user).state == Signup_class_base.State.Owned
+    
+        return render(request, self.template_name, 
+                      {'form' : SubjectForm(initial={'title': subject.title,
+                                                     'language': subject.language.lang_id}),
+                       'subject' : subject,
+                       'participated_professor_list': participated_professor_list,
+                       'participated_student_list': participated_student_list,
+                       'isOwner' : isOwner
+                       }
+                      )
+        
+    def post(self, request, * args, **kwargs):
+        form = request.POST
+        
+        if "invite" in form.keys():
+            try:
+                Signup_class_professor.objects.create(
+                    subject = Subject.objects.get(id=int(request.session.get('subject_id'))),
+                    user = User.objects.get(username=form.get('professor_id')),
+                    state = Signup_class_base.State.Waiting
+                )
+            except User.DoesNotExist:
+                messages.info(request, "User does not exist")
+            except IntegrityError:
+                messages.info(request, "You already invited")
+            
+            return self.get(request)
+        elif "revise" in form.keys():
+            subject = Subject.objects.get(id = int(request.session.get('subject_id')))
+            subject.title = form.get('title')
+            subject.language = Language.objects.get(lang_id=form.get('language'))
+            subject.save()
+        
+        elif "accept" in form.keys():
+            accept = form.get('accept')
+            converter = {"accept" : Signup_class_base.State.Accepted,
+                         "reject" : Signup_class_base.State.Rejected,
+                         "Accept all" : Signup_class_base.State.Accepted,
+                         "Reject all" : Signup_class_base.State.Rejected}
+            
+            if accept == "accept" or accept == "reject":
+                student = User.objects.get(id=int(form.get('student_id')))
+                signup_class_student_instance = Signup_class_student.objects.get(user=student, subject=int(request.session.get("subject_id")))
+                signup_class_student_instance.state = converter.get(accept)
+                signup_class_student_instance.save()
+                
+            else:   # accept = "Accept all" or "Reject all"
+                signup_class_student = Signup_class_student.objects.filter(subject=int(request.session.get("subject_id"))).filter(state=Signup_class_base.State.Waiting)
+                for scp in signup_class_student:
+                    scp.state = converter.get(accept)
+                    scp.save()
+                # uppder 3 line maybe same like this
+                # signup_class_student.update(state=converter.get(accept))
+        
+        return self.get(request)
+
 class ProfessorAssignmentLV(ProfessorMixin, ListView):
     template_name = 'judge/professor/professor_assignment_list.html'
     paginate_by = 10
@@ -313,70 +380,6 @@ class ProfessorAssignmentUpdateView(ProfessorMixin, FormView):
 class ProfessorAssignmentDeleteView(ProfessorMixin, TemplateView):
     template_name = 'judge/professor/professor_assignment_delete.html'
 
-class ProfessorSubjectManagementView(ProfessorMixin, TemplateView):
-    template_name = 'judge/professor/professor_subject_management.html'
-    
-    def get(self, request, * args, **kwargs):
-        
-        subject = Subject.objects.get(id = int(request.session.get('subject_id')))
-        q = ~Q(state=Signup_class_base.State.Owned)
-        participated_professor_list = Signup_class_professor.objects.filter(subject_id=subject.id).filter(q).order_by('state')
-        participated_student_list = Signup_class_student.objects.filter(subject=subject.id).filter(q).order_by("-state")
-        
-        isOwner = Signup_class_professor.objects.get(subject=subject, user=request.user).state == Signup_class_base.State.Owned
-    
-        return render(request, self.template_name, 
-                      {'form' : SubjectForm(initial={'title': subject.title,
-                                                     'language': subject.language.lang_id}),
-                       'subject' : subject,
-                       'participated_professor_list': participated_professor_list,
-                       'participated_student_list': participated_student_list,
-                       'isOwner' : isOwner
-                       }
-                      )
-        
-    def post(self, request, * args, **kwargs):
-        form = request.POST
-        
-        if "invite" in form.keys():
-            try:
-                Signup_class_professor.objects.create(
-                    subject = Subject.objects.get(id=int(request.session.get('subject_id'))),
-                    user = User.objects.get(username=form.get('professor_id')),
-                    state = Signup_class_base.State.Waiting
-                )
-            except User.DoesNotExist:
-                messages.info(request, "User does not exist")
-            except IntegrityError:
-                messages.info(request, "You already invited")
-            
-            return self.get(request)
-        elif "revise" in form.keys():
-            subject = Subject.objects.get(id = int(request.session.get('subject_id')))
-            subject.title = form.get('title')
-            subject.language = Language.objects.get(lang_id=form.get('language'))
-            subject.save()
-        
-        elif "accept" in form.keys():
-            accept = form.get('accept')
-            converter = {"accept" : Signup_class_base.State.Accepted,
-                         "reject" : Signup_class_base.State.Rejected,
-                         "Accept all" : Signup_class_base.State.Accepted,
-                         "Reject all" : Signup_class_base.State.Rejected}
-            
-            if accept == "accept" or accept == "reject":
-                student = User.objects.get(id=int(form.get('student_id')))
-                signup_class_student_instance = Signup_class_student.objects.get(user=student, subject=int(request.session.get("subject_id")))
-                signup_class_student_instance.state = converter.get(accept)
-                signup_class_student_instance.save()
-                
-            else:   # accept = "Accept all" or "Reject all"
-                signup_class_student = Signup_class_student.objects.filter(subject=int(request.session.get("subject_id"))).filter(state=Signup_class_base.State.Waiting)
-                for scp in signup_class_student:
-                    scp.state = converter.get(accept)
-                    scp.save()
-        
-        return self.get(request)
 
 # Student area------------------------------------------------------------------------------------------------------------------------
 class StudentSubjectLV(StudentMixin, ListView):
