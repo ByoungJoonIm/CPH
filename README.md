@@ -16,7 +16,21 @@
   - Professor의 역할을 조금 수정한다면, 기업의 코딩 테스트로도 활용할 수 있습니다.
   
 ## Demo
+- Professor의 과제 등록
 
+![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/demo_professor_1.JPG)
+
+- Student의 과제 풀이
+
+![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/demo_student_1.JPG)
+
+![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/demo_student_2(error).JPG)
+
+![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/demo_student_3(WA).JPG)
+
+![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/demo_student_4(AC).JPG)
+
+- 전체 기능은 Professor / Student Guide를 참고하세요.
 
 ## Guide & Docs & Release
 - [여기](https://github.com/ByoungJoonIm/University-Coding-Site/tree/master/docs)를 참고하세요.
