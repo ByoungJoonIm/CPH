@@ -7,14 +7,12 @@
 
 {% block content %}
 <div id="content">
-	<h1>here is for professor_assignment_add.html</h1>
+	<h1>Add assignment</h1>
 	<form action="?" method="post" enctype="multipart/form-data">{% csrf_token %}
 
 		{% if form.errors %}
 			<p class="errornote">Wrong! Please correct the error(s) below.</p>
 		{% endif %}
-
-		<p>This is a creation or update form for your post.</p>
 
 		<fieldset class="aligned">
 
