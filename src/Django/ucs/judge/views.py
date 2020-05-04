@@ -524,8 +524,9 @@ class StudentAssignment(StudentMixin, FormView):
         context = dict()
         judge_result = self.judge_student_src_file(submit_time, code, base_dir_path, assignment, language, request, context)
         
-        if judge_result:
-            return StudentAssignmentLV.get(request)
+        #if judge_result:
+            #return StudentAssignmentLV.get(request)
+            
         
         context['judge_result'] = judge_result
         context['last_code'] = code
