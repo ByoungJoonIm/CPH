@@ -24,6 +24,7 @@
 - (기능) homepage의 footer에 가이드 추가
 - (배포) Docker image 배포 [0.21](https://hub.docker.com/repository/registry-1.docker.io/ibjsw/ucs/tags?page=1)
   - 개발 버전으로, 성능이나 보안에 주의 필요
+- (기능) content 영역의 footer 침범 해결(scroll)
 
 # To Do
 - 디자인 개선
