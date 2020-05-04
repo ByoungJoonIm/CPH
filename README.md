@@ -21,12 +21,19 @@
 ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/demo_professor_1.JPG)
 
 - Student의 과제 풀이
+  - 언어별 기본 템플릿 제공
 
 ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/demo_student_1.JPG)
 
+  - 에러가 난 경우
+
 ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/demo_student_2(error).JPG)
 
+  - 틀린 경우
+
 ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/demo_student_3(WA).JPG)
+
+  - 맞은 경우
 
 ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/demo_student_4(AC).JPG)
 
