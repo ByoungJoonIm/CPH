@@ -32,7 +32,11 @@ div#content {
 	top: 70px;
 	left: 50px;
 	right: 50px;
+	bottom: 60px;
+	overflow-x: hidden;
+	overflow-x: auto;
 }
+
 
 div#footer {
 	position: absolute;
