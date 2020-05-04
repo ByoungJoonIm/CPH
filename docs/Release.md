@@ -16,7 +16,7 @@
 - (보안) Professor / Student의 역할 기반 permission 추가로 권한이 없는 페이지를 URL로 접근 불가
 - (테스트) 샘플 데이터 추가
 
-# v0.21 (Not published yet)
+# v0.21 (published)
 - (문서) professor guide 작성
 - (문서) student guide 작성
 - (문서) developer guide 작성
@@ -25,6 +25,9 @@
 - (배포) Docker image 배포 [0.21](https://hub.docker.com/repository/registry-1.docker.io/ibjsw/ucs/tags?page=1)
   - 개발 버전으로, 성능이나 보안에 주의 필요
 - (기능) content 영역의 footer 침범 해결(scroll)
+
+# v0.3 (Not published yet)
+- Functions are not implemented yet.
 
 # To Do
 - 디자인 개선
