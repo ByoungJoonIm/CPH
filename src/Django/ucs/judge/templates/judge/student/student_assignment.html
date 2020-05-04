@@ -16,26 +16,25 @@
                 <p class="errornote">Wrong! Please correct the error(s) below.</p>
                 {% endif %}
 
-                <fieldset class="aligned">
-                        <div class="form-row">
-				lang {{ lang.lang_id }}
-                        </div>
-                        <div class="form-row">
-				assign_name {{ assignment.name }}
-                        </div>
-                        <div class="form-row">
-				desc {{ assignment.desc | linebreaks }}
-                        </div>
-                        <div class="form-row">
-                                {{ form.code }}
-                        </div>
-                </fieldset>
-
+                <table>
+                        <tr>
+                                <td>language</td>
+                                <td>{{ lang.lang_id }}</td>
+                        </tr>
+                        <tr>
+                                <td>assignment_name</td>
+                                <td>{{ assignment.name }}</td>
+                        </tr>
+                        <tr>
+                                <td>desc</td>
+                                <td>{{ assignment.desc | linebreaks }}</td>
+                        </tr>       
+                </table>
+                {{ form.code }}
 
                 <div class="submit-row">
                         <input type="submit" value="Submit"/>
                 </div>
-                <script type="text/javascript">document.getElementById('id_code').focus();</script>
         </form>
 
         {% if result %}
