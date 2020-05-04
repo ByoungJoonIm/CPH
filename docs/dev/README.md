@@ -1,12 +1,14 @@
 ## Docker image
 - `docker pull ibjsw/ucs:0.21`
 - `docker run -it -d -p 8000:8000 --name ucs ibjsw/ucs:0.21 /bin/bash -c "/root/settings/serviceRunner.sh"`
-  - 서버의 8000 포트는 개방되어 있어야 합니다.
+  - You must open a port 8000 in server.
 - `docker exec -it /bin/bash ucs`
 - `cd $WD`
+  - If you want latest version, type `git pull`
 - `./auto_init.sh`
 - `./run_server.sh`
-- http://[yourIP]:8000 로 접속
+- http://[yourIP]:8000
+  - Chrome is recommended.
 
 ## Development Environment
 
@@ -26,4 +28,14 @@
 - apt : [link](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/dev/dpkg.txt)
 - pip : [link](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/docs/dev/freeze.txt)
 
-## 
+## Sample datas
+- Professor ID : 00001~00008
+  - 00001 has 3 sample subjects, and they already have sample assignment.
+    - c_sample
+    - python_sample
+    - java_sample
+- Student ID : 20160001~20160009
+  - 20160001 had been accepted classes above.
+- Sample ID and password are same.
+- If you don't want generate sample datas, change line 12 as comment in auto_init.sh
+  - You need to excute auto_init.sh again to apply change.
