@@ -25,13 +25,16 @@
 
 ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/demo_student_1.JPG)
 
+
   - 에러가 난 경우
 
 ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/demo_student_2(error).JPG)
 
+
   - 틀린 경우
 
 ![](https://github.com/ByoungJoonIm/University-Coding-Site/blob/master/captures/demo_student_3(WA).JPG)
+
 
   - 맞은 경우
 
