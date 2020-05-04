@@ -11,6 +11,7 @@
 - (기능) professor가 다른 Professor를 특정한 과목으로 초대 가능
 - (기능) 과제 추가시 input파일에서 ('\n') 단위로 파일을 분할
 - (기능) Student의 코드 채점기를 Django-ace로 변경
+- (기능) 언어별 템플릿 추가 및 적용
 - (기능) Student가 특정 과목에 수강신청이 가능
 - (보안) Professor / Student의 역할 기반 permission 추가로 권한이 없는 페이지를 URL로 접근 불가
 - (테스트) 샘플 데이터 추가
