@@ -18,7 +18,7 @@
 		<a href="{% url 'home' %}"><img src="{% static 'img/programming_icon.png' %}" style="height:30px;"/></a></h2>
 	<h2 class="maintitle"><a href="{% url 'home' %}">UCS</a></h2>
 	{% if request.user.is_authenticated %}
-	<h4 class="welcome">Welcome, {{ request.session.name }}!
+	<h4 class="welcome">Welcome, {{ request.user.username }}!
 		<a href="#">Change Password</a> /
 		<a href="{% url 'logout' %}">Logout</a>
 	</h4>
