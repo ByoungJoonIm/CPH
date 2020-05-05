@@ -64,6 +64,7 @@ class Assignment(models.Model):
     max_score = models.IntegerField()
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, db_column = 'subject_id')
     problem = models.BinaryField()
+    delay_submission = models.BooleanField(default=False)
 
     #It will work like setter
     def problem_upload(self, file_src_path):

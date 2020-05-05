@@ -17,6 +17,7 @@ class AssignmentForm(forms.Form):
     assignment_deadline = forms.IntegerField(label="assignment_deadline", initial=7)
     assignment_in_file = forms.FileField(label="assignment_in_file")
     assignment_out_file = forms.FileField(label="assignment_out_file")
+    assignment_delayed_submission = forms.BooleanField(label="allow delayed submission", required=False)
 
 class AssignmentUpdateForm(AssignmentForm):
     assignment_deadline = forms.IntegerField(label="assignment_deadline", required=False)

@@ -27,7 +27,6 @@ from judge.forms import *
 import pymysql
 import os
 import pathlib
-import datetime
 import zipfile
 import time
 import datetime
@@ -348,7 +347,9 @@ class ProfessorAssignmentAddView(ProfessorMixin, FormView):
             assignment_instance.max_score = out_cnt - 1 #It will be changed
             assignment_instance.subject = Subject.objects.get(id=int(request.session.get('subject_id')))
             assignment_instance.problem_upload("problem.zip")
+            assignment_instance.delay_submission = request.POST.get('assignment_delayed_submission') == 'on'
             assignment_instance.save()
+            
         else:
             print("input set and output set are not corresponded..")
 
