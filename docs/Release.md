@@ -39,4 +39,5 @@
 - 관리자 기능 추가
   - 계정 추가/수정/삭제
 - 과제 comment 기능 / comment에 대한 Student에게 알림 기능
-
+- 폼 검증(clean data)
+- 폼을 모델 폼으로 변경
