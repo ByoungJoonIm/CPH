@@ -27,7 +27,7 @@
 - (기능) content 영역의 footer 침범 해결(scroll)
 
 # v0.3 (Not published yet)
-- Functions are not implemented yet.
+- (기능) Professor가 과제의 지연 제출 여부 설정 가능
 
 # To Do
 - 디자인 개선
