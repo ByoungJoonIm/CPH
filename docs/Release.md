@@ -27,7 +27,7 @@
 - (기능) content 영역의 footer 침범 해결(scroll)
 
 # v0.3 (Not published yet)
-- Functions are not implemented yet.
+- (기능) Professor가 과제의 지연 제출 여부 설정 가능
 
 # To Do
 - 디자인 개선
@@ -38,3 +38,6 @@
 - Dmoj-server를 분리하여 dmoj-cli 대신 사용
 - 관리자 기능 추가
   - 계정 추가/수정/삭제
+- 과제 comment 기능 / comment에 대한 Student에게 알림 기능
+- 폼 검증(clean data)
+- 폼을 모델 폼으로 변경
