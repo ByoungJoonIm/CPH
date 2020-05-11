@@ -7,9 +7,11 @@
 
 {% block extrascript %} 
 <script type="text/javascript">
-	function toggleDisabled(elemId){
-		var elem = document.getElementById(elemId);
-		elem.disabled = !elem.disabled;
+	function toggleDisabled(checkBoxId, inFileId){
+		var checkboxElem = document.getElementById(checkBoxId);
+		var inFileElem = document.getElementById(inFileId);
+		inFileElem.disabled = checkboxElem.checked;
+		inFileElem.value = '';
 	}
 
 
@@ -43,7 +45,7 @@
 			</div>
 
 			<div class="form-row">
-				{{ form.assignment_no_in_file.label_tag }} <input type="checkbox" name="assignment_no_in_file" id="id_assignment_no_in_file" onclick="toggleDisabled('id_assignment_in_file')"/>
+				{{ form.assignment_no_in_file.label_tag }} <input type="checkbox" name="assignment_no_in_file" id="id_assignment_no_in_file" onclick="toggleDisabled('id_assignment_no_in_file', 'id_assignment_in_file')"/>
 				 
 			</div>
 

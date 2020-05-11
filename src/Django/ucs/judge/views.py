@@ -253,105 +253,88 @@ class ProfessorAssignmentAddView(ProfessorMixin, FormView):
         origin_path = os.getcwd()
         os.chdir(temp_path)
         
+        print(origin_path)
+        
+        
         #--- upload files
-        origin_file_name = ['assignment_in_file', 'assignment_out_file']
-        uploaded_file_name = ['in', 'out']
+        origin_file_name = ['assignment_out_file', 'assignment_in_file']
+        uploaded_file_name = ['out', 'in']        
+        
+        checkedNoFile = request.POST.get('assignment_no_in_file') == "on"
+        endOfSeq = 1 if checkedNoFile else 2
             
-        for seq in range(0, 2):
+        for seq in range(0, endOfSeq):
             with open(uploaded_file_name[seq], 'wb+') as dest:
                 for chunk in request.FILES[origin_file_name[seq]].chunks():
                     dest.write(chunk)                    
                     
-                    
-        in_cnt = 1
-        out_cnt = 1
-        is_input_file_empty = False
         #--- separate files
         #--- It can't prevent integrity each file
-        with open("in", "r") as in_file:
-            with open("out", "r") as out_file:
-                with zipfile.ZipFile("problem.zip", "w") as myzip:
-                    file_list = ["in", "out", "problem.zip"]
+        
+        # inner def
+        def file_to_zip(file, myzip, file_list, postFix):
+            buf = None
+            cnt = 1
+            lines = file.readlines()
+            
+            try:
+                if lines[-1].rstrip() is not None:
+                    lines.append("")
+            except IndexError:
+                return 0    # when the file is empty
+            
+            for line in lines:
+                line = line.rstrip()
+                
+                if not line:
+                    file_elem_name = str(cnt) + "." + postFix
+                    with open(file_elem_name, "w") as file_elem:
+                        file_elem.write(buf)
                     
-                    in_buffer = None
-                    out_buffer = None
+                    myzip.write(file_elem_name)
+                    file_list.append(file_elem_name)
                     
-                    in_lines = in_file.readlines()
-                    out_lines = out_file.readlines()
-                    
-                    try:
-                        if in_lines[-1].rstrip() is not None:
-                            in_lines.append("")
-                    except IndexError:
-                        is_input_file_empty = True
-                    
-                    try:
-                        if out_lines[-1].rstrip() is not None:
-                            out_lines.append("")
-                    except IndexError:
-                        pass
-                    
-                    for out_line in out_lines:
-                        out_line = out_line.rstrip()
-                        
-                        if not out_line:
-                            out_file_elem_name = str(out_cnt) + ".out"
-                            with open(out_file_elem_name, "w") as out_file_elem:
-                                out_file_elem.write(out_buffer)
-                            
-                            myzip.write(out_file_elem_name)
-                            file_list.append(out_file_elem_name)
-                            
-                            out_buffer = None
-                            out_cnt = out_cnt + 1
-                        else:
-                            if not out_buffer:
-                                out_buffer = out_line
-                            else:
-                                out_buffer = out_buffer + "\n" + out_line
-                                
-                    # if input is empty
-                    if is_input_file_empty:  
-                        in_file_elem_name = "1.in"
-                        with open(in_file_elem_name, "w"):
-                            pass
-                            
-                        myzip.write(in_file_elem_name)
-                        file_list.append(in_file_elem_name)
-                        in_cnt = out_cnt
+                    buf = None
+                    cnt = cnt + 1
+                else:
+                    if not buf:
+                        buf = line
                     else:
-                        for in_line in in_lines:
-                            in_line = in_line.rstrip()
-                            
-                            if not in_line:
-                                in_file_elem_name = str(in_cnt) + ".in"
-                                with open(in_file_elem_name, "w") as in_file_elem:
-                                    in_file_elem.write(in_buffer)
-                                
-                                myzip.write(in_file_elem_name)
-                                file_list.append(in_file_elem_name)
-                                
-                                in_buffer = None
-                                in_cnt = in_cnt + 1
-                            else:
-                                if not in_buffer:
-                                    in_buffer = in_line
-                                else:
-                                    in_buffer = in_buffer + "\n" + in_line
+                        buf = buf + "\n" + line
+            
+            return cnt - 1
+            
+        
+        in_cnt = 1  
+        out_cnt = 1 # temp value
+    
+        
+        with zipfile.ZipFile("problem.zip", "w") as myzip:
+            file_list = ["in", "out", "problem.zip"]
+            
+            with open("out", "r") as out_file:
+                out_cnt = file_to_zip(out_file, myzip, file_list, "out")
+            
+            if checkedNoFile:
+                file_list.remove("in")
+            else:
+                with open("in", "r") as in_file:
+                    in_cnt = file_to_zip(in_file, myzip, file_list, "in")
         
         #--- insert to database
-        if in_cnt == out_cnt:
+        if in_cnt == out_cnt and out_cnt > 0:
             assignment_instance = Assignment()    
             assignment_instance.name = request.POST.get('assignment_name')
             assignment_instance.desc = request.POST.get('assignment_desc')
             assignment_instance.deadline = timezone.make_aware(datetime.datetime.now() + datetime.timedelta(days=int(request.POST.get('assignment_deadline'))))
-            assignment_instance.max_score = out_cnt - 1 #It will be changed
+            assignment_instance.max_score = out_cnt #It will be changed
             assignment_instance.subject = Subject.objects.get(id=int(request.session.get('subject_id')))
             assignment_instance.problem_upload("problem.zip")
+            assignment_instance.no_input_file = checkedNoFile
             assignment_instance.delay_submission = request.POST.get('assignment_delayed_submission') == 'on'
             assignment_instance.save()
-            
         else:
+            print(in_cnt, out_cnt)
             raise forms.ValidationError("input set and output set are not corresponded..")
 
         #--- remove files
@@ -545,13 +528,15 @@ class StudentAssignment(StudentMixin, FormView):
             os.mkdir(dirs)
         
         #--- generate init and problem.zip file
-        init_file = open(os.path.join("problem", "init.yml"), "w")
-        init_file.write("archive: problem.zip\ntest_cases:")
+        with open(os.path.join("problem", "init.yml"), "w") as init_file:
+            init_file.write("archive: problem.zip\ntest_cases:")
+            
+            if assignment.no_input_file:
+                init_file.write("\n- {out: 1.out, points: 1}")
+            else:
+                for i in range(1, assignment.max_score + 1):
+                    init_file.write("\n- {in: {0}.in, out: {0}.out, points: 1".format(i) + "}")
 
-        for i in range(1, assignment.max_score + 1):
-            init_file.write("\n- {" + "in: {0}.in, out: {0}.out, points: 1".format(i) + "}")
-
-        init_file.close()
         assignment.problem_download(os.path.join("problem", "problem.zip"))
         
         #--- generate config file
