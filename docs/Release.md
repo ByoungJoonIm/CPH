@@ -28,6 +28,7 @@
 
 # v0.3 (Not published yet)
 - (기능) Professor가 과제의 지연 제출 여부 설정 가능
+- (기능) Professor가 input이 없는 과제(Hello World 등) 업로드 가능
 
 # To Do
 - 디자인 개선
