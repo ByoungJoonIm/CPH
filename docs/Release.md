@@ -42,3 +42,8 @@
 - 과제 comment 기능 / comment에 대한 Student에게 알림 기능
 - 폼 검증(clean data)
 - 폼을 모델 폼으로 변경
+- Student
+  - 지난 과제 확인
+  - 자유 코딩
+- Professor의 학생 과제 확인
+  - 코딩 창
