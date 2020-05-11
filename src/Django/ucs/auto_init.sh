@@ -8,7 +8,7 @@ echo "Initailizing model..."
 echo "Initailizing model was completed!"
 
 echo "Inserting sample datas..."
-python3 manage.py shell < $epath/group_adder.py
+python3 manage.py shell < $epath/essential_adder.py
 python3 manage.py shell < $spath/sample_adder.py
 echo "Inserting sample datas was completed!"
 
