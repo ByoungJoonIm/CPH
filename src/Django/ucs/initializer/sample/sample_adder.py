@@ -23,7 +23,7 @@ def add_languages():
     
     relation = [
         ['PY3', 'python', 'py', '#python template is not supported yet\n'],
-        ['C', 'c_cpp', 'c', '#include <stdio.h>\n\nvoid main(){\n\t\n}'],
+        ['C', 'c_cpp', 'c', '#include <stdio.h>\n\nint main(){\n\t\n\treturn 0;\n}'],
         ['JAVA8', 'java', 'java', 'import java.util.*;\n\npublic class Main{\n\tpublic static void main(String args[]){\n\t\t\n\t}\n}']
     ]
     

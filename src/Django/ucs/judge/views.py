@@ -535,7 +535,7 @@ class StudentAssignment(StudentMixin, FormView):
                 init_file.write("\n- {out: 1.out, points: 1}")
             else:
                 for i in range(1, assignment.max_score + 1):
-                    init_file.write("\n- {in: {0}.in, out: {0}.out, points: 1".format(i) + "}")
+                    init_file.write("\n- {" + "in: {0}.in, out: {0}.out, points: 1".format(i) + "}")
 
         assignment.problem_download(os.path.join("problem", "problem.zip"))
         
