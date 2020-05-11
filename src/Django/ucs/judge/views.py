@@ -247,7 +247,8 @@ class ProfessorAssignmentAddView(ProfessorMixin, FormView):
     def generate_assignment(self, request):
         #--- Creating assignment directory 
         temp_path = os.path.join(os.path.join(os.path.expanduser('~'), 'assignment_cache'), request.user.username + "_temp")
-        os.mkdir(temp_path)
+        if not os.path.exists(temp_path):
+            os.mkdir(temp_path)
         
         origin_path = os.getcwd()
         os.chdir(temp_path)
@@ -351,7 +352,7 @@ class ProfessorAssignmentAddView(ProfessorMixin, FormView):
             assignment_instance.save()
             
         else:
-            print("input set and output set are not corresponded..")
+            raise forms.ValidationError("input set and output set are not corresponded..")
 
         #--- remove files
         for f in file_list:
