@@ -5,6 +5,17 @@
 {% load static %}
 {% block extrastyle %}{% static "css/forms.css" %}{% endblock %}
 
+{% block extrascript %} 
+<script type="text/javascript">
+	function toggleDisabled(elemId){
+		var elem = document.getElementById(elemId);
+		elem.disabled = !elem.disabled;
+	}
+
+
+</script>
+{% endblock %}
+
 {% block content %}
 <div id="content">
 	<h1>Add assignment</h1>
@@ -28,7 +39,12 @@
 			</div>
 
 			<div class="form-row">
-				{{ form.assignment_in_file.label_tag }} {{ form.assignment_in_file }}
+				{{ form.assignment_in_file.label_tag }} {{ form.assignment_in_file }} 
+			</div>
+
+			<div class="form-row">
+				{{ form.assignment_no_in_file.label_tag }} <input type="checkbox" name="{{ assignment_no_in_file }}" id="id_assignment_no_in_file" onclick="toggleDisabled('id_assignment_in_file')"/>
+				 
 			</div>
 
 			<div class="form-row">

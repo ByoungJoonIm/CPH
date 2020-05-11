@@ -236,7 +236,7 @@ class ProfessorAssignmentResultLV(ProfessorMixin, TemplateView):
         
 class ProfessorAssignmentAddView(ProfessorMixin, FormView):
     template_name = 'judge/professor/professor_assignment_add.html'
-    form_class = AssignmentForm
+    form_class = AssignmentAddForm
 
     def post(self, request, *args, **kwargs):
         self.generate_assignment(self.request)

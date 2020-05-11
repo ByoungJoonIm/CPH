@@ -11,15 +11,16 @@ class StudentSubjectAddForm(forms.Form):
     subject_id = forms.IntegerField(label="subject_id", required=True)
     access_code = forms.CharField(label="access_code", required=True)
     
-class AssignmentForm(forms.Form):
+class AssignmentAddForm(forms.Form):
     assignment_name = forms.CharField(label="assignment_name")
     assignment_desc = forms.CharField(label="assignment_desc", widget=forms.Textarea(attrs={'rows' : '10','cols' : '100'}))
     assignment_deadline = forms.IntegerField(label="assignment_deadline", initial=7)
+    assignment_no_in_file = forms.BooleanField(label="no input file", required=False)
     assignment_in_file = forms.FileField(label="assignment_in_file")
     assignment_out_file = forms.FileField(label="assignment_out_file")
     assignment_delayed_submission = forms.BooleanField(label="allow delayed submission", required=False)
 
-class AssignmentUpdateForm(AssignmentForm):
+class AssignmentUpdateForm(AssignmentAddForm):
     assignment_deadline = forms.IntegerField(label="assignment_deadline", required=False)
     assignment_in_file = forms.FileField(label="assignment_in_file", required=False)
     assignment_out_file = forms.FileField(label="assignment_out_file", required=False)
