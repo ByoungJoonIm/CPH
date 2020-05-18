@@ -9,17 +9,35 @@
 		<tr>
 			<th>assginment_name</th>
 			<th>deadline</th>
+			<th>delay submission</th>
+			<th>submission</th>
 		</tr>
 
 		{% for obj in assignment %}
 		<tr>
             <td>
+			{% if obj.can_solve %}
                 <form id='solve{{ obj.id }}' method="get" action="{% url 'judge:student_assignment' obj.id %}">{% csrf_token %}
 	            	<input type="hidden" name="assignment_id" value="{{ obj.id }}"/>
 					<a href="javascript:{}" onclick=document.getElementById("solve{{ obj.id }}").submit();>{{ obj.name }}</a>
 		    	</form>
+			{% else %}
+				<label>{{ obj.name }}</label>
+			{% endif %}
             </td>
 			<td>{{ obj.deadline | date:"Y-m-d(D)" }} {{ obj.deadline | time:"H:i:s" }}</td>
+			
+			{% if obj.delay_submission %}
+				<td>Allowed</td>
+			{% else %}
+				<td>Not allowed</td>
+			{% endif %}
+
+			{% if obj.submit %}
+				<td>{{obj.submit.submit_time | date:"Y-m-d(D)"}} {{obj.submit.submit_time | time:"H:i:s"}}</td>
+			{% else %}
+				<td style="color:red;">Not yet</td>
+			{% endif %}
 		</tr>
 		{% endfor %}
 	</table>

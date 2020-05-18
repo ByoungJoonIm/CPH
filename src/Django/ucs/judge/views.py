@@ -15,10 +15,9 @@ from django.urls import reverse
 
 from django.db import connection
 from django.db.utils import IntegrityError
-from django.db.models import Q
+from django.db.models import Q, Value, BooleanField
 
 from django.contrib import messages
-
 from django.contrib.auth.models import User, Group
 
 from judge.models import *
@@ -464,7 +463,18 @@ class StudentAssignmentLV(StudentMixin, ListView):
         assignment = Assignment.objects.filter(subject_id = subject_id)
         subject = Subject.objects.get(id = subject_id)
         
-        return render(request, self.template_name, { 'assignment' : assignment, 'subject' : subject })
+        for a in assignment:
+            try:
+                a.submit = Submit.objects.get(assignment=a)
+            except Submit.DoesNotExist:
+                pass
+            
+        cur_time = timezone.make_aware(datetime.datetime.now())
+        for a in assignment:
+            a.can_solve = True if a.deadline > cur_time or a.delay_submission else False 
+        
+        return render(request, self.template_name,
+                       { 'assignment' : assignment, 'subject' : subject })
 
 class StudentAssignment(StudentMixin, FormView):
     template_name = 'judge/student/student_assignment.html'
@@ -502,9 +512,7 @@ class StudentAssignment(StudentMixin, FormView):
     def post(self, request, * args, **kwargs):
         code = request.POST.get('code')
         
-        # time_weight has to be deleted. Now, docker container doesn't have correct time.
-        time_weight = datetime.timedelta(hours=9)
-        submit_time = timezone.make_aware(datetime.datetime.now() + time_weight)
+        submit_time = timezone.make_aware(datetime.datetime.now())
         
         assignment = Assignment.objects.get(id=request.session.get('assignment_id'))
         language = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id)
