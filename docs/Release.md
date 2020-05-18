@@ -28,6 +28,7 @@
 
 # v0.3 (Not published yet)
 - (기능) Professor가 과제의 지연 제출 여부 설정 가능
+- (기능) Professor가 input이 없는 과제(Hello World 등) 업로드 가능
 
 # To Do
 - 디자인 개선
@@ -37,7 +38,13 @@
 - Professor의 과제 삭제 및 수정
 - Dmoj-server를 분리하여 dmoj-cli 대신 사용
 - 관리자 기능 추가
-  - 계정 추가/수정/삭제
+  - 다수의 계정 추가/수정/삭제
 - 과제 comment 기능 / comment에 대한 Student에게 알림 기능
 - 폼 검증(clean data)
 - 폼을 모델 폼으로 변경
+- Student
+  - 지난 과제 확인
+  - 자유 코딩
+- Professor
+  - 학생 코드 확인
+  - 코딩 창
