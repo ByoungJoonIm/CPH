@@ -25,6 +25,9 @@ urlpatterns = [
     # example : /professor/assignment_id/update
     url(r'^professor/update$', ProfessorAssignmentUpdateView.as_view(), name='professor_assignment_update'),
 
+    # example : /professor/assignment_student_code
+    url(r'^professor/assgnment_student_code$', ProfessorAssignmentStudentCodeView.as_view(), name='professor_assignment_student_code'),
+
     # example : /professor/subject_management
     url(r'^professor/subject_management$', ProfessorSubjectManagementView.as_view(), name='professor_subject_management'),
 

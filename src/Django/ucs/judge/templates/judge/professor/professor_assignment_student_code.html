@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+{{codingForm.media}}
+{% load static %}
+
+<style>
+  td, tr, th{
+      border: 1px solid;
+  }
+</style>
+
+<script type="text/javascript">
+
+var zoomSize = 100;
+
+function zoom_in(){
+    zoomSize += 10;
+    zoom_set();
+}
+
+function zoom_out(){
+    zoomSize -= 10;
+    zoom_set();
+}
+
+function zoom_set(){
+    document.getElementById("codingForm").style.zoom = zoomSize + "%";
+    document.getElementById("zoomPercent").innerHTML = zoomSize + "%";
+}
+
+</script>
+
+</head>
+<body>
+
+    <table>
+        <tr>
+            <th> 학번 </th>
+            <td>{{submit.user.username}}</td>
+        </tr>
+        <tr>
+            
+        </tr>
+    </table>
+    <input type="button" onclick="zoom_in()" value="zoom in"/>
+    <input type="button" onclick="zoom_out()" value="zoom out"/>
+    <label id="zoomPercent">100%</label>
+
+    <div id="codingForm">     
+    {{ codingForm.code }}
+    </div>
+    
+    <input type="button" value="close" onclick="self.close()"/>
+
+</body>
+
+</html>
