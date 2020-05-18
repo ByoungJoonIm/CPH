@@ -1,6 +1,17 @@
-# v0.1 (Not published)
-- 기존에 캡스톤 디자인에서 진행되었던 내용입니다.
-- 자세한 내용은 [여기](https://github.com/ByoungJoonIm/Capstone_Design)를 참고하세요.
+# v0.3 (Not published yet)
+- (기능) Professor가 과제의 지연 제출 여부 설정 가능
+- (기능) Professor가 input이 없는 과제(Hello World 등) 업로드 가능
+- (기능) Professor가 제출된 코드 확인 가능
+
+# v0.21 (published)
+- (문서) professor guide 작성
+- (문서) student guide 작성
+- (문서) developer guide 작성
+- (문서) main readme 작성
+- (기능) homepage의 footer에 가이드 추가
+- (배포) Docker image 배포 [0.21](https://hub.docker.com/repository/registry-1.docker.io/ibjsw/ucs/tags?page=1)
+  - 개발 버전으로, 성능이나 보안에 주의 필요
+- (기능) content 영역의 footer 침범 해결(scroll)
 
 # v0.2 (published)
 - (리팩토링) DB 엑세스 방식 변경
@@ -16,19 +27,9 @@
 - (보안) Professor / Student의 역할 기반 permission 추가로 권한이 없는 페이지를 URL로 접근 불가
 - (테스트) 샘플 데이터 추가
 
-# v0.21 (published)
-- (문서) professor guide 작성
-- (문서) student guide 작성
-- (문서) developer guide 작성
-- (문서) main readme 작성
-- (기능) homepage의 footer에 가이드 추가
-- (배포) Docker image 배포 [0.21](https://hub.docker.com/repository/registry-1.docker.io/ibjsw/ucs/tags?page=1)
-  - 개발 버전으로, 성능이나 보안에 주의 필요
-- (기능) content 영역의 footer 침범 해결(scroll)
-
-# v0.3 (Not published yet)
-- (기능) Professor가 과제의 지연 제출 여부 설정 가능
-- (기능) Professor가 input이 없는 과제(Hello World 등) 업로드 가능
+# v0.1 (Not published)
+- 기존에 캡스톤 디자인에서 진행되었던 내용입니다.
+- 자세한 내용은 [여기](https://github.com/ByoungJoonIm/Capstone_Design)를 참고하세요.
 
 # To Do
 - 디자인 개선
