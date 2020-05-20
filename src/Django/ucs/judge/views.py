@@ -465,7 +465,7 @@ class StudentAssignmentLV(StudentMixin, ListView):
         
         for a in assignment:
             try:
-                a.submit = Submit.objects.get(assignment=a)
+                a.submit = Submit.objects.filter(assignment=a).get(user=request.user)
             except Submit.DoesNotExist:
                 pass
             
