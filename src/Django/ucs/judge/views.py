@@ -494,6 +494,12 @@ class StudentAssignment(StudentMixin, FormView):
         language = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id)
         coding_form = CodingForm(mode=language.mode, template=language.template)
         
+        try:
+            submit = Submit.objects.filter(assignment=assignment).get(user=request.user)
+            coding_form = CodingForm(mode=language.mode, template=submit.code)
+        except Submit.DoesNotExist:
+            print("no submit")
+        
         # If get page with wrong answer
         if 'judge_result' in kwargs.keys():
             judge_result = kwargs.pop('judge_result')

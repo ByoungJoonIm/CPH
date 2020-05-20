@@ -33,13 +33,14 @@
                 {{ form.code }}
 
                 <div class="submit-row">
-                        <input type="submit" value="Submit"/>
+                        <input type="submit" value="채점"/>
                 </div>
         </form>
 
         {% if result %}
+                <input type="button" value="제출"/>
                 <div>
-                {% autoescape on %} {{ result | safe }} {% endautoescape %}
+                        {% autoescape on %} {{ result | safe }} {% endautoescape %}
                 </div>
         {% endif %}
 </div>
