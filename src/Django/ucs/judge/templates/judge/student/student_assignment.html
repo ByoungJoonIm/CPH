@@ -38,10 +38,17 @@
         </form>
 
         {% if result %}
+                {% if submit_instance.ontime or assignment.delay_submission %}
                 <form action="?" method="post">{% csrf_token %}
+                        
                         <input type="hidden" name="submit_instance" value="{{submit_instance}}"/>
                         <input type="submit" name='submit' value="제출"/>
                 </form>
+                {% else %}
+                <div>
+                        <p> submit time is already expired and delay submission is not allowed</p>
+                </div>
+                {% endif %}
                 <div>
                         {% autoescape on %} {{ result | safe }} {% endautoescape %}
                 </div>

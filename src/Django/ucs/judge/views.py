@@ -534,14 +534,15 @@ class StudentAssignment(StudentMixin, FormView):
         
             context['submit_instance'] = submit_instance
             context['last_code'] = code
+            
+            request.session['submit_instance'] = submit_instance
         
             return self.get(request, judge_result=context)    
         
         elif "submit" in request.POST.keys():
-            # we are here
-            print("submit requeested!")
-            submit_instance = request.POST.get('submit_instance')
-            print(submit_instance)
+            if 'submit_instance' in request.session:
+                self.submit_judge_result(request.session.pop('submit_instance'))
+                print("save completed!")
             return self.get(request)
         else:
             print("is not valid way!")
@@ -594,7 +595,10 @@ class StudentAssignment(StudentMixin, FormView):
         src_file.close()
         
     def judge_student_src_file(self, code, base_dir_path, assignment, language, request, context):
-        judge_time = timezone.make_aware(datetime.datetime.now())
+        now = datetime.datetime.now()
+        judge_time = timezone.make_aware(now)
+        judge_time_stamp = now.timestamp()
+        
         config_file_path = os.path.join(base_dir_path, "config.yml")
         init_file_path = os.path.join(os.path.join(base_dir_path, "problem"), "init.yml")
         
@@ -637,10 +641,10 @@ class StudentAssignment(StudentMixin, FormView):
         # return submit_instance
         submit_instance = dict()
         submit_instance['score'] = total_get
-        submit_instance['user'] = request.user
-        submit_instance['assignment'] = assignment
+        submit_instance['user_id'] = request.user.id
+        submit_instance['assignment_id'] = assignment.id
         submit_instance['code'] = code
-        submit_instance['judge_time'] = judge_time
+        submit_instance['judge_time_stamp'] = judge_time_stamp
         submit_instance['ontime'] = judge_time <= assignment.deadline
 
         return submit_instance
@@ -648,14 +652,15 @@ class StudentAssignment(StudentMixin, FormView):
     def submit_judge_result(self, submit_instance):
         submit_base = None
         try:
-            submit_base = Submit.objects.filter(assignment_id = submit_instance.get('assignment').id).get(user_id=submit_instance.get('user').id)
+            submit_base = Submit.objects.filter(assignment_id = submit_instance.get('assignment_id')).get(user_id=submit_instance.get('user_id'))
         except Submit.DoesNotExist:
             submit_base = Submit()
         
         submit_base.submit_ontime = submit_instance['ontime']
         submit_base.score = submit_instance['score']
-        submit_base.submit_time = submit_instance['judge_time']
+        submit_base.submit_time = timezone.make_aware(datetime.datetime.fromtimestamp(submit_instance['judge_time_stamp']))
         submit_base.code = submit_instance['code']
-        submit_base.assignment = submit_instance['assignment']
-        submit_base.user = submit_instance['user']
+        submit_base.assignment = Assignment.objects.get(id=submit_instance['assignment_id'])
+        submit_base.user = User.objects.get(id=submit_instance['user_id'])
+        print(submit_base)
         submit_base.save()
