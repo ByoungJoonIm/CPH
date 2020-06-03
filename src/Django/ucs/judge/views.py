@@ -365,7 +365,7 @@ class ProfessorAssignmentDeleteView(ProfessorMixin, TemplateView):
     template_name = 'judge/professor/professor_assignment_delete.html'
 
 class ProfessorAssignmentStudentCodeView(ProfessorMixin, TemplateView):
-    template_name = "judge/professor/professor_assignment_student_code.html"
+    template_name = "judge/common/common_assignment_student_code.html"
     
     def get(self, request, *args, **kwargs):
         submit_id = request.GET.get("submit_id")
@@ -662,3 +662,20 @@ class StudentAssignment(StudentMixin, FormView):
         submit_base.assignment = Assignment.objects.get(id=submit_instance['assignment_id'])
         submit_base.user = User.objects.get(id=submit_instance['user_id'])
         submit_base.save()
+
+class StudentAssignmentStudentCodeView(StudentMixin, TemplateView):
+    template_name = "judge/common/common_assignment_student_code.html"
+    
+    def get(self, request, *args, **kwargs):
+        submit_id = request.GET.get("submit_id")
+        submit = Submit.objects.get(id=int(submit_id))
+        
+        subject_id = int(request.session.get('subject_id'))
+        language = Subject.objects.get(id=subject_id).language
+        
+        codingForm = CodingForm(mode=language.mode, template=submit.code)
+        
+        return render(request, self.template_name,
+                      {"submit" : submit,
+                       "codingForm" : codingForm })
+        

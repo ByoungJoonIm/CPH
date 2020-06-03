@@ -43,4 +43,7 @@ urlpatterns = [
     # example : /student/assignment_id
     url(r'^student/(?P<assignment_id>[0-9]+)$', StudentAssignment.as_view(), name='student_assignment'),
     
+    # example : /student/assignment_student_code
+    url(r'^student/assgnment_student_code$', StudentAssignmentStudentCodeView.as_view(), name='student_assignment_student_code'),
+    
 ]
