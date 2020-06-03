@@ -98,12 +98,12 @@ def add_assignment():
     ]
     
     relations = [
-        ['c_aplusb', 1, 7, solutions[0]],
-        ['python_aplusb', 2, 7, 'Input a, b\nOutput a + b'],
-        ['java_aplusb', 3, 7, 'Input a, b\nOutput a + b'],
-        ['c_aplusb_expired', 1, -7, 'Input a, b\nOutput a + b'],
-        ['python_aplusb_expired', 2, -7, 'Input a, b\nOutput a + b'],
-        ['java_aplusb_expired', 3, -7, 'Input a, b\nOutput a + b']
+        ['c_aplusb', 1, 7, solutions[0], False],
+        ['python_aplusb', 2, 7, 'Input a, b\nOutput a + b', False],
+        ['java_aplusb', 3, 7, 'Input a, b\nOutput a + b', False],
+        ['c_aplusb_expired', 1, -7, 'Input a, b\nOutput a + b', True],
+        ['python_aplusb_expired', 2, -7, 'Input a, b\nOutput a + b', False],
+        ['java_aplusb_expired', 3, -7, 'Input a, b\nOutput a + b', False]
     ]
     
     
@@ -123,7 +123,8 @@ def add_assignment():
             deadline = timezone.make_aware(datetime.datetime.now() + datetime.timedelta(days=r[2])),
             max_score = 3,
             subject = Subject.objects.get(id=r[1]),
-            problem = problem_bin_code
+            problem = problem_bin_code,
+            delay_submission = r[4]
         )
 
         
