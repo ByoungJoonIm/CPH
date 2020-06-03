@@ -542,7 +542,7 @@ class StudentAssignment(StudentMixin, FormView):
         elif "submit" in request.POST.keys():
             if 'submit_instance' in request.session:
                 self.submit_judge_result(request.session.pop('submit_instance'))
-            return self.get(request)
+            return redirect(reverse_lazy('judge:student_assignment_list'))
         else:
             print("is not valid way!")
             return self.get(request)
