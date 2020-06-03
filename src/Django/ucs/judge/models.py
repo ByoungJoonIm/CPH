@@ -82,6 +82,8 @@ class Assignment(models.Model):
 class Submit(models.Model):
     id = models.AutoField(primary_key=True)
     comment = models.CharField(max_length=100, null=True)
+    comment_checked = models.BooleanField(default=False)
+    submit_ontime = models.BooleanField(default=False)
     score = models.IntegerField()
     submit_time = models.DateTimeField()
     code = models.TextField()
