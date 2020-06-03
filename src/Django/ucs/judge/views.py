@@ -542,7 +542,6 @@ class StudentAssignment(StudentMixin, FormView):
         elif "submit" in request.POST.keys():
             if 'submit_instance' in request.session:
                 self.submit_judge_result(request.session.pop('submit_instance'))
-                print("save completed!")
             return self.get(request)
         else:
             print("is not valid way!")
@@ -662,5 +661,4 @@ class StudentAssignment(StudentMixin, FormView):
         submit_base.code = submit_instance['code']
         submit_base.assignment = Assignment.objects.get(id=submit_instance['assignment_id'])
         submit_base.user = User.objects.get(id=submit_instance['user_id'])
-        print(submit_base)
         submit_base.save()
