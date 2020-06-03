@@ -93,14 +93,19 @@ def add_assignment():
     from django.utils import timezone
     import datetime
     
-    relations = [
-        ['c_aplusb', 1, 7],
-        ['python_aplusb', 2, 7],
-        ['java_aplusb', 3, 7],
-        ['c_aplusb_expired', 1, -7],
-        ['python_aplusb_expired', 2, -7],
-        ['java_aplusb_expired', 3, -7]
+    solutions = [
+        "#include <stdio.h>\n\nint main(){\nint n, a, b;\n\nscanf(\"%d\", &n);\n\nfor(int i = 0; i < n; i++){\nscanf(\"%d %d\", &a, &b);\nprintf(\"%d\\n\", a + b);\n}\n\nreturn 0;\n}"
     ]
+    
+    relations = [
+        ['c_aplusb', 1, 7, solutions[0]],
+        ['python_aplusb', 2, 7, 'Input a, b\nOutput a + b'],
+        ['java_aplusb', 3, 7, 'Input a, b\nOutput a + b'],
+        ['c_aplusb_expired', 1, -7, 'Input a, b\nOutput a + b'],
+        ['python_aplusb_expired', 2, -7, 'Input a, b\nOutput a + b'],
+        ['java_aplusb_expired', 3, -7, 'Input a, b\nOutput a + b']
+    ]
+    
     
     sample_path = os.getcwd()
     sample_path = os.path.join(sample_path, "initializer")
@@ -114,7 +119,7 @@ def add_assignment():
     for r in relations:
         assignment = Assignment.objects.create(
             name = r[0],
-            desc = 'Input a, b\nOutput a + b',
+            desc = r[3],
             deadline = timezone.make_aware(datetime.datetime.now() + datetime.timedelta(days=r[2])),
             max_score = 3,
             subject = Subject.objects.get(id=r[1]),
