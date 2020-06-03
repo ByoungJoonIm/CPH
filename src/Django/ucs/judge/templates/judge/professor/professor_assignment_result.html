@@ -11,6 +11,7 @@
 			<th>name</th>
 			<th>submitted time</th>
 			<th>score</th>
+			<th>on time submission</th>
 			<th>code</th>
 		</tr>
 
@@ -19,6 +20,7 @@
 			<td>{{ s.user.username }}</td>
 			<td>{{ s.submit_time | date:"Y-m-d(D)" }} {{ s.submit_time | time:"H:i:s" }}</td>
 			<td>{{ s.score }}</td>
+			<td>{{ s.submit_ontime }}</td>
 			<td>
 			<form id="assignment_student_code{{s.id}}" method="get" action="{% url 'judge:professor_assignment_student_code' %}" target="_blank">{% csrf_token %}
 				<input type="hidden" name="submit_id" value="{{s.id}}"/>
