@@ -223,9 +223,9 @@ class ProfessorAssignmentResultLV(ProfessorMixin, TemplateView):
     
         signup_student = Signup_class_student.objects.filter(subject=int(request.session.get("subject_id"))).values('user')
         
-        submitted_users = Submit.objects.filter(assignment=assignment_id).filter(user__in=signup_student).values('user')        
+        submitted_users = Submit.objects.filter(assignment=Assignment.objects.get(id=assignment_id)).filter(user__in=signup_student).values('user')        
         
-        submitted = Submit.objects.filter(user__in=submitted_users)
+        submitted = Submit.objects.filter(assignment=Assignment.objects.get(id=assignment_id)).filter(user__in=submitted_users)
         not_submitted = User.objects.filter(~Q(id__in=submitted_users) & Q(id__in=signup_student))
             
         return render(request, self.template_name, {
