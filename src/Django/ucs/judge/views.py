@@ -498,16 +498,17 @@ class StudentAssignment(StudentMixin, FormView):
             submit = Submit.objects.filter(assignment=assignment).get(user=request.user)
             coding_form = CodingForm(mode=language.mode, template=submit.code)
         except Submit.DoesNotExist:
-            print("no submit")
+            pass
         
-        # If get page with wrong answer
+        # If get page with result
         if 'judge_result' in kwargs.keys():
             judge_result = kwargs.pop('judge_result')
             return render(request, self.template_name,
                        {'form' : CodingForm(mode=language.mode, template=judge_result['last_code']),
                          'assignment' : assignment,
                          'lang' : language,
-                         'result' : judge_result['result']})
+                         'result' : judge_result['result'],
+                         'submit_instance' : judge_result['submit_instance']})
         
         # basic get
         return render(request, self.template_name,
@@ -516,38 +517,35 @@ class StudentAssignment(StudentMixin, FormView):
                          'lang' : language})
 
     def post(self, request, * args, **kwargs):
-        code = request.POST.get('code')
+        if "judge" in request.POST.keys():
+            context = dict()
+            code = request.POST.get('code')
         
-        submit_time = timezone.make_aware(datetime.datetime.now())
+            assignment = Assignment.objects.get(id=request.session.get('assignment_id'))
+            language = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id)
+            base_dir_path = os.path.join(os.path.join(os.path.expanduser('~'), 'assignment_cache'), str(assignment.id))
         
-        assignment = Assignment.objects.get(id=request.session.get('assignment_id'))
-        language = Language.objects.get(lang_id=Subject.objects.get(id=request.session.get('subject_id')).language_id)
-        base_dir_path = os.path.join(os.path.join(os.path.expanduser('~'), 'assignment_cache'), str(assignment.id))
+            if not os.path.exists(base_dir_path):
+                self.create_structure(base_dir_path, assignment)
         
-        # This code will be changed to do something
-        if submit_time > assignment.deadline:
-            print("Deadline is alreay expired!")
+            self.create_src_file(code, os.path.join(base_dir_path, "students"),assignment, language, request)
+        
+            submit_instance = self.judge_student_src_file(code, base_dir_path, assignment, language, request, context)
+        
+            context['submit_instance'] = submit_instance
+            context['last_code'] = code
+        
+            return self.get(request, judge_result=context)    
+        
+        elif "submit" in request.POST.keys():
+            # we are here
+            print("submit requeested!")
+            submit_instance = request.POST.get('submit_instance')
+            print(submit_instance)
+            return self.get(request)
         else:
-            print("This submit_itme is valid!")
-        
-        # here, we need to clone file that is needed from db
-        
-        if not os.path.exists(base_dir_path):
-            self.create_structure(base_dir_path, assignment)
-        
-        self.create_src_file(code, os.path.join(base_dir_path, "students"),assignment, language, request)
-        
-        context = dict()
-        judge_result = self.judge_student_src_file(submit_time, code, base_dir_path, assignment, language, request, context)
-        
-        #if judge_result:
-            #return StudentAssignmentLV.get(request)
-            
-        
-        context['judge_result'] = judge_result
-        context['last_code'] = code
-        
-        return self.get(request, judge_result=context)
+            print("is not valid way!")
+            return self.get(request)
         
     def create_structure(self, base_dir_path, assignment):
         origin_path = os.getcwd()
@@ -595,7 +593,8 @@ class StudentAssignment(StudentMixin, FormView):
         src_file.write(code)
         src_file.close()
         
-    def judge_student_src_file(self, submit_time, code, base_dir_path, assignment, language, request, context):
+    def judge_student_src_file(self, code, base_dir_path, assignment, language, request, context):
+        judge_time = timezone.make_aware(datetime.datetime.now())
         config_file_path = os.path.join(base_dir_path, "config.yml")
         init_file_path = os.path.join(os.path.join(base_dir_path, "problem"), "init.yml")
         
@@ -634,18 +633,29 @@ class StudentAssignment(StudentMixin, FormView):
                     total_get = total_get + points[int(sp[i + 2]) - 1]
 
             i = i + 1
+    
+        # return submit_instance
+        submit_instance = dict()
+        submit_instance['score'] = total_get
+        submit_instance['user'] = request.user
+        submit_instance['assignment'] = assignment
+        submit_instance['code'] = code
+        submit_instance['judge_time'] = judge_time
+        submit_instance['ontime'] = judge_time <= assignment.deadline
 
-        # update score in submit table in database
-        submit_instance = None
+        return submit_instance
+    
+    def submit_judge_result(self, submit_instance):
+        submit_base = None
         try:
-            submit_instance = Submit.objects.filter(assignment_id = assignment.id).get(user_id=request.user.id)
-            submit_instance.score = max(submit_instance.score, total_get)
+            submit_base = Submit.objects.filter(assignment_id = submit_instance.get('assignment').id).get(user_id=submit_instance.get('user').id)
         except Submit.DoesNotExist:
-            submit_instance = Submit(assignment = assignment, user=request.user, score = total_get)
-        finally:
-            if submit_instance.score <= total_get:
-                submit_instance.code = code
-                submit_instance.submit_time = submit_time
-            submit_instance.save()
-            
-        return total_get == max_score
+            submit_base = Submit()
+        
+        submit_base.submit_ontime = submit_instance['ontime']
+        submit_base.score = submit_instance['score']
+        submit_base.submit_time = submit_instance['judge_time']
+        submit_base.code = submit_instance['code']
+        submit_base.assignment = submit_instance['assignment']
+        submit_base.user = submit_instance['user']
+        submit_base.save()

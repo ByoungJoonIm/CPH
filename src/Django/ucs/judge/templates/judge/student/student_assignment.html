@@ -33,12 +33,15 @@
                 {{ form.code }}
 
                 <div class="submit-row">
-                        <input type="submit" value="채점"/>
+                        <input type="submit" name='judge' value="채점"/>
                 </div>
         </form>
 
         {% if result %}
-                <input type="button" value="제출"/>
+                <form action="?" method="post">{% csrf_token %}
+                        <input type="hidden" name="submit_instance" value="{{submit_instance}}"/>
+                        <input type="submit" name='submit' value="제출"/>
+                </form>
                 <div>
                         {% autoescape on %} {{ result | safe }} {% endautoescape %}
                 </div>
