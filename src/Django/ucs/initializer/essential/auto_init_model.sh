@@ -3,7 +3,7 @@
 epath=initializer/essential
 
 rm judge/migrations/000* > /dev/null 2>&1
-mysql < $epath/recreate_db
+#mysql < $epath/recreate_db
 
 python3 manage.py makemigrations
 python3 manage.py migrate
