@@ -1,7 +1,12 @@
-# v0.3 (Not published yet)
+# v0.31 (Not published yet)
+- Document 수정
+
+# v0.3 (published)
 - (기능) Professor가 과제의 지연 제출 여부 설정 가능
 - (기능) Professor가 input이 없는 과제(Hello World 등) 업로드 가능
 - (기능) Professor가 제출된 코드 확인 가능
+- (배포) Docker image 배포 [0.3](https://hub.docker.com/repository/docker/ibjsw/ucs-dev)
+- (배포) Docker-compose 제공 [0.3](https://github.com/ByoungJoonIm/University-Coding-Site-Docker-compose)
 
 # v0.21 (published)
 - (문서) professor guide 작성
